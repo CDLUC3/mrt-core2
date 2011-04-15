@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets LABEL="A GREMLIN Tutorial for the SUN Workstation" OBJID="ark:/13030/hb1c6006rp" PROFILE="http://www.loc.gov/mets/profiles/00000013.xml" xmlns:mets="http://www.loc.gov/METS/" xmlns:mix="http://www.loc.gov/mix/v10" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:rts="http://cosimo.stanford.edu/sdr/metsrights/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/METS/  http://www.loc.gov/standards/mets/mets.xsd  http://cosimo.stanford.edu/sdr/metsrights/  http://cosimo.stanford.edu/sdr/metsrights.xsd  http://www.loc.gov/mods/v3  http://www.loc.gov/standards/mods/v3/mods-3-2.xsd  http://www.loc.gov/mix/v10  http://www.loc.gov/standards/mix/mix10/mix10.xsd">
+    
+    
+    <mets:metsHdr CREATEDATE="2006-01-03T03:43:22" LASTMODDATE="2009-08-27T08:05:32">
+        <mets:agent ROLE="CREATOR" TYPE="ORGANIZATION">
+            <mets:name>Library Systems Office, University of California, Berkeley</mets:name>
+        </mets:agent>
+    </mets:metsHdr>
+    
+    <mets:dmdSec ID="DMR1">
+        <mets:mdRef LABEL="Catalog Record" LOCTYPE="URL" MDTYPE="MARC" xlink:href="http://pathfinder.berkeley.edu/WebZ/Authorize?sessionid=0:bad=html/authofail.html:next=NEXTCMD%22/WebZ/QUERY:next=html/results.html:format=B:numrecs=20:entitytoprecno=1:entitycurrecno=1:tempjds=TRUE:entitycounter=1:entitydbgroup=Glad:entityCurrentPage=SearchRecentAcq:dbname=Glad:entitycountAvail=0:entitycountDisplay=0:entitycountWhere=0:entityCurrentSearchScreen=html/search.html:entityactive=1:indexA=gl%3A:termA=184915842:next=html/Cannedresultsframe.html:bad=error/badsearchframe.htm"/>
+    </mets:dmdSec>
+    
+    <mets:dmdSec ID="DM1">
+        <mets:mdWrap LABEL="A GREMLIN Tutorial for the SUN Workstation" MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    
+                    <mods:titleInfo>
+                        <mods:title>A GREMLIN Tutorial for the SUN Workstation</mods:title>
+                    </mods:titleInfo>
+                    <mods:name type="personal">
+                        <mods:namePart>Opperman, Mark</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="text">Author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name type="personal">
+                        <mods:namePart>Thompson, Jim</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="text">Author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name type="personal">
+                        <mods:namePart>Chen, Yih-Farn</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="text">Author</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:typeOfResource>text</mods:typeOfResource>
+                    <mods:genre authority="aat">technical reports</mods:genre>
+                    <mods:originInfo>
+                        <mods:place>
+                            <mods:placeTerm type="text">University of California at Berkeley, Berkeley, California</mods:placeTerm>
+                        </mods:place>
+                        <mods:publisher>Computer Science Division</mods:publisher>
+                        <mods:dateCreated>December 9, 1986</mods:dateCreated>
+                    </mods:originInfo>
+                    <mods:language>
+                        <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+                    </mods:language>
+                    <mods:physicalDescription>
+                        <mods:extent>48 p</mods:extent>
+                    </mods:physicalDescription>
+                    <mods:abstract>GREMLIN is an interactive graphics editor for UNIX systems. It permits various objects to be drawn and edited, including circles, rectangles, lines, curves, and polygons. Objects may be modified by moving, copying, resizing, or changing line and stipple styles. Text may be included in the picture in several sizes and fonts. GREMLIN pictures may be saved on disk for later editing, or included in typeset documents for printing. Versions of GREMLIN exist for the SUN workstation and the AED graphics terminal. This tutorial describes the version for the SUN running under the suntools environment.</mods:abstract>
+                    <mods:relatedItem displayLabel="Metacollection" type="host">
+                        <mods:titleInfo>
+                            <mods:title>technical reports</mods:title>
+                        </mods:titleInfo>
+                        <mods:identifier type="local search">hb1k40068r</mods:identifier>
+                    </mods:relatedItem>
+                    <mods:relatedItem displayLabel="Metacollection" type="host">
+                        <mods:titleInfo>
+                            <mods:title>EECS</mods:title>
+                        </mods:titleInfo>
+                        <mods:identifier type="local search">bk0000m744s</mods:identifier>
+                    </mods:relatedItem>
+                    <mods:identifier type="local">CSD-87-322</mods:identifier>
+                    <mods:location>
+                        <mods:physicalLocation>Engineering Library, 110 Bechtel, University of California, Berkeley, CA 94720-1796</mods:physicalLocation>
+                    </mods:location>
+                    
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    
+    <mets:amdSec>
+        
+        <mets:rightsMD ID="RMD1">
+            <mets:mdWrap MDTYPE="OTHER" OTHERMDTYPE="METSRights">
+                <mets:xmlData>
+                    <rts:RightsDeclarationMD RIGHTSCATEGORY="COPYRIGHTED">
+                        <rts:RightsHolder>
+                            <rts:RightsHolderName>The author(s)</rts:RightsHolderName>
+                            <rts:RightsHolderContact>
+                                <rts:RightsHolderContactAddress>Computer Science Division, Department of Electrical Engineering &amp; Computer Sciences, University of California, Berkeley</rts:RightsHolderContactAddress>
+                            </rts:RightsHolderContact>
+                        </rts:RightsHolder>
+                        <rts:Context CONTEXTCLASS="GENERAL PUBLIC">
+                            <rts:Constraints>
+                                <rts:ConstraintDescription>Transmission or reproduction of materials protected by copyright beyond that allowed by fair use requires the written permission of the copyright owners. Works not in the public domain cannot be commercially exploited without permission of the copyright owner. Responsibility for any use rests exclusively with the user.</rts:ConstraintDescription>
+                            </rts:Constraints>
+                        </rts:Context>
+                    </rts:RightsDeclarationMD>
+                    
+                </mets:xmlData>
+            </mets:mdWrap>
+        </mets:rightsMD>
+        
+    </mets:amdSec>
+    
+    <mets:fileSec>
+        <mets:fileGrp USE="application">
+            <mets:file GROUPID="GID1" ID="FID1" MIMETYPE="application/pdf" SEQ="1">
+                <mets:FLocat LOCTYPE="URL" xlink:href="http://nma.berkeley.edu/ark:/28722/bk000595617"/>
+            </mets:file>
+        </mets:fileGrp>
+        
+    </mets:fileSec>
+    
+    <mets:structMap>
+        <mets:div ADMID="RMD1" DMDID="DMR1 DM1" LABEL="A GREMLIN Tutorial for the SUN Workstation" TYPE="text">
+            <mets:fptr FILEID="FID1"/>
+        </mets:div>
+    </mets:structMap>
+    
+</mets:mets>
