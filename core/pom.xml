@@ -4,8 +4,8 @@
     <groupId>org.cdlib.mrt</groupId>
     <artifactId>mrt-core</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>UC3-mrtCore</name>
+    <version>0.1-SNAPSHOT</version>
+    <name>UC3-mrtcore</name>
     <url>http://uc3.cdlib.org</url>
 
     <!-- force UTF-8 -->

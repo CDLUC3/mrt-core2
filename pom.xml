@@ -6,8 +6,8 @@
     <groupId>org.cdlib.mrt</groupId>
 
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>UC3-mrt-CoreUtil</name>
+    <version>0.1-SNAPSHOT</version>
+    <name>UC3-mrtcore</name>
     <description>UC3 Merritt Micro-Services</description>
     <url>http://uc3.cdlib.org</url>
 
