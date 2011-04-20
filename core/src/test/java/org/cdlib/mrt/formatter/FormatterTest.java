@@ -75,6 +75,7 @@ public class FormatterTest
        String ret = null;
        try {
            FormatterInf anvl = FormatterAbs.getANVLFormatter(logger);
+           FormatterInf json = FormatterAbs.getJSONFormatter(logger);
            FormatterInf xml = FormatterAbs.getXMLFormatter(
                    "testresources/xml-test4.properties",
                    logger);
@@ -83,6 +84,8 @@ public class FormatterTest
            System.out.println("*ANVL*" + NL + ret);
            ret = formatIt(xml, testA);
            System.out.println("*XML*" + NL + ret);
+           ret = formatIt(json, testA);
+           System.out.println("*JSON*" + NL + ret);
 
            assertTrue(true);
             
@@ -207,6 +210,27 @@ public class FormatterTest
                     list.put(key + "." + i, "" + new URL(urlS + i));
                 }
                 return list;
+
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
+        public LinkedHashList getListOfLists()
+        {
+            try {
+                String key = "node";
+                LinkedHashList<String, LinkedHashList> listone = new LinkedHashList<String, LinkedHashList>(20);
+                String urlS = "http://url.base";
+                for (int iList=0; iList < 3; iList++) {
+                    LinkedHashList<String, String> list = new LinkedHashList<String, String>(20);
+                    for (int i=0; i < 10; i++) {
+
+                        list.put(key + "." + i, "" + new URL(urlS + i));
+                    }
+                    listone.put("list" + iList, list);
+                }
+                return listone;
 
             } catch (Exception ex) {
                 return null;
