@@ -32,6 +32,7 @@ package org.cdlib.mrt.utility;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -211,6 +212,10 @@ public class HTTPUtil {
             }
             throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
                     "HTTPUTIL: getHttpResponse- Error during HttpClient processing");
+
+        } catch( java.net.UnknownHostException uhe) {
+            throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
+                    "HTTPUTIL: Unknown host Exception:" + uhe);
 
         } catch( IllegalArgumentException iae ) {
             System.out.println("trace:" + StringUtil.stackTrace(iae));
@@ -561,6 +566,25 @@ public class HTTPUtil {
         } catch(Exception ex){
             throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(" Exception: " + ex);
         }
+    }
+
+    public static LinkedHashList<String, String> getQuery(String url)
+    {
+        LinkedHashList<String, String> params = new LinkedHashList();
+        String[] urlParts = url.split("\\?");
+        if (urlParts.length > 1) {
+            String query = urlParts[1];
+            for (String param : query.split("&")) {
+                String[] pair = param.split("=");
+                try {
+                    String key = URLDecoder.decode(pair[0], "UTF-8");
+                    String value = URLDecoder.decode(pair[1], "UTF-8");
+                    params.put(key,value);
+                } catch (Exception ex) { }
+            }
+        }
+        return params;
+
     }
 
     private static class URLConnectionTimeout implements Runnable

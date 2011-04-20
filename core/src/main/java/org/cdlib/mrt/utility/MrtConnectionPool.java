@@ -43,7 +43,7 @@ public class MrtConnectionPool {
             if (StringUtil.isEmpty(user)) {
                 throw new TException.INVALID_OR_MISSING_PARM("user not supplied");
             }
-            if (StringUtil.isEmpty(password)) {
+            if (password == null) {
                 throw new TException.INVALID_OR_MISSING_PARM("password not supplied");
             }
             return new MrtConnectionPool(url, user, password);
@@ -87,12 +87,18 @@ public class MrtConnectionPool {
         while((connlist != null) && (connlist.hasMoreElements())) {
             MrtConnection connection = (MrtConnection)connlist.nextElement();
             removeConnection(connection);
+            try {
+                connection.close();
+                System.out.println("removeConnection: connection closed");
+            } catch (Exception ex) { }
+            System.out.println("MrtConnectionPool: Connection closed");
         }
 
         connections = null;
     }
 
     private synchronized void removeConnection(MrtConnection conn) {
+
         connections.removeElement(conn);
     }
 

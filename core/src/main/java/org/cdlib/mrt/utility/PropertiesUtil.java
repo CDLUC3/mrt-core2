@@ -344,4 +344,21 @@ public class PropertiesUtil
         }
         return val;
     }
+
+    public static LinkedHashList<String, String> prop2LinkedHashList(Properties prop)
+    {
+        if (prop == null) return null;
+        if (prop.size() == 0) return null;
+        System.out.println(dumpProperties("prop2", prop));
+        LinkedHashList<String, String> retList = new LinkedHashList<String, String>(prop.size());
+        Enumeration list = prop.keys();
+        String name = null;
+        String value = null;
+        while (list.hasMoreElements()) {
+            name = (String)list.nextElement();
+            value = prop.getProperty(name);
+            retList.put(name, value);
+        }
+        return retList;
+    }
 }

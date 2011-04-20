@@ -110,7 +110,7 @@ public class FileUtil {
         FileOutputStream outStream = null;
         InputStream inStream = null;
         try {
-            inStream = HTTPUtil.getObject(urlS, 30000, retry);
+            inStream = HTTPUtil.getObject(urlS, 10000, retry);
             stream2File(inStream, outFile);
 
         } catch (TException fe) {

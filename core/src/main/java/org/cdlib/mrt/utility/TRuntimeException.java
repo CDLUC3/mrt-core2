@@ -591,4 +591,26 @@ public class TRuntimeException
         }
     }
 
+
+    /**
+     * SQL_EXCEPTION subclass
+     * See TExceptionEnum value for description
+     */
+    public static class SQL_EXCEPTION extends TRuntimeException
+    {
+        public SQL_EXCEPTION(Exception ex)
+        {
+            super(TExceptionEnum.SQL_EXCEPTION, ex);
+        }
+        public SQL_EXCEPTION(String msg)
+        {
+            super(TExceptionEnum.SQL_EXCEPTION, msg);
+        }
+        public SQL_EXCEPTION(String msg, Exception ex)
+        {
+            super(TExceptionEnum.SQL_EXCEPTION, msg, ex);
+        }
+    }
+
+
 }

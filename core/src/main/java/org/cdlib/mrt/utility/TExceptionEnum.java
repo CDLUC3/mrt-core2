@@ -65,6 +65,8 @@ public enum TExceptionEnum
 
     CONCURRENT_UPDATE("Concurrent update of same Version", 500),
 
+    SQL_EXCEPTION("SQL exception", 500),
+
     REQUESTED_ITEM_NOT_FOUND("Request contains element that cannot be located", 404),
 
     UNIMPLEMENTED_CODE("Unimplemented Code", 501),

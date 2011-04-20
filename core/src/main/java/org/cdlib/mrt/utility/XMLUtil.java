@@ -71,12 +71,23 @@ public class XMLUtil
             String encodedString = null;
             try {
                 encodedString = xmlString.replace("$", ".");
+                char c = 0;
+                StringBuffer buf = new StringBuffer(xmlString.length());
+                String match = "._-"
+                            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                            + "abcdefghijklmnopqrstuvwxyz"
+                            + "0123456789";
+                for (int i=0; i< encodedString.length(); i++) {
+                    c = encodedString.charAt(i);
+                    if (match.indexOf(c) < 0) {
+                        buf.append("__");
+                    } else buf.append(c);
+                }
+                return buf.toString();
 
             } catch (Exception e) {
                 throw new TException (TExceptionEnum.GENERAL_EXCEPTION, "XMLUtil.encodeXML: Error in encoding XML: " + xmlString);
             }
-
-        return encodedString;
     }
 
 
