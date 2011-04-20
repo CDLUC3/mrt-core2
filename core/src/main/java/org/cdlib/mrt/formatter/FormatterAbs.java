@@ -497,22 +497,55 @@ public abstract class FormatterAbs
             throws Exception
     {
         try {
-            LinkedHashList<String, String> map = (LinkedHashList)runMethod(m, obj);
+            LinkedHashList<String, Object> map = (LinkedHashList)runMethod(m, obj);
             if (map == null) return;
             String name = getMethodName(m);
+
+
+            processLinkedHashList(map, name, isFirst, lvl, stream);
+            return;
+
+        } catch (TException mfex) {
+            throw mfex;
+
+        } catch (Exception ex) {
+            logException(ex);
+            throw new TException.GENERAL_EXCEPTION(
+                    MESSAGE + "formatNode - Exception:" + ex);
+        }
+    }
+
+    protected void processLinkedHashList(
+            LinkedHashList<String, Object> map,
+            String name,
+            boolean isFirst,
+            int lvl,
+            PrintStream stream)
+            throws Exception
+    {
+        try {
+            if (map == null) return;
             int startLvl = lvl;
             printStart(name, isFirst, lvl, stream);
             isFirst = true;
             lvl++;
-            Vector<String> values = null;
+            Vector<Object> values = null;
             for (String key: map.keySet()) {
                 values = map.get(key);
                 if (values == null) return;
                 for(int i = 0; i < values.size(); i++) {
-                    String value = values.get(i);
-                    boolean isNumeric = isNumeric(value);
-                    print(key, value, isFirst, isNumeric, lvl, stream);
-                    isFirst = false;
+                    Object object = values.get(i);
+                    if (object instanceof String) {
+                        String value = (String) object;
+                        boolean isNumeric = isNumeric(value);
+                        print(key, value, isFirst, isNumeric, lvl, stream);
+                        isFirst = false;
+                    } else if (object instanceof LinkedHashList) {
+                        LinkedHashList<String, Object> passMap = (LinkedHashList) object;
+                        processLinkedHashList(passMap, key, isFirst, lvl, stream);
+                    } else {
+                        String type = object.getClass().getName();
+                    }
                 }
             }
             printClose(name, startLvl, stream);
@@ -522,6 +555,7 @@ public abstract class FormatterAbs
             throw mfex;
 
         } catch (Exception ex) {
+            String dispEx = ex.toString();
             logException(ex);
             throw new TException.GENERAL_EXCEPTION(
                     MESSAGE + "formatNode - Exception:" + ex);

@@ -56,6 +56,10 @@ public class XMLMapper
         access,
         authorize,
         feeder,
+        fixentry,
+        fixentries,
+        fixserv,
+        fixselect,
         ingingest,
         ingqueue,
         ingbatch,
@@ -97,6 +101,10 @@ public class XMLMapper
     protected final String HANDLER = "HandlerState";
     protected final String AUTHORIZE = "AuthorizeState";
     protected final String QUEUE_ENTRY_STATE = "QueueEntryState";
+    protected final String FIXITY_ENTRY = "FixityEntry";
+    protected final String FIXITY_ENTRIES = "FixityEntriesState";
+    protected final String FIXITY_SELECT = "FixitySelectState";
+    protected final String FIXITY_SERVICE = "FixityServiceState";
 
     public static XMLMapper getXMLMapper(String resourceName, StateInf state)
         throws TException
@@ -133,6 +141,10 @@ public class XMLMapper
         else if (stateS.contains(FIXITY)) type = Type.strfixity;
         else if (stateS.contains(PRIMARY)) type = Type.strprimary;
         else if (stateS.contains(EXCEPTION)) type = Type.exc;
+        else if (stateS.contains(FIXITY_ENTRY)) type = Type.fixentry;
+        else if (stateS.contains(FIXITY_ENTRIES)) type = Type.fixentries;
+        else if (stateS.contains(FIXITY_SELECT)) type = Type.fixselect;
+        else if (stateS.contains(FIXITY_SERVICE)) type = Type.fixserv;
         else if (stateS.contains(INGEST)) type = Type.ingingest;
         else if (stateS.contains(QUEUE)) type = Type.ingqueue;
         else if (stateS.contains(BATCH)) type = Type.ingbatch;
