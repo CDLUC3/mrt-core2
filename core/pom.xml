@@ -4,7 +4,7 @@
     <groupId>org.cdlib.mrt</groupId>
     <artifactId>mrt-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <name>UC3-mrtcore</name>
     <url>http://uc3.cdlib.org</url>
 
@@ -12,6 +12,20 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+  <distributionManagement>
+    <repository>
+      <id>cdl-releases</id>
+      <name>CDL Snapshot Repository</name>
+      <url>http://builds.cdlib.org/repo/content/repositories/cdl-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>cdl-snapshots</id>
+      <name>CDL Snapshot Repository</name>
+      <url>http://builds.cdlib.org/repo/content/repositories/cdl-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
 
     <build>
         <plugins>
