@@ -208,7 +208,7 @@ public class FixityClient
     }
 
     /**
-     *
+     * General submission form for process operations
      * @param cmd "add", "queue", "test"
      * @param linkS fixity server URL base
      * @param timeout number of milli-seconds for server connection timeout
