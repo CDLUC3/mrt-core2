@@ -63,6 +63,24 @@ public class FixityClient
         this.logger = new TFileLogger(NAME, 5, 5);
     }
 
+    /**
+     * Add item into fixity - performs fixity check and then saves to db
+     * @param linkS fixity server URL base
+     * @param timeout number of milli-seconds for server connection timeout
+     * @param retry number of retries to make if timeout failure
+     * @param urlS fixity URL
+     * @param source "web"
+     * @param sizeS fixity byte size
+     * @param digestType checksum type
+     * @param digestValue checksum value
+     * @param context user defined description used for selecting db entries
+     * @param note user defined note (typically null)
+     * @param formatTypeS Microservice formats: json, anvl, xml, xhtml
+     * @return properties containing twos property values
+     * <br>"response.status"=http status
+     * <br>"response.state"=Microservice formatted response based on formatTypeS
+     * @throws TException
+     */
     public Properties add(
             String linkS,
             int timeout,
@@ -93,6 +111,24 @@ public class FixityClient
             formatTypeS);
     }
 
+    /**
+     * Save fixity item into db without testing - validates if url is unique
+     * @param linkS fixity server URL base
+     * @param timeout number of milli-seconds for server connection timeout
+     * @param retry number of retries to make if timeout failure
+     * @param urlS fixity URL
+     * @param source "web"
+     * @param sizeS fixity byte size
+     * @param digestType checksum type
+     * @param digestValue checksum value
+     * @param context user defined description used for selecting db entries
+     * @param note user defined note (typically null)
+     * @param formatTypeS Microservice formats: json, anvl, xml, xhtml
+     * @return properties containing twos property values
+     * <br>"response.status"=http status
+     * <br>"response.state"=Microservice formatted response based on formatTypeS
+     * @throws TException
+     */
     public Properties queue(
             String linkS,
             int timeout,
@@ -123,6 +159,24 @@ public class FixityClient
             formatTypeS);
     }
 
+    /**
+     * Test item fixity - performs fixity check and no db store
+     * @param linkS fixity server URL base
+     * @param timeout number of milli-seconds for server connection timeout
+     * @param retry number of retries to make if timeout failure
+     * @param urlS fixity URL
+     * @param source "web"
+     * @param sizeS fixity byte size
+     * @param digestType checksum type
+     * @param digestValue checksum value
+     * @param context user defined description used for selecting db entries
+     * @param note user defined note (typically null)
+     * @param formatTypeS Microservice formats: json, anvl, xml, xhtml
+     * @return properties containing twos property values
+     * <br>"response.status"=http status
+     * <br>"response.state"=Microservice formatted response based on formatTypeS
+     * @throws TException
+     */
     public Properties test(
             String linkS,
             int timeout,
@@ -153,6 +207,25 @@ public class FixityClient
             formatTypeS);
     }
 
+    /**
+     *
+     * @param cmd "add", "queue", "test"
+     * @param linkS fixity server URL base
+     * @param timeout number of milli-seconds for server connection timeout
+     * @param retry number of retries to make if timeout failure
+     * @param urlS fixity URL
+     * @param source "web"
+     * @param sizeS fixity byte size
+     * @param digestType checksum type
+     * @param digestValue checksum value
+     * @param context user defined description used for selecting db entries
+     * @param note user defined note (typically null)
+     * @param formatTypeS Microservice formats: json, anvl, xml, xhtml
+     * @return properties containing twos property values
+     * <br>"response.status"=http status
+     * <br>"response.state"=Microservice formatted response based on formatTypeS
+     * @throws TException
+     */
     public Properties process(
             String cmd,
             String linkS,
