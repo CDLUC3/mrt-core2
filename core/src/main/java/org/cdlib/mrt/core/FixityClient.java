@@ -7,33 +7,24 @@
 package org.cdlib.mrt.core;
 
 import java.net.URL;
-import org.cdlib.mrt.utility.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 
-import org.cdlib.mrt.core.Identifier;
 import org.cdlib.mrt.formatter.FormatInfo;
 import org.cdlib.mrt.utility.TException;
 import org.cdlib.mrt.utility.LoggerInf;
-import org.cdlib.mrt.utility.FileUtil;
-import org.cdlib.mrt.utility.FixityTests;
 import org.cdlib.mrt.utility.PropertiesUtil;
 import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TFileLogger;
 import org.cdlib.mrt.utility.URLEncoder;
 
 import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.Header;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.protocol.HTTP;
 
 
 
-import java.io.File;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -86,6 +77,97 @@ public class FixityClient
             String formatTypeS)
         throws TException
     {
+
+        return process(
+            "add",
+            linkS,
+            timeout,
+            retry,
+            urlS,
+            source,
+            sizeS,
+            digestType,
+            digestValue,
+            context,
+            note,
+            formatTypeS);
+    }
+
+    public Properties queue(
+            String linkS,
+            int timeout,
+            int retry,
+            String urlS,
+            String source,
+            String sizeS,
+            String digestType,
+            String digestValue,
+            String context,
+            String note,
+            String formatTypeS)
+        throws TException
+    {
+
+        return process(
+            "queue",
+            linkS,
+            timeout,
+            retry,
+            urlS,
+            source,
+            sizeS,
+            digestType,
+            digestValue,
+            context,
+            note,
+            formatTypeS);
+    }
+
+    public Properties test(
+            String linkS,
+            int timeout,
+            int retry,
+            String urlS,
+            String source,
+            String sizeS,
+            String digestType,
+            String digestValue,
+            String context,
+            String note,
+            String formatTypeS)
+        throws TException
+    {
+
+        return process(
+            "test",
+            linkS,
+            timeout,
+            retry,
+            urlS,
+            source,
+            sizeS,
+            digestType,
+            digestValue,
+            context,
+            note,
+            formatTypeS);
+    }
+
+    public Properties process(
+            String cmd,
+            String linkS,
+            int timeout,
+            int retry,
+            String urlS,
+            String source,
+            String sizeS,
+            String digestType,
+            String digestValue,
+            String context,
+            String note,
+            String formatTypeS)
+        throws TException
+    {
         URL link = null;
         URL url = null;
         long size = -1;
@@ -93,6 +175,9 @@ public class FixityClient
         FormatInfo format = null;
 
         try {
+            if (StringUtil.isEmpty(cmd)) {
+                throw new TException.INVALID_OR_MISSING_PARM("cmd required");
+            }
             if (StringUtil.isEmpty(linkS)) {
                 throw new TException.INVALID_OR_MISSING_PARM("link required");
             }
@@ -154,7 +239,8 @@ public class FixityClient
             if (!format.getForm().equals("state")) {
                 throw new TException.INVALID_OR_MISSING_PARM("formatType not supported:" + formatTypeS);
             }
-            log(MESSAGE + "addClient:"
+            log(MESSAGE + "update:"
+                    + " - cmd=" + cmd
                     + " - url=" + url.toString()
                     + " - source=" + source
                     + " - size=" + size
@@ -163,7 +249,8 @@ public class FixityClient
                     + " - note=" + note
                     + " - format=" + format.toString(),10);
             if (false) return null; //!!!!!!
-            HttpResponse  response = sendAddMultipartRetry(
+            HttpResponse  response = sendProcessMultipartRetry(
+                cmd,
                 link,
                 timeout,
                 retry,
@@ -185,7 +272,8 @@ public class FixityClient
 
     }
 
-     public HttpResponse sendAddMultipart(
+     public HttpResponse sendProcessMultipart(
+                String cmd,
                 URL link,
                 int timeout,
                 URL url,
@@ -198,9 +286,10 @@ public class FixityClient
         throws TException
     {
         try {
-            String addFixityURLS = link.toString() + "/add";
+            String addFixityURLS = link.toString() + "/" + cmd;
             URL addFixityURL = new URL(addFixityURLS);
-            log(MESSAGE + "addCLient:"
+            log(MESSAGE + "sendProcessMultipart:"
+                    + " - cmd=" + cmd
                     + " - url=" + url.toString()
                     + " - source=" + source
                     + " - size=" + size
@@ -272,7 +361,8 @@ public class FixityClient
      * @return InputStream to URL service
      * @throws org.cdlib.mrt.utility.TException
      */
-     public HttpResponse sendAddMultipartRetry(
+     public HttpResponse sendProcessMultipartRetry(
+            String cmd,
             URL link,
             int timeout,
             int retry,
@@ -288,7 +378,8 @@ public class FixityClient
         Exception exSave = null;
         for (int i=0; i < retry; i++) {
             try {
-                HttpResponse  response = sendAddMultipart(
+                HttpResponse  response = sendProcessMultipart(
+                    cmd,
                     link,
                     timeout,
                     url,
@@ -322,12 +413,12 @@ public class FixityClient
             int statusCode = statusLine.getStatusCode();
 
             if ((statusCode >= 300) || (statusCode < 200)) {
-                resultProp.setProperty("add.status", "" + statusCode);
+                resultProp.setProperty("response.status", "" + statusCode);
             }
             HttpEntity resEntity = response.getEntity();
             String responseState = StringUtil.streamToString(resEntity.getContent(), "utf-8");
             if (StringUtil.isNotEmpty(responseState)) {
-                resultProp.setProperty("add.state", responseState);
+                resultProp.setProperty("response.state", responseState);
                 System.out.println("mrt-response:" + responseState);
             }
             Header [] headers = response.getAllHeaders();
