@@ -215,7 +215,8 @@ public class HTTPUtil {
 
         } catch( java.net.UnknownHostException uhe) {
             throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
-                    "HTTPUTIL: Unknown host Exception:" + uhe);
+                    "HTTPUTIL: Unknown host Exception:" + uhe
+                    + " - URL:" + requestURL);
 
         } catch( IllegalArgumentException iae ) {
             System.out.println("trace:" + StringUtil.stackTrace(iae));

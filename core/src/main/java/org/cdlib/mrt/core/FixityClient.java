@@ -47,6 +47,7 @@ public class FixityClient
 {
     private static final String NAME = "FixityAddClient";
     private static final String MESSAGE = NAME + ": ";
+    private static boolean DEBUG = true;
     protected final static String NL = System.getProperty("line.separator");
     protected final static String FORMAT_NAME_POST = "t";
     protected final static String FORMAT_NAME_MULTIPART = "response-form";
@@ -345,6 +346,132 @@ public class FixityClient
 
     }
 
+    /**
+     * General submission form for process operations
+     * @param cmd "add", "queue", "test"
+     * @param linkS fixity server URL base
+     * @param timeout number of milli-seconds for server connection timeout
+     * @param retry number of retries to make if timeout failure
+     * @param urlS fixity URL
+     * @param source "web"
+     * @param sizeS fixity byte size
+     * @param digestType checksum type
+     * @param digestValue checksum value
+     * @param context user defined description used for selecting db entries
+     * @param note user defined note (typically null)
+     * @param formatTypeS Microservice formats: json, anvl, xml, xhtml
+     * @return properties containing twos property values
+     * <br>"response.status"=http status
+     * <br>"response.state"=Microservice formatted response based on formatTypeS
+     * @throws TException
+     */
+    public Properties update(
+            String linkS,
+            int timeout,
+            int retry,
+            String urlS,
+            String source,
+            String sizeS,
+            String digestType,
+            String digestValue,
+            String context,
+            String note,
+            String formatTypeS)
+        throws TException
+    {
+        String cmd = "update";
+        URL link = null;
+        URL url = null;
+        long size = -1;
+        MessageDigest messageDigest = null;
+        FormatInfo format = null;
+
+        try {
+            if (StringUtil.isEmpty(linkS)) {
+                throw new TException.INVALID_OR_MISSING_PARM("link required");
+            }
+            try {
+                link = new URL(linkS);
+            } catch (Exception ex) {
+                throw new TException.INVALID_OR_MISSING_PARM("link invalid:" + linkS);
+            }
+
+            if (StringUtil.isEmpty(urlS)) {
+                throw new TException.INVALID_OR_MISSING_PARM("url required");
+            }
+            try {
+                url = new URL(urlS);
+            } catch (Exception ex) {
+                throw new TException.INVALID_OR_MISSING_PARM("url invalid:" + urlS);
+            }
+            if (StringUtil.isNotEmpty(sizeS)) {
+                try {
+                    size = Long.parseLong(sizeS);
+                } catch (Exception ex) {
+                    throw new TException.INVALID_OR_MISSING_PARM("sizeS invalid:" + sizeS);
+                }
+            }
+
+            if (StringUtil.isNotEmpty(digestType)
+                    && StringUtil.isNotEmpty(digestValue)) {
+                try {
+                    messageDigest = new MessageDigest(digestValue, digestType);
+                } catch (Exception ex) {
+                    throw new TException.INVALID_OR_MISSING_PARM("digest invalid:"
+                            + " - digestType=" + digestType
+                            + " - digestValue=" + digestValue
+                            );
+                }
+            }
+            if (StringUtil.isEmpty(formatTypeS)) {
+                formatTypeS = "XML";
+            }
+
+            try {
+                formatTypeS = formatTypeS.toLowerCase();
+                format = FormatInfo.valueOf(formatTypeS);
+            } catch (Exception ex) {
+                throw new TException.INVALID_OR_MISSING_PARM("formatType invalid:" + formatTypeS);
+            }
+            if (!format.getForm().equals("state")) {
+                throw new TException.INVALID_OR_MISSING_PARM("formatType not supported:" + formatTypeS);
+            }
+            String messageDigestS = null;
+            if (messageDigest != null) messageDigestS = messageDigest.toString();
+            log(MESSAGE + "update:"
+                    + " - cmd=" + cmd
+                    + " - url=" + url.toString()
+                    + " - source=" + source
+                    + " - size=" + size
+                    + " - messageDigest=" + messageDigestS
+                    + " - context=" + context
+                    + " - note=" + note
+                    + " - format=" + format.toString(),10);
+            if (false) return null; //!!!!!!
+            HttpResponse  response = sendProcessMultipartRetry(
+                cmd,
+                link,
+                timeout,
+                retry,
+                url,
+                source,
+                size,
+                messageDigest,
+                context,
+                note,
+                format);
+            return processResponse(response);
+
+        } catch (Exception ex) {
+            log(MESSAGE + "Exception:" + ex, 3);
+            log(MESSAGE + "Trace:" + StringUtil.stackTrace(ex), 10);
+            if (DEBUG) ex.printStackTrace();
+            throw new TException.GENERAL_EXCEPTION(ex);
+
+        }
+
+    }
+
      public HttpResponse sendProcessMultipart(
                 String cmd,
                 URL link,
@@ -361,12 +488,14 @@ public class FixityClient
         try {
             String addFixityURLS = link.toString() + "/" + cmd;
             URL addFixityURL = new URL(addFixityURLS);
+            String messageDigestS = null;
+            if (messageDigest != null) messageDigestS = messageDigest.toString();
             log(MESSAGE + "sendProcessMultipart:"
                     + " - cmd=" + cmd
                     + " - url=" + url.toString()
                     + " - source=" + source
                     + " - size=" + size
-                    + " - messageDigest=" + messageDigest.toString()
+                    + " - messageDigest=" + messageDigestS
                     + " - context=" + context
                     + " - note=" + note
                     + " - format=" + format.toString(),10);

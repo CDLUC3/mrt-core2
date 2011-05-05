@@ -621,6 +621,26 @@ public class TException
     }
 
     /**
+     * REQUEST_ITEM_EXISTS subclass
+     * See TExceptionEnum value for description
+     */
+    public static class REQUEST_ITEM_EXISTS extends TException
+    {
+        public REQUEST_ITEM_EXISTS(Exception ex)
+        {
+            super(TExceptionEnum.REQUEST_ITEM_EXISTS, ex);
+        }
+        public REQUEST_ITEM_EXISTS(String msg)
+        {
+            super(TExceptionEnum.REQUEST_ITEM_EXISTS, msg);
+        }
+        public REQUEST_ITEM_EXISTS(String msg, Exception ex)
+        {
+            super(TExceptionEnum.REQUESTED_ITEM_NOT_FOUND, msg, ex);
+        }
+    }
+
+    /**
      * SQL_EXCEPTION subclass
      * See TExceptionEnum value for description
      */

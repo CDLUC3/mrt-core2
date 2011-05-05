@@ -176,7 +176,9 @@ public class PropertiesUtil
         }
         return buf.toString();
     }
-    
+
+
+
     /**
      *
      * Build string containing display form of Properties contents
@@ -184,12 +186,12 @@ public class PropertiesUtil
      * @param msg Display message for this dump
      * @param prop Properties file to be dumped
      * @param maxlen maximum length for prop to add
-     * @return String containing display 
-     */    
+     * @return String containing display
+     */
     public static String dumpProperties(String msg, Properties prop, int maxlen)
     {
         if (prop == null) return "(empty)";
-        
+
         Enumeration e = prop.propertyNames();
         String key = null;
         String value = null;
@@ -210,7 +212,30 @@ public class PropertiesUtil
            }
         }
         buf.append("]");
-        return buf.toString(); 
+        return buf.toString();
+    }
+    
+    /**
+     * merge updates property values into another properties
+     * @param prop merge to this Property
+     * @param updateProp updates to merge
+     */
+    public static void mergeProperties(Properties prop, Properties updateProp)
+    {
+        if (updateProp == null) return;
+        
+        Enumeration e = updateProp.propertyNames();
+        String key = null;
+        String value = null;
+
+        while( e.hasMoreElements() )
+        {
+           key = (String)e.nextElement();
+           value = updateProp.getProperty(key);
+           if (StringUtil.isNotEmpty(value)) {
+               prop.setProperty(key, value);
+           }
+        }
     }
      
     public static Properties addRequestToProperties(ServletRequest request)
