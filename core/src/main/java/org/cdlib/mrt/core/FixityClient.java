@@ -614,8 +614,10 @@ public class FixityClient
             StatusLine statusLine = response.getStatusLine();
             int statusCode = statusLine.getStatusCode();
 
+
+            resultProp.setProperty("response.status", "" + statusCode);
             if ((statusCode >= 300) || (statusCode < 200)) {
-                resultProp.setProperty("response.status", "" + statusCode);
+                resultProp.setProperty("error.status", "" + statusCode);
             }
             HttpEntity resEntity = response.getEntity();
             String responseState = StringUtil.streamToString(resEntity.getContent(), "utf-8");

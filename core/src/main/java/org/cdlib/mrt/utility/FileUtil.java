@@ -825,49 +825,49 @@ public class FileUtil {
      */
     public static void removeLineFromFile(String file, String lineToRemove, String linePortion) {
 
-    try {
+        try {
 
-      File inFile = new File(file);
-      
-      if (!inFile.isFile()) {
-        System.out.println("Parameter is not an existing file");
-        return;
-      }
-       
-      //Construct the new file that will later be renamed to the original filename.
-      File tempFile = new File(inFile.getAbsolutePath() + ".tmp");
-      
-      BufferedReader br = new BufferedReader(new FileReader(file));
-      PrintWriter pw = new PrintWriter(new FileWriter(tempFile));
-      
-      String line = null;
+          File inFile = new File(file);
 
-      //Read from the original file and write to the new
-      //unless content matches data to be removed.
-      while ((line = br.readLine()) != null) {
-        
-        if ( ! ((line.trim().endsWith(lineToRemove) && linePortion.equals("END"))  ||
-            (line.trim().startsWith(lineToRemove) && linePortion.equals("BEGIN")) ||
-            (line.trim().equals(lineToRemove)))) {
+          if (!inFile.isFile()) {
+            System.out.println("Parameter is not an existing file");
+            return;
+          }
 
-          pw.println(line);
-          pw.flush();
+          //Construct the new file that will later be renamed to the original filename.
+          File tempFile = new File(inFile.getAbsolutePath() + ".tmp");
+
+          BufferedReader br = new BufferedReader(new FileReader(file));
+          PrintWriter pw = new PrintWriter(new FileWriter(tempFile));
+
+          String line = null;
+
+          //Read from the original file and write to the new
+          //unless content matches data to be removed.
+          while ((line = br.readLine()) != null) {
+
+            if ( ! ((line.trim().endsWith(lineToRemove) && linePortion.equals("END"))  ||
+                (line.trim().startsWith(lineToRemove) && linePortion.equals("BEGIN")) ||
+                (line.trim().equals(lineToRemove)))) {
+
+              pw.println(line);
+              pw.flush();
+            }
+          }
+          pw.close();
+          br.close();
+
+          //Delete the original file
+          if (!inFile.delete()) {
+            System.out.println("Could not delete file");
+            return;
+          }
+
+          //Rename the new file to the filename the original file had.
+          if (!tempFile.renameTo(inFile))
+            System.out.println("Could not rename file");
+
         }
-      }
-      pw.close();
-      br.close();
-      
-      //Delete the original file
-      if (!inFile.delete()) {
-        System.out.println("Could not delete file");
-        return;
-      }
-      
-      //Rename the new file to the filename the original file had.
-      if (!tempFile.renameTo(inFile))
-        System.out.println("Could not rename file");
-      
-    }
     catch (FileNotFoundException ex) {
       ex.printStackTrace();
     }
@@ -875,5 +875,59 @@ public class FileUtil {
       ex.printStackTrace();
     }
   }
+
+    /**
+     * Return array of nonempty lines from a file
+     * @param logger merritt logger
+     * @param urlS url to file to be split
+     * @return array of lines from original file
+     * @throws TException
+     */
+    public static String[] getLinesFromFile(File splitFile)
+        throws TException
+    {
+        try {
+            String fileContent = FileUtil.file2String(splitFile);
+            if (StringUtil.isEmpty(fileContent)) return null;
+            String [] lines = fileContent.split("[\\n\\r]+");
+            if (lines.length == 0) return null;
+            Vector<String> list = new Vector(lines.length);
+            for (String line: lines) {
+                if (StringUtil.isNotEmpty(line)) list.add(line);
+            }
+            return list.toArray(new String[0]);
+
+        } catch (Exception ex) {
+            return null;
+
+        }
+    }
+
+    /**
+     * Return array of nonempty lines from url content
+     * @param logger merritt logger
+     * @param urlS url to file to be split
+     * @return array of lines from original file
+     * @throws TException
+     */
+    public static String[] getLinesFromURL(LoggerInf logger, String urlS)
+        throws TException
+    {
+        File tempFile = null;
+        try {
+            tempFile = url2TempFile(logger, urlS);
+            return getLinesFromFile(tempFile);
+
+        } catch (Exception ex) {
+            return null;
+
+        } finally {
+            if (tempFile != null) {
+                try {
+                    tempFile.delete();
+                } catch (Exception ex) { }
+            }
+        }
+    }
 
 }
