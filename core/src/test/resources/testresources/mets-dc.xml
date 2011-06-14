@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets LABEL="Correspondence from J. E. Morrish to Pacific Gas and Electric Company" OBJID="ark:/13030/fq01z41t7" PROFILE="http://ark.cdlib.org/ark:/13030/kt4g5012g0" TYPE="Image" xmlns="http://www.loc.gov/METS/" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/TR/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+    <metsHdr>
+        <agent ROLE="EDITOR" TYPE="ORGANIZATION">
+            <name>California Digital Library</name>
+            <note>Record created by conversion of DC metadata accompanying object</note>
+        </agent>
+        <altRecordID TYPE="local-id">M-301-01</altRecordID>
+    </metsHdr>
+    <dmdSec ID="dc">
+        <mdWrap LABEL="Dublin Core Metadata" MDTYPE="DC" MIMETYPE="text/xml">
+            <xmlData>
+                <cdl:qualifieddc xmlns:cdl="http://ark.cdlib.org/schemas/appqualifieddc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xsi:schemaLocation="http://ark.cdlib.org/schemas/appqualifieddc/ http://ark.cdlib.org/schemas/appqualifieddc/appqualifieddc.xsd">
+                    <dc:identifier>M-301-01</dc:identifier>
+                    <dc:title>Correspondence from J. E. Morrish to Pacific Gas and Electric Company</dc:title>
+                    <dc:creator>Morrish, J. Elmer, 1886-1957, banker</dc:creator>
+                    <dc:date>3 Apr 1942</dc:date>
+                    <dc:description>1 document</dc:description>
+                    <dc:description>8 1/2 x 11 in.</dc:description>
+                    <dc:subject>Japanese Americans--California--Redwood City--Evacuation and relocation, 1942-1945</dc:subject>
+                    <dc:subject>World War, 1939-1945--Japanese Americans</dc:subject>
+                    <dc:subject>Morrish, J. E., 1886-1957</dc:subject>
+                    <dc:coverage>Redwood City (Calif.)--History</dc:coverage>
+                    <dcterms:isPartOf>Morrish Collection: Redwood City Public Library</dcterms:isPartOf>
+                    <dcterms:isPartOf>Surviving the Internment: Redwood City Remembers</dcterms:isPartOf>
+                    <dc:publisher>Redwood City Public Library</dc:publisher>
+                    <dc:type>Image</dc:type>
+                    <dc:language>eng</dc:language>
+                    <dc:rights>Property rights of the materials in the Morrish Collection reside with the Redwood City Public Library. Literary rights are retained by the creators of the records and their heirs. The materials are intended for educational and scholarly research only; any other kind of use may be subject to restrictions. Users are solely responsible for determining the existence of such rights and for obtaining and/or paying for proposed use.</dc:rights>
+                </cdl:qualifieddc>
+            </xmlData>
+        </mdWrap>
+    </dmdSec>
+    <dmdSec ID="dc-html">
+        <mdRef ID="kt067nc3v8" LABEL="Original Redwood DC Metadata" LOCTYPE="URL" MDTYPE="DC" xlink:href="http://www.oac.cdlib.org/affiliates/images/crc/kt70002161/metadata/M-301-01.meta"/>
+    </dmdSec>
+    <dmdSec ID="ead">
+        <mdRef ID="kt70002161" LABEL="Redwood City Public Library Morrish Collection" LOCTYPE="URL" MDTYPE="EAD" xlink:href="http://www.oac.cdlib.org/findaid/ark:/13030/kt70002161"/>
+    </dmdSec>
+    <dmdSec ID="repo">
+        <mdWrap LABEL="Dublin Core Metadata" MDTYPE="DC" MIMETYPE="text/xml">
+            <xmlData>
+                <cdl:qualifieddc xmlns:cdl="http://ark.cdlib.org/schemas/appqualifieddc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xsi:schemaLocation="http://ark.cdlib.org/schemas/appqualifieddc/ http://ark.cdlib.org/schemas/appqualifieddc/appqualifieddc.xsd">
+                    <dc:title>Redwood City Public Library</dc:title>
+                    <dc:identifier>ark:/13030/kt9q2nc8w8</dc:identifier>
+                    <dc:identifier>http://www.rcpl.info/</dc:identifier>
+                </cdl:qualifieddc>
+            </xmlData>
+        </mdWrap>
+    </dmdSec>
+    <fileSec>
+        <fileGrp>
+            <file ID="thumbnail" USE="thumbnail">
+                <FLocat LOCTYPE="URL" xlink:href="http://www.oac.cdlib.org/affiliates/images/crc/kt70002161/thumbs/M-301-01.gif" xlink:role="thumbnail"/>
+            </file>
+            <file ID="hi-res" USE="hi-res">
+                <FLocat LOCTYPE="URL" xlink:href="http://www.oac.cdlib.org/affiliates/images/crc/kt70002161/hi-res/M-301-01.jpg" xlink:role="hi-res"/>
+            </file>
+            <file ID="archival" USE="archival">
+                <FLocat LOCTYPE="URL" xlink:href="http://www.oac.cdlib.org/archive/kt9q2nc8w8/M-301-01.archival.tif" xlink:role="archival"/>
+            </file>
+        </fileGrp>
+    </fileSec>
+    <structMap>
+        <div LABEL="Correspondence from J. E. Morrish to Pacific Gas and Electric Company">
+            <div LABEL="thumbnail">
+                <fptr FILEID="thumbnail"/>
+            </div>
+            <div LABEL="hi-res">
+                <fptr FILEID="hi-res"/>
+            </div>
+            <div LABEL="archival" TYPE="hidden">
+                <fptr FILEID="archival"/>
+            </div>
+        </div>
+    </structMap>
+</mets>

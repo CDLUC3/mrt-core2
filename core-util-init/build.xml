@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Builds the CDL Framework --><!-- Assumes: Java source is at '../src' --><!-- Builds:  Java classes at '../classes' --><!-- Builds:  Jar at '../lib' --><!--  -->
+<project basedir="." default="cleanup" name="buildstore">
+    <target name="-init">
+        <echo message="-init entered"/>
+        <property file="build.properties"/>
+    </target>
+
+    <target name="cleanup">
+        <echo message="core-util cleanup entered"/>
+        <delete dir="../core/target"/>
+        <delete dir="../jena/target"/>
+        <delete file="../jena/dependency-reduced-pom.xml"/>
+    </target>
+</project>
