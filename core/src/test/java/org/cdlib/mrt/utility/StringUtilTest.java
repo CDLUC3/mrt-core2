@@ -131,4 +131,27 @@ public class StringUtilTest {
         }
     
     }
+
+    @Test
+    public void isAllBlank()
+    {
+        String test = null;
+        try {
+            assertTrue(StringUtil.isAllBlank(""));
+            assertTrue(StringUtil.isAllBlank(null));
+            assertTrue(StringUtil.isAllBlank("              "));
+            assertFalse(StringUtil.isAllBlank("      |        "));
+            assertFalse(StringUtil.isAllBlank("#"));
+            assertFalse(StringUtil.isAllBlank("abcd"));
+            assertFalse(StringUtil.isAllBlank("ab cd"));
+
+        } catch (Exception ex) {
+            System.out.println(MESSAGE + "Exception:" + ex);
+            assertFalse(MESSAGE
+                    + " - Exception:" + ex
+                    + " - stack:" + StringUtil.stackTrace(ex)
+                    , true);
+        }
+
+    }
 }

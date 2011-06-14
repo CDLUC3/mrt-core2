@@ -193,6 +193,7 @@ public class Manifest implements Enumeration
                         continue;
                     }
                     if (line.substring(0,1).equals("#")) continue;
+                    if (StringUtil.isAllBlank(line)) continue;
                 }
 
                 if (isHeaderArea) {

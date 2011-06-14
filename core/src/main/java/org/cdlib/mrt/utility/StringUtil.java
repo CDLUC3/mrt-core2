@@ -69,7 +69,18 @@ public class StringUtil {
 				return false;
 		}
 		return true;
-	}  
+	}
+
+        /**
+         * Return true if only space characters are found or empty
+         * @param s
+         * @return true=all space; false=at least one non-space
+         */
+        public static final boolean isAllBlank(String s)
+        {
+            if (isEmpty(s)) return true;
+            return s.matches("^\\s+$");
+        }
 
 	/**
 	 * test if the string passed is null or empty
