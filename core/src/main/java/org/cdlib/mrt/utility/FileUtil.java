@@ -904,4 +904,56 @@ public class FileUtil {
     }
   }
 
+   /**
+    * Return array of nonempty lines from a file
+    * @param logger merritt logger
+    * @param urlS url to file to be split
+    * @return array of lines from original file
+    * @throws TException
+    */
+    public static String[] getLinesFromFile(File splitFile)
+        throws TException
+    {
+        try {
+            String fileContent = FileUtil.file2String(splitFile);
+            if (StringUtil.isEmpty(fileContent)) return null;
+            String [] lines = fileContent.split("[\\n\\r]+");
+            if (lines.length == 0) return null;
+            Vector<String> list = new Vector(lines.length);
+            for (String line: lines) {
+                if (StringUtil.isNotEmpty(line)) list.add(line);
+            }
+            return list.toArray(new String[0]);
+
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Return array of nonempty lines from url content
+     * @param logger merritt logger
+     * @param urlS url to file to be split
+     * @return array of lines from original file
+     * @throws TException
+     */
+    public static String[] getLinesFromURL(LoggerInf logger, String urlS)
+        throws TException
+    {
+        File tempFile = null;
+        try {
+            tempFile = url2TempFile(logger, urlS);
+            return getLinesFromFile(tempFile);
+
+        } catch (Exception ex) {
+            return null;
+
+        } finally {
+            if (tempFile != null) {
+                try {
+                    tempFile.delete();
+                } catch (Exception ex) { }
+            }
+        }
+    }
 }
