@@ -191,11 +191,12 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 	<xsl:template match="mods:originInfo">
 		<xsl:apply-templates select="*[@point='start']"/>
 		<xsl:for-each
-			select="mods:dateIssued[@point!='start' and @point!='end'] |mods:dateCreated[@point!='start' and @point!='end'] | mods:dateCaptured[@point!='start' and @point!='end'] | mods:dateOther[@point!='start' and @point!='end']">
+			select="mods:dateIssued[not(@point)] |mods:dateCreated[not(@point)] | mods:dateCaptured[not(@point)] | mods:dateOther[not(@point)]">
 			<dc:date>
 				<xsl:value-of select="."/>
 			</dc:date>
 		</xsl:for-each>
+		
 
 		<xsl:for-each select="mods:publisher">
 
