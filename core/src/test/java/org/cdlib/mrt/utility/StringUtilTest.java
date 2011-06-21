@@ -154,4 +154,32 @@ public class StringUtilTest {
         }
 
     }
+
+    @Test
+    public void normParm()
+    {
+        String tParm = null;
+        try {
+            tParm = StringUtil.normParm("");
+            assertTrue(tParm == null);
+            tParm = StringUtil.normParm("    ");
+            assertTrue(tParm == null);
+            tParm = StringUtil.normParm(null);
+            assertTrue(tParm == null);
+            tParm = StringUtil.normParm(" abc ");
+            assertTrue(tParm.equals("abc"));
+            tParm = StringUtil.normParm(" zyx");
+            assertTrue(tParm.equals("zyx"));
+            tParm = StringUtil.normParm("zyx ");
+            assertTrue(tParm.equals("zyx"));
+
+        } catch (Exception ex) {
+            System.out.println(MESSAGE + "Exception:" + ex);
+            assertFalse(MESSAGE
+                    + " - Exception:" + ex
+                    + " - stack:" + StringUtil.stackTrace(ex)
+                    , true);
+        }
+
+    }
 }

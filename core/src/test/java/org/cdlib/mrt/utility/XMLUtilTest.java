@@ -29,6 +29,15 @@ public class XMLUtilTest {
     protected String result3 = "-test.don&apos;t-test";
     protected String test4 = "-test.\"nut\"-test";
     protected String result4 = "-test.&quot;nut&quot;-test";
+
+    protected String test5 ="-test.<init>-test";
+    protected String result5 = "-test.&#60;init&#62;-test";
+    protected String test6 = "-test.&lt;init&gt;-test";
+    protected String result6 = "-test.&#38;lt;init&#38;gt;-test";
+    protected String test7 = "-test.don't-test";
+    protected String result7 = "-test.don&#39;t-test";
+    protected String test8 = "-test.\"nut\"-test";
+    protected String result8 = "-test.&#34;nut&#34;-test";
     public XMLUtilTest() {
     }
 
@@ -71,6 +80,11 @@ public class XMLUtilTest {
             //testDecode(result2, test2);
             testDecode(result3, test3);
             testDecode(result4, test4);
+            
+            testDecode(result5, test5);
+            testDecode(result6, test6);
+            testDecode(result7, test7);
+            testDecode(result8, test8);
         } catch (Exception ex) {
             assertFalse("Exception:" + ex, true);
         }
@@ -83,7 +97,7 @@ public class XMLUtilTest {
             System.out.println("in*=" + in);
             String out = XMLUtil.encodeValue(in);
             System.out.println("out=" + out);
-            assertTrue(out.equals(match));
+            assertTrue("FAIL: out=" + out + " - match=" + match, out.equals(match));
             
         } catch (Exception ex) {
             assertFalse("Exception:" + ex, true);
