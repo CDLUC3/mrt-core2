@@ -611,4 +611,20 @@ public class StringUtil {
 		}
 		return out.toString();
 	}
+
+
+    /**
+     * A common normalization for parms:
+     * if null or has length zero then set null
+     * if all space characters set null
+     * trim space characters
+     * @param in string to convert
+     * @return string with leading and trailing non-space
+     */
+    public static String normParm(String in)
+    {
+        if (StringUtil.isAllBlank(in)) in = null;
+        else in = in.trim();
+        return in;
+    }
 }
