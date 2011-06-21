@@ -42,6 +42,7 @@ import org.cdlib.mrt.utility.LinkedHashList;
 import org.cdlib.mrt.utility.LoggerInf;
 import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TException;
+import org.cdlib.mrt.utility.XMLUtil;
 import org.cdlib.mrt.utility.XSLTUtil;
 
 /**
@@ -167,6 +168,7 @@ public class DC
                 fileNode = (Element)list.item(i);
                 String name = fileNode.getLocalName();
                 String content = DOMParser.getSimpleElementText(fileNode, logger);
+                content = XMLUtil.decode(content);
                 returnList.put(name, content);
             }
             return returnList;
@@ -222,6 +224,7 @@ public class DC
                 fileNode = (Element)list.item(i);
                 String name = fileNode.getLocalName();
                 String content = DOMParser.getSimpleElementText(fileNode, logger);
+                content = XMLUtil.decode(content);
                 if (StringUtil.isNotEmpty(content)) {
                     returnList.put(name, content);
                 }
