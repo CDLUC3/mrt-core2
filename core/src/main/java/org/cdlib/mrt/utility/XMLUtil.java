@@ -108,7 +108,7 @@ public class XMLUtil
                 encodedString = encodedString.replace("&quot;", "\"");
 
                 encodedString = encodedString.replace("&#38;", "&");
-                encodedString = encodedString.replace("&#60", "<");
+                encodedString = encodedString.replace("&#60;", "<");
                 encodedString = encodedString.replace("&#62;", ">");
                 encodedString = encodedString.replace("&#39;", "'");
                 encodedString = encodedString.replace("&#34;", "\"");
