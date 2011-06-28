@@ -62,14 +62,14 @@ public class InstallCertTest {
     public void tearDown() {
     }
 
-    //@Test
+    @Test
     public void Dummy()
         throws TException
     {
         assertTrue(true);
     }
 
-    @Test
+    //@Test
     public void Test()
         throws TException
     {

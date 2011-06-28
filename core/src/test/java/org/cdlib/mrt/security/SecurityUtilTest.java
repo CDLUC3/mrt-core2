@@ -4,12 +4,6 @@
  */
 
 package org.cdlib.mrt.security;
-import org.cdlib.mrt.core.*;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.Vector;
-import org.cdlib.mrt.utility.LoggerInf;
-import org.cdlib.mrt.utility.TFileLogger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -17,15 +11,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.cdlib.mrt.utility.TException;
-import org.cdlib.mrt.utility.DOMParser;
-import org.cdlib.mrt.utility.LinkedHashList;
-import org.cdlib.mrt.utility.FileUtil;
-import org.cdlib.mrt.utility.HTTPUtil;
-import org.cdlib.mrt.utility.LoggerInf;
-import org.cdlib.mrt.utility.PropertiesUtil;
-import org.cdlib.mrt.utility.StringUtil;
-import org.cdlib.mrt.utility.LinkedHashList;
-import org.w3c.dom.Document;
 /**
  *
  * @author dloy
