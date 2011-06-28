@@ -182,4 +182,34 @@ public class StringUtilTest {
         }
 
     }
+    @Test
+    public void testLeftPad()
+    {
+        String tPad = null;
+        try {
+            testLeftPad("aaa", 5, '0', "00aaa");
+            testLeftPad("aaa", 5, 'q', "qqaaa");
+            testLeftPad("bbbbb", 5, '0', "bbbbb");
+            testLeftPad("bbbbbb", 5, '0', "bbbbbb");
+            testLeftPad("", 5, '0', "00000");
+            testLeftPad("ccc", 0, '0', "ccc");
+            testLeftPad("", -5, '0', "");
+            testLeftPad(null, 5, '0', null);
+
+        } catch (Exception ex) {
+            System.out.println(MESSAGE + "Exception:" + ex);
+            assertFalse(MESSAGE
+                    + " - Exception:" + ex
+                    + " - stack:" + StringUtil.stackTrace(ex)
+                    , true);
+        }
+
+    }
+
+    protected void testLeftPad(String in, int size, char padc, String match)
+    {
+        String pad = StringUtil.leftPad(in, size, padc);
+        if (in == null) assertTrue(pad == null);
+        else assertTrue(pad.equals(match));
+    }
 }
