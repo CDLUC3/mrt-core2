@@ -39,7 +39,9 @@ public class InstallCertTest {
 
     //protected final static String HOSTS = "badger.cdlib.org:1636";
     //protected final static String HOSTS = "dp01.cdlib.org:1636";
-    protected final static String HOSTS = "coot.ucop.edu:1636";
+    //protected final static String HOSTS = "coot.ucop.edu:1636";
+    protected final static String HOSTS = "ferret.cdlib.org:1636";
+    //protected final static String HOSTS = "dp08.cdlib.org:1636";
     //protected final static String HOSTS = "merritt.cdlib.org:1636";
     public InstallCertTest() {
     }
@@ -60,14 +62,14 @@ public class InstallCertTest {
     public void tearDown() {
     }
 
-    @Test
+    //@Test
     public void Dummy()
         throws TException
     {
         assertTrue(true);
     }
 
-    //@Test
+    @Test
     public void Test()
         throws TException
     {

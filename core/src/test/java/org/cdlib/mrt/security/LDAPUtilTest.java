@@ -37,7 +37,10 @@ public class LDAPUtilTest {
     protected final static String NL = System.getProperty("line.separator");
     protected final static String UID = "dloy";
     protected final static String PW = "Huz8dloy";
-    protected final static String HOSTS = "ldaps://coot.ucop.edu:1636";
+    //protected final static String HOSTS = "ldaps://coot.ucop.edu:1636";
+    //protected final static String HOSTS = "ldaps://dp08.cdlib.org:1636";
+    protected final static String HOSTS = "ldaps://ferret.cdlib.org:1636";
+    //protected final static String HOSTS = "ldaps://coot.ucop.edu:1636";
     //protected final static String HOSTS = "ldaps://badger.cdlib.org:1636";
     protected final static String HOST = "ldap://badger.cdlib.org:1389";
 
@@ -109,7 +112,7 @@ public class LDAPUtilTest {
         }
     }
 
-    //@Test
+    @Test
     public void TestAuthorize()
         throws TException
     {

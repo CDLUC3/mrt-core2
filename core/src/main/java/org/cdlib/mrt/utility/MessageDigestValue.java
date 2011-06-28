@@ -318,7 +318,7 @@ public class MessageDigestValue
             }
             long checksumL = checksum32.getValue();
             checksum = Long.toHexString(checksumL);
-
+            checksum = StringUtil.leftPad(checksum, 8, '0');
             if (logger.getMessageMaxLevel() >= 10) {
                 String msg = MESSAGE + "fileLen=" + inputSize
                         + " - " + checksumType + "=" + checksum;

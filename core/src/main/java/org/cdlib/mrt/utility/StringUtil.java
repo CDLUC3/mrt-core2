@@ -627,4 +627,16 @@ public class StringUtil {
         else in = in.trim();
         return in;
     }
+
+    public static String leftPad(String in, int size, char padc)
+    {
+        if (in == null) return in;
+        int padLen = size - in.length();
+        if (padLen <= 0) return in;
+        StringBuffer buf = new StringBuffer();
+        for (int i=0; i < padLen; i++) {
+            buf.append(padc);
+        }
+        return buf.toString() + in;
+    }
 }
