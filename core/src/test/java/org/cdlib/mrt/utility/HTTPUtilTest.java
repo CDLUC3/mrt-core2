@@ -134,7 +134,7 @@ public class HTTPUtilTest {
         }
     }
 
-    @Test
+    //@Test
     public void TestFTP()
     {
         try {
