@@ -47,7 +47,7 @@ public class TimerUtilTest {
     }
 
     
-    @Test
+    //@Test
     public void testLog()
     {
         try {
@@ -67,7 +67,7 @@ public class TimerUtilTest {
     }
 
 
-    //@Test
+    @Test
     public void genericTimerTest()
     {
         File log = null;
@@ -105,7 +105,7 @@ public class TimerUtilTest {
         }
     }
 
-    //@Test
+    @Test
     public void genericTimerThread()
     {
         File log = null;
