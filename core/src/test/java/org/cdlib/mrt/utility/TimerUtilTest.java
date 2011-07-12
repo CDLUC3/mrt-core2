@@ -47,12 +47,13 @@ public class TimerUtilTest {
     }
 
     
-    //@Test
+    @Test
     public void testLog()
     {
         try {
             //File log = FileUtil.getTempFile("tst", "txt");
-            String path = "C:/Documents and Settings/dloy/My Documents/MRTMaven/fixity/log/fix110707.log";
+            String path = "C:/Documents and Settings/dloy/My Documents/MRTMaven/work/timings/split-fix110711.log";
+            System.out.println("PATH:" + path);
             File log = new File(path);
             TimerUtil util = new TimerUtil(log);
             util.process();
@@ -66,7 +67,7 @@ public class TimerUtilTest {
     }
 
 
-    @Test
+    //@Test
     public void genericTimerTest()
     {
         File log = null;
@@ -104,7 +105,7 @@ public class TimerUtilTest {
         }
     }
 
-    @Test
+    //@Test
     public void genericTimerThread()
     {
         File log = null;
