@@ -45,9 +45,9 @@ import org.apache.http.params.HttpParams;
 
 public class FixityClient
 {
-    private static final String NAME = "FixityAddClient";
+    private static final String NAME = "FixityClient";
     private static final String MESSAGE = NAME + ": ";
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
     protected final static String NL = System.getProperty("line.separator");
     protected final static String FORMAT_NAME_POST = "t";
     protected final static String FORMAT_NAME_MULTIPART = "response-form";
@@ -328,6 +328,7 @@ public class FixityClient
                 link,
                 timeout,
                 retry,
+                0,
                 url,
                 source,
                 size,
@@ -369,6 +370,7 @@ public class FixityClient
             String linkS,
             int timeout,
             int retry,
+            String itemKeyS,
             String urlS,
             String source,
             String sizeS,
@@ -383,6 +385,7 @@ public class FixityClient
         URL link = null;
         URL url = null;
         long size = -1;
+        long itemKey = 0;
         MessageDigest messageDigest = null;
         FormatInfo format = null;
 
@@ -409,6 +412,14 @@ public class FixityClient
                     size = Long.parseLong(sizeS);
                 } catch (Exception ex) {
                     throw new TException.INVALID_OR_MISSING_PARM("sizeS invalid:" + sizeS);
+                }
+            }
+
+            if (StringUtil.isNotEmpty(itemKeyS)) {
+                try {
+                    itemKey = Long.parseLong(itemKeyS);
+                } catch (Exception ex) {
+                    throw new TException.INVALID_OR_MISSING_PARM("itemKeyS invalid:" + itemKeyS);
                 }
             }
 
@@ -440,6 +451,7 @@ public class FixityClient
             if (messageDigest != null) messageDigestS = messageDigest.toString();
             log(MESSAGE + "update:"
                     + " - cmd=" + cmd
+                    + " - itemKey=" + itemKey
                     + " - url=" + url.toString()
                     + " - source=" + source
                     + " - size=" + size
@@ -453,6 +465,7 @@ public class FixityClient
                 link,
                 timeout,
                 retry,
+                itemKey,
                 url,
                 source,
                 size,
@@ -476,6 +489,7 @@ public class FixityClient
                 String cmd,
                 URL link,
                 int timeout,
+                long itemKey,
                 URL url,
                 String source,
                 long size,
@@ -506,6 +520,10 @@ public class FixityClient
             HttpClient httpclient = new DefaultHttpClient(params);
             HttpPost httppost = new HttpPost(addFixityURL.toString());
             MultipartEntity reqEntity = new MultipartEntity();
+            if (itemKey > 0) {
+                StringBody body = new StringBody("" + itemKey);
+                reqEntity.addPart("itemkey", body);
+            }
             if (url != null) {
                 StringBody body = new StringBody(url.toString());
                 reqEntity.addPart("url", body);
@@ -543,7 +561,7 @@ public class FixityClient
 
             httppost.setEntity(reqEntity);
 
-            System.out.println("executing request " + httppost.getRequestLine());
+            if (DEBUG) System.out.println("executing request " + httppost.getRequestLine());
             HttpResponse response = httpclient.execute(httppost);
             return response;
 
@@ -568,6 +586,7 @@ public class FixityClient
             URL link,
             int timeout,
             int retry,
+            long itemKey,
             URL url,
             String source,
             long size,
@@ -584,6 +603,7 @@ public class FixityClient
                     cmd,
                     link,
                     timeout,
+                    itemKey,
                     url,
                     source,
                     size,
@@ -623,7 +643,7 @@ public class FixityClient
             String responseState = StringUtil.streamToString(resEntity.getContent(), "utf-8");
             if (StringUtil.isNotEmpty(responseState)) {
                 resultProp.setProperty("response.state", responseState);
-                System.out.println("mrt-response:" + responseState);
+                if (DEBUG) System.out.println("mrt-response:" + responseState);
             }
             Header [] headers = response.getAllHeaders();
             for (Header header : headers) {
@@ -631,13 +651,15 @@ public class FixityClient
                         "header." + header.getName(),
                         header.getValue());
             }
-            System.out.println(PropertiesUtil.dumpProperties("!!!!sendArchiveMultipart!!!!", resultProp, 100));
+            if (DEBUG) {
+                System.out.println(PropertiesUtil.dumpProperties("!!!!sendArchiveMultipart!!!!", resultProp, 100));
 
-            System.out.println("----------------------------------------");
-            System.out.println(response.getStatusLine());
-            if (resEntity != null) {
-                System.out.println("Response content length: " + resEntity.getContentLength());
-                System.out.println("Chunked?: " + resEntity.isChunked());
+                System.out.println("----------------------------------------");
+                System.out.println(response.getStatusLine());
+                if (resEntity != null) {
+                    System.out.println("Response content length: " + resEntity.getContentLength());
+                    System.out.println("Chunked?: " + resEntity.isChunked());
+                }
             }
             if (resEntity != null) {
                 resEntity.consumeContent();
