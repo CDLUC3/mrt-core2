@@ -313,7 +313,9 @@ public class FixityClient
             if (!format.getForm().equals("state")) {
                 throw new TException.INVALID_OR_MISSING_PARM("formatType not supported:" + formatTypeS);
             }
-            log(MESSAGE + "update:"
+            Thread t = Thread.currentThread();
+            String name = t.getName();
+            log(MESSAGE + "[" + name + "]: "
                     + " - cmd=" + cmd
                     + " - url=" + url.toString()
                     + " - source=" + source
