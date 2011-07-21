@@ -75,6 +75,8 @@ public class XMLMapper
         strfile,
         strfixity,
         strprimary,
+        strlocid,
+        strdelid,
         exc,
         undef;
     }
@@ -107,6 +109,8 @@ public class XMLMapper
     protected final String FIXITY_SELECT = "FixitySelectState";
     protected final String FIXITY_SERVICE = "FixityServiceState";
     protected final String FIXITY_SUBMIT = "FixitySubmittedState";
+    protected final String STORE_LOCID = "LocalIDsState";
+    protected final String STORE_DELID = "DeleteIDState";
 
     public static XMLMapper getXMLMapper(String resourceName, StateInf state)
         throws TException
@@ -158,6 +162,8 @@ public class XMLMapper
         else if (stateS.contains(AUTHORIZE)) type = Type.authorize;
         else if (stateS.contains(QUEUE_ENTRY_STATE)) type = Type.ingqueue;
         else if (stateS.contains(FEEDER)) type = Type.feeder;
+        else if (stateS.contains(STORE_LOCID)) type = Type.strlocid;
+        else if (stateS.contains(STORE_DELID)) type = Type.strdelid;
         else type = Type.undef;
         prop = getProperties(resourceName);
         this.state = state;
