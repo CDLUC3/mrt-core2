@@ -56,12 +56,15 @@ public class DCTest {
         throws TException
     {
         try {
+            boolean dumpMets = false;
             LinkedHashList<String, String> retList = null;
-            retList = testMets("mets-dc.xml");
+            retList = testMets(dumpMets, "mets-dc.xml");
             assertTrue(retList.size() > 5);
-            retList = testMets("mets-mods.xml");
+            retList = testMets(dumpMets, "mets-mods.xml");
             assertTrue(retList.size() > 5);
-            retList = testMets("mets-mods2.xml");
+            retList = testMets(dumpMets, "mets-mods2.xml");
+            assertTrue(retList.size() > 5);
+            retList = testMets(dumpMets, "mets-dc-no-qualifieddc.xml");
             assertTrue(retList.size() > 5);
             assertTrue(true);
 
@@ -117,6 +120,7 @@ public class DCTest {
     }
 
     public LinkedHashList<String, String> testMets(
+            boolean dumpMets,
             String resourceName
             )
         throws TException
@@ -127,7 +131,7 @@ public class DCTest {
 
             InputStream metsStream = getResource(resourceName);
             String metsS = StringUtil.streamToString(metsStream, "utf-8");
-            System.out.println("METS:" + metsS);
+            if (dumpMets) System.out.println("METS:" + metsS);
             metsStream = getResource(resourceName);
             Document mets = getDocument(metsStream, logger);
             LinkedHashList<String, String> list = DC.getDC (mets, logger);
@@ -158,9 +162,10 @@ public class DCTest {
             System.out.println("METS:" + metsS);
             metsStream = getResource("mets-mods.xml");
             Document mets = getDocument(metsStream, logger);
-            LinkedHashList<String, String> list = DC.getDCFromModsMets (mets, logger);
+            LinkedHashList<String, String> list = new LinkedHashList<String, String>();
+            DC.getDCFromModsMets (list, mets, logger);
             dumpList("*****TestMods*****", list);
-            assertTrue(true);
+            assertTrue(list.size() > 0);
 
 
         } catch (Exception ex) {
@@ -183,9 +188,37 @@ public class DCTest {
             System.out.println("METS:" + metsS);
             metsStream = getResource("mets-dc.xml");
             Document mets = getDocument(metsStream, logger);
-            LinkedHashList<String, String> list = DC.getMetsDC (mets, logger);
+            LinkedHashList<String, String> list = new LinkedHashList<String, String>();
+            DC.getMetsDC (list, mets, logger);
             dumpList("*****TestDC*****", list);
-            assertTrue(true);
+            assertTrue(list.size() > 0);
+
+
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex);
+            ex.printStackTrace();
+            assertFalse("TestIT exception:" + ex, true);
+        }
+    }
+
+    //@Test
+    public void testDCNoQualified()
+        throws TException
+    {
+        try {
+
+            LoggerInf logger = new TFileLogger(NAME, 50, 50);
+
+            InputStream metsStream = getResource("mets-dc-noqualifieddc.xml");
+            String metsS = StringUtil.streamToString(metsStream, "utf-8");
+            System.out.println("METS:" + metsS);
+            metsStream = getResource("mets-dc.xml");
+            Document mets = getDocument(metsStream, logger);
+            
+            LinkedHashList<String, String> list = new LinkedHashList<String, String>();
+            DC.getMetsDC (list, mets, logger);
+            dumpList("*****TestDC NOQUALIFIEDDC*****", list);
+            assertTrue(list.size() > 0);
 
 
         } catch (Exception ex) {

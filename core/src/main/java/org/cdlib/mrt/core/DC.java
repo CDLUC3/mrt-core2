@@ -35,6 +35,7 @@ import java.io.InputStream;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.cdlib.mrt.utility.DOMParser;
@@ -78,13 +79,13 @@ public class DC
             LinkedHashList<String, String> returnList = new LinkedHashList<String, String>();
             //extract all of the file elements
             NodeList list = null;
+            boolean isDC = isDC(root, logger);
             //to accommodate possibility that namespace is not default,
             //use xpath local-name for this whole section.
             list = DOMParser.getNodeList(root,
                     "/*[local-name()='mets']" +
                     "/*[local-name()='dmdSec']" +
-                    "/*[local-name()='mdWrap']" +
-                    "/*[local-name()='xmlData']",
+                    "/*[local-name()='mdWrap']",
                 logger);
             int size = list.getLength();
             Element fileNode = null;
@@ -94,18 +95,36 @@ public class DC
                 throw new TException.INVALID_OR_MISSING_PARM(
                     MESSAGE + "METS does not contain dmdSec");
             }
-            
             for (int i=0; i<size; i++) {
                 fileNode = (Element)list.item(i);
-                NodeList listMODS = DOMParser.getNodeList(fileNode, "*[local-name()='mods']", logger);
+                isDC = isDC(fileNode, logger);
+                if (DEBUG) System.out.println("isDC=" + isDC);
+                NodeList listMODS = DOMParser.getNodeList(fileNode,
+                    "*[local-name()='xmlData']/*[local-name()='mods']", logger);
                 int modsSize = listMODS.getLength();
                 if (modsSize > 0) {
-                    return getDCFromModsMets(metsDoc, logger);
+                    getDCFromModsMets(returnList, metsDoc, logger);
+                    continue;
                 }
-                NodeList listDC = DOMParser.getNodeList(fileNode, "*[local-name()='qualifieddc']", logger);
+
+                NodeList listDC = DOMParser.getNodeList(fileNode, "*[local-name()='xmlData']/*[local-name()='qualifieddc']", logger);
                 int dcSize = listDC.getLength();
                 if (dcSize > 0) {
-                    return getMetsDC(metsDoc, logger);
+                    getMetsDC(returnList,metsDoc, logger);
+                    continue;
+
+                } else if (isDC) {
+                    NodeList nodeListXMLData = DOMParser.getNodeList(fileNode, "*[local-name()='xmlData']", logger);
+                    dcSize = nodeListXMLData.getLength();
+                    if (DEBUG) System.out.println("dcSize=" + dcSize);
+                    if (dcSize > 0) {
+                        Element xmlDataElement = (Element)nodeListXMLData.item(0);
+                        NodeList nodeList = xmlDataElement.getChildNodes();
+                        int xmlDataSize = nodeList.getLength();
+                        if (DEBUG) System.out.println("xmlDataSize=" + xmlDataSize);
+                        getMetsDC(returnList, nodeList, logger);
+                        continue;
+                    }
                 }
                 continue;
             }
@@ -128,6 +147,29 @@ public class DC
         }
     }
 
+    public static boolean isDC(Element fileNode,
+            LoggerInf logger)
+        throws TException
+    {
+
+        try {
+            String mdType = fileNode.getAttribute("MDTYPE");
+            if (StringUtil.isEmpty(mdType)) return false;
+            mdType = mdType.toUpperCase();
+            if (mdType.equals("DC")) return true;
+            return false;
+
+        }  catch(Exception e)  {
+            if (logger != null)
+            {
+                logger.logError(
+                    "Main: Encountered exception:" + e, 0);
+                logger.logError(
+                        StringUtil.stackTrace(e), 10);
+            }
+            throw new TException(e);
+        }
+    }
     /**
      * Extract DC from METS
      * @param mets METS record
@@ -135,7 +177,8 @@ public class DC
      * @return list of DC values
      * @throws TException
      */
-    public static LinkedHashList getMetsDC (
+    public static void getMetsDC (
+            LinkedHashList<String, String> returnList,
             Document mets,
             LoggerInf logger)
         throws TException
@@ -144,7 +187,6 @@ public class DC
         try {
 
             Element root = mets.getDocumentElement();
-            LinkedHashList<String, String> returnList = new LinkedHashList<String, String>();
             //extract all of the file elements
             NodeList list = null;
             //to accommodate possibility that namespace is not default,
@@ -156,6 +198,39 @@ public class DC
                     "/*[local-name()='xmlData']" +
                     "/*[local-name()='qualifieddc']/*",
                 logger);
+            getMetsDC(returnList, list, logger);
+
+        } catch (TException fe) {
+            throw fe;
+
+        }  catch(Exception e)  {
+            if (logger != null)
+            {
+                logger.logError(
+                    "Main: Encountered exception:" + e, 0);
+                logger.logError(
+                        StringUtil.stackTrace(e), 10);
+            }
+            throw new TException(e);
+        }
+    }
+    /**
+     * Extract DC from METS
+     * @param mets METS record
+     * @param logger file logger
+     * @return list of DC values
+     * @throws TException
+     */
+    public static void getMetsDC (
+            LinkedHashList<String, String> returnList,
+            NodeList list,
+            LoggerInf logger)
+        throws TException
+    {
+
+        try {
+
+            
             int size = list.getLength();
             Element fileNode = null;
             if (DEBUG) System.out.println("***size=" + size);
@@ -165,13 +240,13 @@ public class DC
                     MESSAGE + "METS does not contain dmdSec");
             }
             for (int i=0; i<size; i++) {
+                if (list.item(i).getNodeType() != Node.ELEMENT_NODE) continue;
                 fileNode = (Element)list.item(i);
                 String name = fileNode.getLocalName();
                 String content = DOMParser.getSimpleElementText(fileNode, logger);
                 content = XMLUtil.decode(content);
                 returnList.put(name, content);
             }
-            return returnList;
 
         } catch (TException fe) {
             throw fe;
@@ -197,6 +272,7 @@ public class DC
      * @throws TException process exception
      */
     public static LinkedHashList<String, String> getOAIDC (
+            LinkedHashList<String, String> returnList,
             String dc,
             LoggerInf logger)
         throws TException
@@ -205,7 +281,6 @@ public class DC
             ByteArrayInputStream bas = new ByteArrayInputStream(dc.getBytes("utf-8"));
             Document doc = DOMParser.doParse(bas, logger);
             Element root = doc.getDocumentElement();
-            LinkedHashList<String, String> returnList = new LinkedHashList<String, String>();
             //extract all of the file elements
             NodeList list = null;
             //to accommodate possibility that namespace is not default,
@@ -257,7 +332,8 @@ public class DC
      * @return list of DC values
      * @throws TException
      */
-    public static LinkedHashList<String, String>  getDCFromModsMets (
+    public static void  getDCFromModsMets (
+            LinkedHashList<String, String> returnList,
             Document mets,
             LoggerInf logger)
         throws TException
@@ -268,8 +344,7 @@ public class DC
             String mods = DC.getMetsMods(mets, logger);
             if (DEBUG) System.out.println("getDCFromModsMets MODS:" + mods);
             String dc = DC.mods2dc(mods, logger);
-            LinkedHashList<String, String> list = getOAIDC(dc, logger);
-            return list;
+            getOAIDC(returnList, dc, logger);
 
         } catch (TException fe) {
             throw fe;
