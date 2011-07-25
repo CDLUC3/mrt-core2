@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets xmlns:dc="http://purl.org/dc/elements/1.1/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           xmlns:mets="http://www.loc.gov/METS/"
+           xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd"
+           OBJID="ark:/13030/c89p2zph"
+           LABEL="Liberty Loan Train during World War I Registration Day event in Banning, California"
+           TYPE="image"
+           PROFILE="http://www.loc.gov/mets/profiles/00000010.xml">
+   <mets:metsHdr CREATEDATE="2011-07-13T12:41:05.003-07:00"
+                 LASTMODDATE="2011-07-13T12:41:05.003-07:00"
+                 RECORDSTATUS="NEW"
+                 ID="METSHDRID-1.162">
+      <mets:agent ROLE="EDITOR" TYPE="ORGANIZATION">
+         <mets:name>California Digital Library</mets:name>
+         <mets:note>Record created by conversion of CONTENTdm XML metadata</mets:note>
+         <mets:note>Created using 7train</mets:note>
+      </mets:agent>
+      <mets:altRecordID>CBAN_066</mets:altRecordID>
+   </mets:metsHdr>
+   <mets:dmdSec ID="DC" CREATED="2011-07-13T12:41:05.003-07:00">
+      <mets:mdWrap MIMETYPE="text/xml" MDTYPE="DC" LABEL="DC">
+         <mets:xmlData>
+            <dc:identifier>CBAN_066</dc:identifier>
+            <dc:title>Liberty Loan Train during World War I Registration Day event in Banning, California</dc:title>
+            <dc:creator>Unknown</dc:creator>
+            <dcterms:created xmlns:dcterms="http://purl.org/dc/terms/">6366</dcterms:created>
+            <dc:description>Exterior photograph of World War I Registration Day event in Banning, California showing the Liberty Loan Train as it arrived in Banning.</dc:description>
+            <dc:type>Image</dc:type>
+            <dc:format>1 sepia tone photograph; 6.7 x 9.2 cm.</dc:format>
+            <dc:publisher>Banning Library District</dc:publisher>
+            <dc:relation>http://www.oac.cdlib.org/findaid/ark:/13030/kt6779r9df</dc:relation>
+            <dc:rights>Copyright status unknown</dc:rights>
+            <dc:rights>Copyright status unknown. Some materials in these collections may be protected by the U.S. Copyright Law (Title 17, U.S.C.). In addition, the reproduction of some materials may be restricted by terms of gift or purchase agreements, donor restrictions, privacy and publicity rights, licensing and trademarks. Transmission or reproduction of materials protected by copyright beyond that allowed by fair use requires the written permission of the copyright owners. Works not in the public domain cannot be commercially exploited without permission of the copyright owner. Responsibility for any use rests exclusively with the user.</dc:rights>
+            <dc:language>eng</dc:language>
+            <dc:coverage>Banning (Calif.)</dc:coverage>
+            <dc:subject>Events-California-Banning</dc:subject>
+            <dc:subject>World War I-California-Banning</dc:subject>
+            <dc:subject>Trains-California-Banning</dc:subject>
+            <dc:type>Photographs</dc:type>
+            <dc:identifier>86-02-05-03</dc:identifier>
+            <dc:contributor>Barker, C. O.</dc:contributor>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="ead">
+      <mets:mdRef LOCTYPE="URL" MDTYPE="EAD" ID="kt6779r9df"
+                  LABEL="Banning Library District Local History Collection"
+                  xlink:href="http://www.oac.cdlib.org/findaid/ark:/13030/kt6779r9df"/>
+   </mets:dmdSec>
+   <mets:dmdSec ID="repo">
+      <mets:mdWrap MIMETYPE="text/xml" MDTYPE="DC" LABEL="Repository">
+         <mets:xmlData>
+            <dc:title>Banning Library District</dc:title>
+            <dc:identifier>ark:/13030/kt7q2nf6fv</dc:identifier>
+            <dc:identifier/>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:fileSec ID="FILESECID-1.162">
+      <mets:fileGrp USE="thumbnail image">
+         <mets:file ID="FILEID-1.162.41">
+            <mets:FLocat LOCTYPE="URL"
+                         xlink:href="http://contentdm.califa.org/cgi-bin/thumbnail.exe?CISOROOT=/cban&amp;CISOPTR=176"
+                         xlink:role="thumbnail"/>
+         </mets:file>
+      </mets:fileGrp>
+      <mets:fileGrp USE="reference image">
+         <mets:file ID="FILEID-1.162.43">
+            <mets:FLocat LOCTYPE="URL"
+                         xlink:href="http://contentdm.califa.org/cgi-bin/getimage.exe?CISOROOT=/cban&amp;CISOPTR=176&amp;DMWIDTH=100000&amp;DMHEIGHT=100000&amp;DMSCALE=100"
+                         xlink:role="access"/>
+         </mets:file>
+      </mets:fileGrp>
+      <mets:fileGrp USE="archive image">
+         <mets:file ID="FILEID-1.162.34" MIMETYPE="image/jpeg">
+            <mets:FLocat LOCTYPE="URL" xlink:role="access"
+                         xlink:href="http://cdl-mredar-2.ad.ucop.edu/lsta/cban/jpeg/cban_066.jpg"/>
+         </mets:file>
+         <mets:file ID="FILEID-1.162.33" MIMETYPE="image/tiff">
+            <mets:FLocat LOCTYPE="URL"
+                         xlink:href="http://cdl-mredar-2.ad.ucop.edu/lsta/cban/tiff/cban_066.tif"
+                         xlink:role="master"/>
+         </mets:file>
+      </mets:fileGrp>
+   </mets:fileSec>
+   <mets:structMap>
+      <mets:div ID="DIVID-1.162" DMDID="DC"
+                LABEL="Liberty Loan Train during World War I Registration Day event in Banning, California">
+         <mets:div ID="DIVID-1.162.41" TYPE="thumbnail image">
+            <mets:fptr ID="FPTRID-1.162.41" FILEID="FILEID-1.162.41"/>
+         </mets:div>
+         <mets:div ID="DIVID-1.162.43" TYPE="reference image">
+            <mets:fptr ID="FPTRID-1.162.43" FILEID="FILEID-1.162.43"/>
+         </mets:div>
+         <mets:div ID="DIVID-AI-1-1.162.33" TYPE="archive image">
+            <mets:fptr ID="FPTRID-AI-1-1.162.33" FILEID="FILEID-1.162.34"/>
+         </mets:div>
+         <mets:div ID="DIVID-AI-2-1.162.33" TYPE="archive image">
+            <mets:fptr ID="FPTRID-AI-2-1.162.33" FILEID="FILEID-1.162.33"/>
+         </mets:div>
+      </mets:div>
+   </mets:structMap>
+</mets:mets>

@@ -291,7 +291,7 @@ public class FileComponent
         }
 
         try {
-            setSize(Integer.parseInt(sizeS));
+            setSize(Long.parseLong(sizeS));
 
         } catch (Exception ex) {
             throw new TException.INVALID_DATA_FORMAT(
