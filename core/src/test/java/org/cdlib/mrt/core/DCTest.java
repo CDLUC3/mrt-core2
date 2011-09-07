@@ -58,13 +58,39 @@ public class DCTest {
         try {
             boolean dumpMets = false;
             LinkedHashList<String, String> retList = null;
-            retList = testMets(dumpMets, "mets-dc.xml");
+            retList = testMets(dumpMets, "mets-dc.xml", 10);
             assertTrue(retList.size() > 5);
-            retList = testMets(dumpMets, "mets-mods.xml");
+            retList = testMets(dumpMets, "mets-mods.xml", 10);
             assertTrue(retList.size() > 5);
-            retList = testMets(dumpMets, "mets-mods2.xml");
+            retList = testMets(dumpMets, "mets-mods2.xml", 10);
             assertTrue(retList.size() > 5);
-            retList = testMets(dumpMets, "mets-dc-no-qualifieddc.xml");
+            retList = testMets(dumpMets, "mets-dc-no-qualifieddc.xml", 10);
+            assertTrue(retList.size() > 5);
+            assertTrue(true);
+
+
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex);
+            ex.printStackTrace();
+            assertFalse("TestIT exception:" + ex, true);
+        }
+    }
+
+    @Test
+    public void TestMultiSecs()
+        throws TException
+    {
+        try {
+            boolean dumpMets = false;
+            LinkedHashList<String, String> retList = null;
+            System.out.println("************TEST CNT=1");
+            retList = testMets(dumpMets, "1864_mets_mods.xml", 1);
+            Vector<String> list = retList.get("contributor");
+            assertTrue(list.size()== 1);
+            System.out.println("************TEST CNT=20");
+            retList = testMets(dumpMets, "1864_mets_mods.xml", 20);
+            list = retList.get("contributor");
+            assertTrue(list.size()== 20);
             assertTrue(retList.size() > 5);
             assertTrue(true);
 
@@ -121,7 +147,8 @@ public class DCTest {
 
     public LinkedHashList<String, String> testMets(
             boolean dumpMets,
-            String resourceName
+            String resourceName,
+            int max
             )
         throws TException
     {
@@ -134,7 +161,7 @@ public class DCTest {
             if (dumpMets) System.out.println("METS:" + metsS);
             metsStream = getResource(resourceName);
             Document mets = getDocument(metsStream, logger);
-            LinkedHashList<String, String> list = DC.getDC (mets, logger);
+            LinkedHashList<String, String> list = DC.getDC (mets, max, logger);
 
             dumpList("*****" + resourceName + "*****", list);
             assertTrue(true);
