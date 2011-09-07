@@ -63,16 +63,18 @@ public class DC
     /**
      * Build a LinkedHashList containing DC values extracted from METS
      * @param metsDoc METS Document
+     * @param maxDMDSec number of DMDSec elements allowed for processing
      * @param logger file logger
      * @return list of (repeating) DC values
      * @throws TException process exception
      */
     public static LinkedHashList getDC (
             Document metsDoc,
+            int maxDMDSec,
             LoggerInf logger)
         throws TException
     {
-
+        int maxDMDCnt = 0;
         try {
 
             Element root = metsDoc.getDocumentElement();
@@ -96,6 +98,7 @@ public class DC
                     MESSAGE + "METS does not contain dmdSec");
             }
             for (int i=0; i<size; i++) {
+                if (maxDMDCnt >= maxDMDSec) break;
                 fileNode = (Element)list.item(i);
                 isDC = isDC(fileNode, logger);
                 if (DEBUG) System.out.println("isDC=" + isDC);
@@ -104,6 +107,7 @@ public class DC
                 int modsSize = listMODS.getLength();
                 if (modsSize > 0) {
                     getDCFromModsMets(returnList, metsDoc, logger);
+                    maxDMDCnt++;
                     continue;
                 }
 
@@ -111,6 +115,7 @@ public class DC
                 int dcSize = listDC.getLength();
                 if (dcSize > 0) {
                     getMetsDC(returnList,metsDoc, logger);
+                    maxDMDCnt++;
                     continue;
 
                 } else if (isDC) {
