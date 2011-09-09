@@ -70,8 +70,9 @@ public class FormatterTest
     //
     // @Test
     // public void hello() {}
-       @Test public void testReference() 
-   {
+    @Test
+    public void testReference()
+    {
        String ret = null;
        try {
            FormatterInf anvl = FormatterAbs.getANVLFormatter(logger);
@@ -84,8 +85,6 @@ public class FormatterTest
            System.out.println("*ANVL*" + NL + ret);
            ret = formatIt(xml, testA);
            System.out.println("*XML*" + NL + ret);
-           ret = formatIt(json, testA);
-           System.out.println("*JSON*" + NL + ret);
 
            assertTrue(true);
             
@@ -94,12 +93,9 @@ public class FormatterTest
         }
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
-       @Test public void testXHTML()
+
+   @Test
+   public void testXHTML()
    {
        String ret = null;
        try {
@@ -108,6 +104,27 @@ public class FormatterTest
                    logger);
            TestA testA = new TestA();
            ret = formatIt(xhtml, testA);
+           System.out.println("*XHTML*" + NL + ret);
+
+           assertTrue(true);
+
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex);
+            System.out.println("Trace:" + StringUtil.stackTrace(ex));
+            assertFalse("Exception:" + ex, true);
+        }
+    }
+
+    @Test
+    public void testJSON()
+    {
+       String ret = null;
+       try {
+           FormatterInf json = FormatterAbs.getJSONFormatter(
+                   "testresources/xml-test6.properties",
+                   logger);
+           TestA testA = new TestA();
+           ret = formatIt(json, testA);
            System.out.println("*XHTML*" + NL + ret);
 
            assertTrue(true);
@@ -147,7 +164,7 @@ public class FormatterTest
         MessageDigest digest5 = new MessageDigest("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12", "shaxxx");
     }
 
-    private class TestA implements StateInf
+    private static class TestA implements StateInf
     {
         public String getValue()
         {
