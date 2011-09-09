@@ -29,11 +29,24 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************/
 package org.cdlib.mrt.formatter;
 
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
-import org.cdlib.mrt.utility.JSONUtil;
-import org.cdlib.mrt.utility.StateInf;
+import java.util.Properties;
+import javax.xml.transform.*;
+
+import org.json.XML;
+import org.json.JSONObject;
+import org.cdlib.mrt.utility.FileUtil;
 import org.cdlib.mrt.utility.LoggerInf;
+import org.cdlib.mrt.utility.StateInf;
+import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TException;
+import org.cdlib.mrt.utility.XSLTUtil;
 
 /**
  * JSON output display formatter
@@ -43,45 +56,139 @@ public class JSONFormatter
         extends FormatterAbs
         implements FormatterInf
 {
+
+    protected XMLFormatter xmlFormatter = null;
+    protected String mapperName = null;
+    protected XMLMapper mapper = null;
+    private boolean debug = false;
+
     public JSONFormatter(LoggerInf logger)
             throws TException
     {
         super(logger);
+        xmlFormatter = FormatterAbs.getXMLFormatter(logger);
         formatterType = FormatterInf.Format.json;
     }
+
+    public JSONFormatter(String mapperName, LoggerInf logger)
+            throws TException
+    {
+        super(logger);
+        xmlFormatter = FormatterAbs.getXMLFormatter(mapperName, logger);
+        formatterType = FormatterInf.Format.json;
+        this.mapperName = mapperName;
+    }
+
+    @Override
+    public void format(StateInf stateFile, PrintStream stream)
+            throws TException
+    {
+        File tempFile = null;
+        try {
+            if (StringUtil.isEmpty(mapperName)) {
+                mapperName = "resources/XMLFormatNS.properties";
+            }
+            if (debug) System.out.println("!!!!" + MESSAGE + "format - mapperNameame=" + mapperName);
+            mapper = XMLMapper.getXMLMapper(mapperName, stateFile);
+            tempFile = FileUtil.getTempFile("xml", "xml");
+            FileOutputStream outStream = new FileOutputStream(tempFile);
+            PrintStream xmlStream = new PrintStream(outStream, true, "utf-8");
+            xmlFormatter.format(stateFile, xmlStream);
+            if (debug) System.out.println("!!!!XHTMLFormatter xml=" + FileUtil.file2String(tempFile));
+            File formatFile = transform(tempFile);
+            writeStream(formatFile, stream);
+
+
+        } catch (TException tex) {
+            throw tex;
+
+        } catch (Exception ex) {
+            if (debug) System.out.println("!!!!Exception trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION (
+                    "JSONFormatter exception:" + ex);
+
+        } finally {
+            if (tempFile != null) {
+                try {
+                    tempFile.delete();
+                } catch (Exception ex) {}
+            }
+        }
+    }
+
+    protected void writeStream(
+            File formatFile,
+            PrintStream stream)
+        throws TException
+    {
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(formatFile);
+            byte [] buf = new byte[10000];
+            while (true) {
+                int len = inputStream.read(buf);
+                if (len < 0) break;
+                stream.write(buf, 0, len);
+            }
+        } catch (Exception ex) {
+            throw new TException.GENERAL_EXCEPTION(
+                    "JSONFormatter exception:" + ex);
+
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (Exception ex) { }
+            }
+        }
+
+    }
+
+    protected File transform(
+            File xmlFile)
+        throws TException
+    {
+        try {
+            String xmlS = FileUtil.file2String(xmlFile);
+            JSONObject json = XML.toJSONObject(xmlS);
+
+            File outTemp = FileUtil.getTempFile("json", "jsn");
+            String response = json.toString();
+            if (debug) System.out.println("!!!!JSONFormatter response=" + response);
+            FileUtil.string2File(outTemp, response);
+            return outTemp;
+
+        }  catch (Exception e) {
+            System.out.println(StringUtil.stackTrace(e));
+            throw new TException.GENERAL_EXCEPTION(
+                    "JSONLFormatter exception:" + e);
+
+        }
+  }
 
     @Override
     protected int printBegin(StateInf state, PrintStream stream)
             throws TException
     {
-        writeln("{", stream);
-        return 1;
+        return 0;
     }
 
     @Override
     protected void printEnd(PrintStream stream)
             throws TException
     {
-        writeln(NL + "}", stream);
     }
 
     @Override
     protected void printStart(String name, boolean isFirst, int lvl, PrintStream stream)
             throws TException
     {
-        if (!isFirst) write(",", stream);
-        write(NL, stream);
-        addLvl(lvl, stream);
-        write("\"" + name + "\": {", stream);
     }
 
     @Override
     protected void printClose(String name, int lvl, PrintStream stream)
             throws TException
     {
-        write(NL, stream);
-        addLvl(lvl, stream);
-        write("}", stream);
     }
 
     @Override
@@ -94,14 +201,5 @@ public class JSONFormatter
             PrintStream stream)
         throws TException
     {
-        if (value == null) value = "";
-        if (!isFirst) write(",", stream);
-        write(NL, stream);
-        addLvl(lvl, stream);
-        value = JSONUtil.encode(value);
-        if (isNumeric)
-            write("\"" + name + "\":" + value, stream);
-        else
-            write("\"" + name + "\":" + "\"" + value +"\"", stream);
     }
 }

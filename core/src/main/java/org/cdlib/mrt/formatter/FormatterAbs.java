@@ -209,6 +209,20 @@ public abstract class FormatterAbs
      * @return JSON formatter
      * @throws org.cdlib.mrt.utility.TException
      */
+    public static JSONFormatter getJSONFormatter(String mapperName, LoggerInf logger)
+            throws TException
+    {
+        JSONFormatter formatter = new JSONFormatter(mapperName, logger);
+        formatter.setFormatterType(FormatterInf.Format.json);
+        return formatter;
+    }
+
+    /**
+     * get JSON formatter
+     * @param logger process logger
+     * @return JSON formatter
+     * @throws org.cdlib.mrt.utility.TException
+     */
     public static JSONFormatter getJSONFormatter(LoggerInf logger)
             throws TException
     {
