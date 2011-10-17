@@ -80,6 +80,7 @@ public class XHTMLFormatter
             throws TException
     {
         File tempFile = null;
+        File formatFile = null;
         try {
             if (StringUtil.isEmpty(mapperName)) {
                 mapperName = "resources/XMLFormatNS.properties";
@@ -91,7 +92,7 @@ public class XHTMLFormatter
             PrintStream xmlStream = new PrintStream(outStream, true, "utf-8");
             xmlFormatter.format(stateFile, xmlStream);
             if (debug) System.out.println("!!!!XHTMLFormatter xml=" + FileUtil.file2String(tempFile));
-            File formatFile = transform(tempFile);
+            formatFile = transform(tempFile);
             writeStream(formatFile, stream);
 
 
@@ -107,6 +108,11 @@ public class XHTMLFormatter
             if (tempFile != null) {
                 try {
                     tempFile.delete();
+                } catch (Exception ex) {}
+            }
+            if (formatFile != null) {
+                try {
+                    formatFile.delete();
                 } catch (Exception ex) {}
             }
         }
