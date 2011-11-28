@@ -67,6 +67,8 @@ public enum TExceptionEnum
 
     SQL_EXCEPTION("SQL exception", 500),
 
+    REMOTE_IO_SERVICE_EXCEPTION("Attempt to read or write to remote IO service fails", 500),
+
     REQUEST_ITEM_EXISTS("Request fails because element already exists", 404),
 
     REQUESTED_ITEM_NOT_FOUND("Request contains element that cannot be located", 404),

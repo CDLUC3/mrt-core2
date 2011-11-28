@@ -641,6 +641,25 @@ public class TException
     }
 
     /**
+     * Attempt to read or write to remote external IO service fails
+     */
+    public static class REMOTE_IO_SERVICE_EXCEPTION extends TException
+    {
+        public REMOTE_IO_SERVICE_EXCEPTION(Exception ex)
+        {
+            super(TExceptionEnum.SQL_EXCEPTION, ex);
+        }
+        public REMOTE_IO_SERVICE_EXCEPTION(String msg)
+        {
+            super(TExceptionEnum.REMOTE_IO_SERVICE_EXCEPTION, msg);
+        }
+        public REMOTE_IO_SERVICE_EXCEPTION(String msg, Exception ex)
+        {
+            super(TExceptionEnum.REMOTE_IO_SERVICE_EXCEPTION, msg, ex);
+        }
+    }
+
+    /**
      * SQL_EXCEPTION subclass
      * See TExceptionEnum value for description
      */

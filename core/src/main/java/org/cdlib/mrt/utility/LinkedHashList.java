@@ -42,16 +42,16 @@ import java.util.Vector;
  * @author dloy
  */
 public class LinkedHashList<K,V>
-    extends LinkedHashMap<K,Vector>
     implements Serializable
 {
-    protected Vector<V> vector = null;
+    protected LinkedHashMap<K,Vector<V>> hash = null;
+    
     //protected LinkedHashMap<K, Vector> map = null;
     public LinkedHashList() {
-        super();
+        hash = new LinkedHashMap<K,Vector<V>>();
     }
     public LinkedHashList(int cnt) {
-        super(cnt);
+        hash = new LinkedHashMap<K,Vector<V>>(cnt);
     }
 
     /**
@@ -62,10 +62,11 @@ public class LinkedHashList<K,V>
      */
     public void put(K key, V value)
     {
-        Vector<V> ret = super.get(key);
+        if (value == null) return;
+        Vector<V> ret = hash.get(key);
         if (ret == null) {
             ret = new Vector<V>();
-            super.put(key, ret);
+            hash.put(key, ret);
         }
         ret.add(value);
     }
@@ -77,13 +78,13 @@ public class LinkedHashList<K,V>
      */
     public Vector<V> get(K key)
     {
-        Vector<V> ret = super.get(key);
+        Vector<V> ret = hash.get(key);
         return ret;
     }
 
     public V getFirstElement(K key)
     {
-        Vector<V> ret = super.get(key);
+        Vector<V> ret = hash.get(key);
         if (ret == null) return null;
         V value = ret.firstElement();
         return value;
@@ -96,7 +97,7 @@ public class LinkedHashList<K,V>
      */
     public int getCnt(K key)
     {
-        Vector<V> ret = super.get(key);
+        Vector<V> ret = hash.get(key);
         if (ret == null) return 0;
         return ret.size();
     }
@@ -105,9 +106,13 @@ public class LinkedHashList<K,V>
      * Return a list of keys for this hash
      * @return
      */
-    @Override
     public Set<K> keySet()
     {
-        return super.keySet();
+        return hash.keySet();
+    }
+    
+    public int size()
+    {
+        return hash.size();
     }
 }
