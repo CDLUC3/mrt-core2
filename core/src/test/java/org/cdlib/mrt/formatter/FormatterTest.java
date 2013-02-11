@@ -70,7 +70,7 @@ public class FormatterTest
     //
     // @Test
     // public void hello() {}
-    @Test
+    //@Test
     public void testReference()
     {
        String ret = null;
@@ -95,12 +95,64 @@ public class FormatterTest
 
 
    @Test
-   public void testXHTML()
+   public void testIt()
+   {
+       String ret = null;
+       try {
+           testIt("testresources/basic-prop-test-NS.properties");
+
+           testIt("testresources/basic-prop-test-NoNS.properties");
+           assertTrue(true);
+
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex);
+            System.out.println("Trace:" + StringUtil.stackTrace(ex));
+            assertFalse("Exception:" + ex, true);
+        }
+    }
+   
+   public void testIt(String nsName)
+   {
+       String ret = null;
+       try {
+           System.out.println("*****NS:" + nsName);
+           testXML(nsName);
+           testXHTML(nsName);
+           testJSON(nsName);
+           
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex);
+            System.out.println("Trace:" + StringUtil.stackTrace(ex));
+            assertFalse("Exception:" + ex, true);
+        }
+    }
+
+   public void testXML(String nsName)
+   {
+       String ret = null;
+       try {
+           FormatterInf xhtml = FormatterAbs.getXMLFormatter(
+                   nsName,
+                   logger);
+           TestA testA = new TestA();
+           ret = formatIt(xhtml, testA);
+           System.out.println("*XML*" + NL + ret);
+
+           assertTrue(true);
+
+        } catch (Exception ex) {
+            System.out.println("Exception:" + ex);
+            System.out.println("Trace:" + StringUtil.stackTrace(ex));
+            assertFalse("Exception:" + ex, true);
+        }
+    }
+   
+   public void testXHTML(String nsName)
    {
        String ret = null;
        try {
            FormatterInf xhtml = FormatterAbs.getXHTMLFormatter(
-                   "testresources/xml-test6.properties",
+                   nsName,
                    logger);
            TestA testA = new TestA();
            ret = formatIt(xhtml, testA);
@@ -115,17 +167,16 @@ public class FormatterTest
         }
     }
 
-    @Test
-    public void testJSON()
+    public void testJSON(String nsName)
     {
        String ret = null;
        try {
            FormatterInf json = FormatterAbs.getJSONFormatter(
-                   "testresources/xml-test6.properties",
+                   nsName,
                    logger);
            TestA testA = new TestA();
            ret = formatIt(json, testA);
-           System.out.println("*XHTML*" + NL + ret);
+           System.out.println("*JSON*" + NL + ret);
 
            assertTrue(true);
 
@@ -157,7 +208,7 @@ public class FormatterTest
         }
     }
 
-    @Test (expected=org.cdlib.mrt.utility.TException.INVALID_OR_MISSING_PARM.class)
+    //@Test (expected=org.cdlib.mrt.utility.TException.INVALID_OR_MISSING_PARM.class)
     public void testException()
         throws TException
     {
@@ -166,6 +217,11 @@ public class FormatterTest
 
     private static class TestA implements StateInf
     {
+        public int getId()
+        {
+            return 10;
+        }
+        
         public String getValue()
         {
             return "this is a value";

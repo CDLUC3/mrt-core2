@@ -751,9 +751,23 @@ public class FixityClient
                 FormatInfo format)
         throws TException
     {
+        return sendDelete(link, timeout, url, true, format);
+    }
+
+     public HttpResponse sendDelete(
+                URL link,
+                int timeout,
+                URL url,
+                boolean missing,
+                FormatInfo format)
+        throws TException
+    {
         try {
             String deleteFixityURLS = link.toString() + "/item/"
-                + URLEncoder.encode(url.toString(), "utf-8") + "?=" + format.toString();
+                + URLEncoder.encode(url.toString(), "utf-8") + "?t=" + format.toString();
+            if (missing) {
+                deleteFixityURLS += "&missing=true";
+            }
             URL deleteFixityURL = new URL(deleteFixityURLS);
             log(MESSAGE + "sendDelete:"
                     + " - deleteFixityURL=" + deleteFixityURL.toString()
@@ -774,6 +788,7 @@ public class FixityClient
 
         }
     }
+
 
     /**
      * getObject with timeout and retry

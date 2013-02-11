@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -281,5 +282,10 @@ public class TallyTable {
             throw new TException.GENERAL_EXCEPTION(
                     MESSAGE + "saveTable - Exception:" + ex);
         }
+    }
+    
+    public Map getTallyMap()
+    {
+        return queue;
     }
 }

@@ -31,6 +31,11 @@ package org.cdlib.mrt.formatter;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -461,6 +466,9 @@ public abstract class FormatterAbs
 
                 } else if (isLinkedHashList(m.getReturnType())) {
                     processLinkedHashList(m, object, first, lvl, stream);
+                } else if (returnsMap(m)) {
+                    processMap(m, object, first, lvl, stream);
+                    first = false;
                 }
             }
 
@@ -577,6 +585,90 @@ public abstract class FormatterAbs
     }
 
     /**
+     * process reference type
+     * @param m         method to be processed
+     * @param obj       object containing method
+     * @param isFirst   is this the first of a list of entries
+     * @param lvl       indentation level
+     * @param stream    print output stream
+     * @throws java.lang.Exception
+     */
+    protected void processMap(Method m, Object obj, boolean isFirst, int lvl, PrintStream stream)
+            throws Exception
+    {
+        try {
+            Map<String, Object> map = (Map)runMethod(m, obj);
+            if (map == null) return;
+            String name = getMethodName(m);
+
+
+            processMap(map, name, isFirst, lvl, stream);
+            return;
+
+        } catch (TException mfex) {
+            throw mfex;
+
+        } catch (Exception ex) {
+            logException(ex);
+            throw new TException.GENERAL_EXCEPTION(
+                    MESSAGE + "formatNode - Exception:" + ex);
+        }
+    }
+
+    protected void processMap(
+            Map<String, Object> map,
+            String name,
+            boolean isFirst,
+            int lvl,
+            PrintStream stream)
+            throws Exception
+    {
+        try {
+            if (map == null) return;
+            int startLvl = lvl;
+            printStart(name, isFirst, lvl, stream);
+            isFirst = true;
+            lvl++;
+
+            for (String key: map.keySet()) {
+         	Object object = (Object) map.get(key);
+   
+                if (object instanceof String) {
+                    String value = (String) object;
+                    boolean isNumeric = isNumeric(value);
+                    print(key, value, isFirst, isNumeric, lvl, stream);
+                    isFirst = false;
+                    
+                } else if (isNumeric(object)) {
+                    String value = "" + object;
+                    boolean isNumeric = isNumeric(value);
+                    print(key, value, isFirst, isNumeric, lvl, stream);
+                    isFirst = false;
+                    
+                } else if (object instanceof StateInf) {
+                    formatNode(object, isFirst, lvl, stream);
+                  isFirst = false;
+                } else {
+                    String type = object.getClass().getName();
+                }
+            }
+            printClose(name, startLvl, stream);
+            return;
+
+        } catch (TException mfex) {
+            throw mfex;
+
+        } catch (Exception ex) {
+            String dispEx = ex.toString();
+            // logException(ex);
+            throw new TException.GENERAL_EXCEPTION(
+                    MESSAGE + "formatNode - Exception:" + ex);
+        }
+    }
+
+
+
+    /**
      * Determine if this class is numeric or boolean.
      * This is required because display formats changed based on numeric/boolean
      * status.
@@ -593,6 +685,19 @@ public abstract class FormatterAbs
         if ((superClass != null) && superClass.getName().equals("java.lang.Number"))
             return true;
         return false;
+    }
+
+    /**
+     * Determine if this class is numeric or boolean.
+     * This is required because display formats changed based on numeric/boolean
+     * status.
+     * @param testClass class to be tested
+     * @return true=is numeric or boolean, false=is neither numeric nor boolean
+     */
+    protected boolean isNumeric(Object testObject)
+    {
+        Class objClass = testObject.getClass();
+        return (isNumeric(objClass));
     }
 
     /**
@@ -831,6 +936,7 @@ public abstract class FormatterAbs
     {
         try {
             String name = method.getName();
+            // if (name.startsWith("getJobStates")) return false;
             if (!name.startsWith("get") && !name.startsWith("is")) return false;
             Class returnType = method.getReturnType();
             if (!isList(returnType)) return false;
@@ -843,6 +949,29 @@ public abstract class FormatterAbs
 
     }
 
+    /**
+     * If the return class is a map this is true
+     * @param m test the return type of this method
+     * @return true=is map, false=not map
+     */
+    protected boolean returnsMap(Method method)
+    {
+        try {
+            String name = method.getName();
+            if (!name.startsWith("get") && !name.startsWith("is")) return false;
+            if (Modifier.isStatic(method.getModifiers())) return false;
+            Class returnType = method.getReturnType();
+            if (!isMap(returnType)) return false;
+            return true;
+
+        } catch (Throwable e) {
+            System.err.println(e);
+            return false;
+        }
+
+    }
+
+    /**
     /**
      * Is this an enum class?
      * @param c class to be tested
@@ -899,6 +1028,16 @@ public abstract class FormatterAbs
 
     }
 
+    /**
+     *  Is this a Map class
+     * @param c class to be tested
+     * @return true=is Map class, false=is not Map class
+     */
+    protected boolean isMap(Class c)
+    {
+	return c.getName().endsWith(".Map");
+
+    }
     /**
      * Lower case first letter of string
      * @param in String to be processed

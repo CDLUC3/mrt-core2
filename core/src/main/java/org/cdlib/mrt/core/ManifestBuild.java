@@ -44,6 +44,7 @@ import org.cdlib.mrt.core.FileComponent;
 import org.cdlib.mrt.core.Manifest;
 import org.cdlib.mrt.core.ManifestRowAbs;
 import org.cdlib.mrt.core.ManifestRowAdd;
+import org.cdlib.mrt.core.Tika;
 import org.cdlib.mrt.utility.FileUtil;
 import org.cdlib.mrt.utility.TException;
 import org.cdlib.mrt.utility.TFileLogger;
@@ -234,6 +235,7 @@ public class ManifestBuild
                 throw new TException.REQUESTED_ITEM_NOT_FOUND(MESSAGE + "No items found for:"
                         + sourceDir.getCanonicalPath());
             }
+            Tika tika = Tika.getTika(logger);
             ManifestRowAdd rowOut
                     = (ManifestRowAdd)ManifestRowAbs.getManifestRow(manifestType, logger);
             Manifest manifestDflat = Manifest.getManifest(logger, manifestType);
@@ -265,6 +267,13 @@ public class ManifestBuild
                             + " - Exception:" + ex);
                 }
                 fileState.setURL(fileLink);
+                try {
+                    String tikaString = tika.getMimeType(file);
+                    fileState.setMimeType(tikaString);
+                } catch (java.lang.NoSuchMethodError nsme) {
+                    nsme.printStackTrace();
+                } catch (Exception e) { e.printStackTrace(); }
+
                 rowOut.setFileComponent(fileState);
                 if (DEBUG) System.out.println("!!!!line:" + rowOut.getLine());
                 manifestDflat.write(rowOut);

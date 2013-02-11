@@ -82,6 +82,13 @@ public class LinkedHashList<K,V>
         return ret;
     }
 
+    /**
+     * Empty list
+     */
+    public void clear() {
+        hash.clear();
+    }
+    
     public V getFirstElement(K key)
     {
         Vector<V> ret = hash.get(key);

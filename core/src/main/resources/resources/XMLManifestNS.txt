@@ -1,0 +1,35 @@
+# This table is used to define the XML and Semantic name space headers
+# Entries:
+# <name> | <class name> | <name space prefix> | <name space extension on URL> | <object identifier> | <URL reference to state content>
+# note that for semantic output either the <object identifier> or the <URL reference> need to be provided - reference is preferred if both exist
+#---------------------------------------------------------------------
+ACCESS | AccessServiceState | acc | access/service
+AUTHORIZE | AuthorizeState | aut | authorize/handler
+STORAGE | StorageServiceState | sto | store/storage | identifier
+NODE | NodeState | nod | store/node | identifier
+OBJECT | ObjectState | obj | store/object | | object
+VERSION | VersionState | ver | store/version | | version
+FILE | FileState | fil | store/file | | file
+FIXITY | FileFixityState | fix | store/fix
+PRIMARY | PrimaryIDState | pid | store/pid | localIdentifier
+FEEDER | FeederServiceState | feed | feeder/mets | identifier
+EXCEPTION | TException | exc | core/exc | status
+INGEST | IngestServiceState | ing |ingest/single | serviceID
+QUEUE | QueueState | que | ingest/queue
+BATCH | BatchState | bat | ingest/batch | batchID
+JOB | JobState | job | ingest/job | jobID
+JOBS | JobsState | jobs | ingest/jobs
+PROFILE | ProfileState | pro | ingest/profile
+HANDLER | HandlerState | bat | ingest/handler
+QUEUE_ENTRY_STATE | QueueEntryState | que | ingest/queue
+FIXITY_ENTRY | FixityEntry | item | fixity/items
+FIXITY_ENTRIES | FixityEntriesState | items | fixity/items
+FIXITY_SELECT | FixitySelectState | fixsel | fixity/select
+FIXITY_SERVICE | FixityServiceState | fix | fixity/service
+FIXITY_SUBMIT | FixitySubmittedState | fixsub | fixity/submit
+INV_SERVICE | InvServiceState | invsv | inv/service
+INV_DELETE | InvDeleteState | invd | inv/delete
+INV_SELECT | InvSelectState | invse | inv/select
+STORE_LOCID | LocalIDsState | locid | store/locid
+STORE_DELID | DeleteIDState | delid | store/delid
+PING | PingState | ping | ping/basic | dateTime

@@ -33,6 +33,7 @@ import org.cdlib.mrt.utility.StateInf;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
@@ -62,6 +63,13 @@ public class ComponentContent
     {
         this.logger = logger;
         buildComponents(manifest, manifestInputStream);
+    }
+
+    public ComponentContent(
+        List<FileComponent> componentList)
+        throws TException
+    {
+        setComponents(componentList);
     }
 
     public LinkedHashMap<String, FileComponent> getFileComponentTable()
@@ -136,6 +144,23 @@ public class ComponentContent
             }
         }
     }
+    
+    private void setComponents(
+            List<FileComponent> componentList)
+        throws TException
+    {
+        try {
+            for (FileComponent fileComponent : componentList) {
+                addFileComponent(fileComponent.getIdentifier(), fileComponent);
+            }
+            return;
+
+        } catch (Exception ex) {
+            System.out.println("!!!!Stack trace:" + StringUtil.stackTrace(ex));
+            throw makeGeneralTException(logger, "Unable to build VersionContent.", ex);
+
+        }
+    }
 
     /**
      * create TException and do appropriate logger
@@ -156,6 +181,27 @@ public class ComponentContent
                 LoggerInf.LogLevel.DEBUG);
         return new TException.GENERAL_EXCEPTION(
                 msg +  "Exception:" + ex);
+    }
+    
+    public int size()
+    {
+        return componentTable.size();
+    }
+
+    public Identifier getObjectID() {
+        return objectID;
+    }
+
+    public void setObjectID(Identifier objectID) {
+        this.objectID = objectID;
+    }
+
+    public int getVersionID() {
+        return versionID;
+    }
+
+    public void setVersionID(int versionID) {
+        this.versionID = versionID;
     }
 }
 

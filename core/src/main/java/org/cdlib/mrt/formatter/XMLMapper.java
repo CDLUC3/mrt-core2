@@ -49,68 +49,16 @@ import org.cdlib.mrt.utility.TException;
  */
 public class XMLMapper
 {
+    protected static final String NL = System.getProperty("line.separator");
     protected static final String NAME = "XMLMapper";
     protected static final String MESSAGE = NAME + ": ";
-    public enum Type
-    {
-        access,
-        authorize,
-        feeder,
-        fixentry,
-        fixentries,
-        fixserv,
-        fixselect,
-        fixsubmit,
-        ingingest,
-        ingqueue,
-        ingbatch,
-        ingjob,
-        ingjobs,
-        ingprofile,
-        inghandler,
-        strstore,
-        strnode,
-        strobject,
-        strversion,
-        strfile,
-        strfixity,
-        strprimary,
-        strlocid,
-        strdelid,
-        exc,
-        undef;
-    }
-
-    protected Type type;
+    protected static final boolean DEBUG = false;
     protected StateInf state = null;
     protected Properties prop = null;
+    protected String stateS = null;
     protected String globalNameSpace = null;
-    protected final String ACCESS = "AccessServiceState";
-    protected final String STORAGE = "StorageServiceState";
-    protected final String NODE = "NodeState";
-    protected final String OBJECT = "ObjectState";
-    protected final String VERSION = "VersionState";
-    protected final String FEEDER = "FeederServiceState";
-    protected final String FILE = "FileState";
-    protected final String FIXITY = "FileFixityState";
-    protected final String PRIMARY = "PrimaryIDState";
-    protected final String EXCEPTION = "TException";
-    protected final String INGEST = "IngestServiceState";
-    protected final String QUEUE = "QueueState";
-    protected final String BATCH = "BatchState";
-    protected final String JOB = "JobState";
-    protected final String JOBS = "JobsState";
-    protected final String PROFILE = "ProfileState";
-    protected final String HANDLER = "HandlerState";
-    protected final String AUTHORIZE = "AuthorizeState";
-    protected final String QUEUE_ENTRY_STATE = "QueueEntryState";
-    protected final String FIXITY_ENTRY = "FixityEntry";
-    protected final String FIXITY_ENTRIES = "FixityEntriesState";
-    protected final String FIXITY_SELECT = "FixitySelectState";
-    protected final String FIXITY_SERVICE = "FixityServiceState";
-    protected final String FIXITY_SUBMIT = "FixitySubmittedState";
-    protected final String STORE_LOCID = "LocalIDsState";
-    protected final String STORE_DELID = "DeleteIDState";
+    protected String nsMapBase = null;
+    protected NSMap.NSEntry entry = null;
 
     public static XMLMapper getXMLMapper(String resourceName, StateInf state)
         throws TException
@@ -136,59 +84,38 @@ public class XMLMapper
                     MESSAGE + "construct - missing state");
         }
         this.state = state;
-        String stateS = state.getClass().getName();
-        //System.out.println(MESSAGE + "stateS=" + stateS);
-        if (stateS.contains(ACCESS)) type = Type.access;
-        else if (stateS.contains(STORAGE)) type = Type.strstore;
-        else if (stateS.contains(NODE)) type = Type.strnode;
-        else if (stateS.contains(OBJECT)) type = Type.strobject;
-        else if (stateS.contains(VERSION)) type = Type.strversion;
-        else if (stateS.contains(FILE)) type = Type.strfile;
-        else if (stateS.contains(FIXITY)) type = Type.strfixity;
-        else if (stateS.contains(PRIMARY)) type = Type.strprimary;
-        else if (stateS.contains(EXCEPTION)) type = Type.exc;
-        else if (stateS.contains(FIXITY_ENTRY)) type = Type.fixentry;
-        else if (stateS.contains(FIXITY_ENTRIES)) type = Type.fixentries;
-        else if (stateS.contains(FIXITY_SELECT)) type = Type.fixselect;
-        else if (stateS.contains(FIXITY_SERVICE)) type = Type.fixserv;
-        else if (stateS.contains(FIXITY_SUBMIT)) type = Type.fixsubmit;
-        else if (stateS.contains(INGEST)) type = Type.ingingest;
-        else if (stateS.contains(QUEUE)) type = Type.ingqueue;
-        else if (stateS.contains(BATCH)) type = Type.ingbatch;
-        else if (stateS.contains(JOB)) type = Type.ingjob;
-        else if (stateS.contains(JOBS)) type = Type.ingjobs;
-        else if (stateS.contains(PROFILE)) type = Type.ingprofile;
-        else if (stateS.contains(HANDLER)) type = Type.inghandler;
-        else if (stateS.contains(AUTHORIZE)) type = Type.authorize;
-        else if (stateS.contains(QUEUE_ENTRY_STATE)) type = Type.ingqueue;
-        else if (stateS.contains(FEEDER)) type = Type.feeder;
-        else if (stateS.contains(STORE_LOCID)) type = Type.strlocid;
-        else if (stateS.contains(STORE_DELID)) type = Type.strdelid;
-        else type = Type.undef;
+        stateS = state.getClass().getName();
+        if (DEBUG) System.out.println(MESSAGE + "stateS=" + stateS);
         prop = getProperties(resourceName);
-        this.state = state;
-        globalNameSpace = getProperty("namespace");
-    }
-
-    /**
-     * match property value of form [typename].
-     * @param key match key of specific typename
-     * @return match property - may be null
-     * @throws TException
-     */
-    public String getProperty(String key)
-        throws TException
-    {
-        if (StringUtil.isEmpty(key)) {
+        if (DEBUG) System.out.append(PropertiesUtil.dumpProperties(MESSAGE, prop));
+        nsMapBase = prop.getProperty("nsMapBase");
+        if (StringUtil.isEmpty(nsMapBase)) {
             throw new TException.INVALID_OR_MISSING_PARM (
-                    MESSAGE + "getProperty key missing");
+                    MESSAGE + "NSMapBase property not found");
         }
-        String typeS = type.toString();
-        String value = prop.getProperty(typeS + "." + key);
-        if (StringUtil.isEmpty(value)) {
-            value = prop.getProperty(key);
+        String nsMapName = prop.getProperty("nsMapName");
+        if (DEBUG) System.out.println(MESSAGE + "nsMapName=" + nsMapName);
+        NSMap map = new NSMap(nsMapName, null);
+        if ((map == null) || (map.size() == 0)) {
+            throw new TException.INVALID_OR_MISSING_PARM (
+                    MESSAGE + "NSMap not found:" + nsMapName);
         }
-        return value;
+        if (DEBUG) System.out.println(MESSAGE + "FOUND nsMapName=" + nsMapName);
+        entry = map.getEntry(state);
+        
+        if (entry == null) {
+            throw new TException.INVALID_OR_MISSING_PARM (
+                    MESSAGE + "NSMap.Entry not found:" 
+                    + " - nsMapName=" + nsMapName
+                    + " - stateS=" + stateS
+                    );
+                    
+        }
+        
+        
+        if (StringUtil.isAllBlank(entry.ns)) globalNameSpace = null;
+        else if (StringUtil.isEmpty(entry.ns)) globalNameSpace = null;
+        globalNameSpace=entry.ns;
     }
 
     /**
@@ -203,20 +130,15 @@ public class XMLMapper
             throw new TException.INVALID_OR_MISSING_PARM (
                     MESSAGE + "getProperty key missing");
         }
-
-        String header = getProperty("header");
-
-        if (StringUtil.isEmpty(header)) {
-            throw new TException.INVALID_OR_MISSING_PARM (
-                    MESSAGE + "getHeader - required but not found:"
-                    + type.toString() + "." + header
-                    + " - name=" + name
-                    );
-        }
-        if (StringUtil.isEmpty(globalNameSpace)) {
-            header = name + " " + header;
+//fixsubmit.header=xmlns:fixsub='http://uc3.cdlib.org/ontology/mrt/fixity/submit'
+        
+        String header = null;
+        String headBase = "='" + nsMapBase + entry.ext + "'";
+        String prefix = "xmlns";
+        if (StringUtil.isNotEmpty(globalNameSpace)) {
+            header = globalNameSpace + ':' + name + " xmlns:" + globalNameSpace + headBase;
         } else {
-            header = globalNameSpace + ":" + name + " " + header;
+            header = name + " xmlns" + headBase;
         }
 
         return header;
@@ -239,7 +161,7 @@ public class XMLMapper
             throw new TException.INVALID_OR_MISSING_PARM (
                     MESSAGE + "getProperty key missing");
         }
-        nameSpace = getProperty("name." + name);
+        nameSpace = entry.ns;
         if (StringUtil.isEmpty(nameSpace)) {
             nameSpace = globalNameSpace;
         }
@@ -260,8 +182,7 @@ public class XMLMapper
     public String getIDName()
         throws TException
     {
-        String idName = getProperty("id");
-        return idName;
+        return entry.id;
     }
 
     /**
@@ -273,36 +194,33 @@ public class XMLMapper
     public String getResourceName()
         throws TException
     {
-        String idName = getProperty("resource");
-        return idName;
+        return entry.resource;
     }
 
 
     public String getNameSpaceURI()
         throws TException
     {
-        String idName = getProperty("nsuri");
-        return idName;
+        return nsMapBase + entry.ext + "/";
     }
-
+    
     public String getNameSpacePrefix()
         throws TException
     {
-        String prefix = getProperty("nsprefix");
-        return prefix;
+        return entry.ns;
     }
 
     public String getXHTML()
         throws TException
     {
-        String prefix = getProperty("xhtml");
+        String prefix = prop.getProperty("xhtml");
         return prefix;
     }
 
     public String getSemanticBase()
         throws TException
     {
-        String prefix = getProperty("semanticBase");
+        String prefix = prop.getProperty("semanticBase");
         return prefix;
     }
 
@@ -342,14 +260,17 @@ public class XMLMapper
             } catch (Exception ex) { }
         }
     }
-
-    /**
-     * return enum XMLMapper enum type
-     * @return XMLMapper enum type
-     */
-    public Type getType()
+    
+    public String dump(String header)
     {
-        return type;
+        return 
+                "XMLMapper " + header + " dump:"
+                + " - stateS=" + stateS
+                + " - entry****" + NL
+                + entry.dump("ENTRY") + NL
+                + PropertiesUtil.dumpProperties("DUMP PROP", prop)
+                
+                ;
     }
 
 }

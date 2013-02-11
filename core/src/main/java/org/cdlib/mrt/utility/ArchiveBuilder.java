@@ -56,6 +56,7 @@ public abstract class ArchiveBuilder {
     protected LoggerInf logger = null;
     protected File fromDir;
     protected File toArchive;
+    protected OutputStream outputStream;
 
 
     /**
@@ -144,6 +145,43 @@ public abstract class ArchiveBuilder {
         buildArchive();
     }
 
+    /**
+     * Contructor used as build method for this class
+     * @param fromDir - directory to be archived
+     * @param toArchive - archive to this file
+     * @param logger - process logging
+     * @param archiveType type of archive to create see ArchiveType
+     * @throws TException
+     */
+    public ArchiveBuilder(
+            File fromDir,
+            OutputStream outputStream,
+            LoggerInf logger,
+            ArchiveType archiveType)
+        throws TException
+    {
+        if ((fromDir == null) || !fromDir.exists()) {
+            throw new TException.INVALID_OR_MISSING_PARM(MESSAGE + "from Directory does not exist");
+        }
+
+        if (outputStream == null) {
+            throw new TException.INVALID_OR_MISSING_PARM(MESSAGE + "archive File not supplied");
+        }
+
+        if (logger == null) {
+            throw new TException.INVALID_OR_MISSING_PARM(MESSAGE + "logger required");
+        }
+
+        if (archiveType == null) {
+            archiveType = ArchiveType.targz; // default
+        }
+        this.fromDir = fromDir;
+        this.outputStream = outputStream;
+        this.logger = logger;
+        this.archiveType = archiveType;
+        buildArchive();
+    }
+
 
     /**
      * Factory routine to get specific ArchiveBuilder for supplied ArchiveType
@@ -177,6 +215,37 @@ public abstract class ArchiveBuilder {
     }
 
     /**
+     * Factory routine to get specific ArchiveBuilder for supplied ArchiveType
+     * @param fromDir - directory to be archived
+     * @param toArchive - archive to this file
+     * @param logger - process logging
+     * @param archiveType type of archive to create see ArchiveType
+     * @return specific type of ArchiveBuilder
+     * @throws TException
+     */
+    public static ArchiveBuilder getArchiveBuilder(
+            File fromDir,
+            OutputStream outputStream,
+            LoggerInf logger,
+            ArchiveType archiveType)
+        throws TException
+    {
+
+        if (archiveType == null) {
+            archiveType = ArchiveType.targz; // default
+        }
+        switch (archiveType) {
+            case tar:
+                return new ArchiveBuilder.Tar(fromDir, outputStream, logger);
+            case targz:
+                return new ArchiveBuilder.TarGZ(fromDir, outputStream, logger);
+            case zip:
+                return new ArchiveBuilder.Zip(fromDir, outputStream, logger);
+        }
+        throw new TException.REQUEST_ELEMENT_UNSUPPORTED(MESSAGE + "archiveType not supported");
+    }
+
+    /**
      * Create archive from constructor supplied values
      * @throws TException
      */
@@ -184,7 +253,7 @@ public abstract class ArchiveBuilder {
         throws TException
     {
         try {
-            OutputStream outputStream = new FileOutputStream(toArchive);
+            if (outputStream == null) outputStream = new FileOutputStream(toArchive);
             setOutputStream(outputStream);
             addFiles(fromDir);
             closeArchive();
@@ -332,6 +401,18 @@ public abstract class ArchiveBuilder {
         {
             super(fromDir, toArchive, logger, archiveType);
         }
+        public Tar(File fromDir, OutputStream outputStream, LoggerInf logger)
+            throws TException
+        {
+            super(fromDir, outputStream, logger, ArchiveType.tar);
+        }
+
+        public Tar(File fromDir, OutputStream outputStream, LoggerInf logger, ArchiveType archiveType)
+            throws TException
+        {
+            super(fromDir, outputStream, logger, archiveType);
+        }
+
 
         protected void setOutputStream(OutputStream baseOutputStream)
             throws TException
@@ -401,6 +482,12 @@ public abstract class ArchiveBuilder {
         {
             super(fromDir, toArchive, logger, ArchiveType.targz);
         }
+        
+        public TarGZ(File fromDir, OutputStream outputStream, LoggerInf logger)
+            throws TException
+        {
+            super(fromDir, outputStream, logger, ArchiveType.targz);
+        }
 
         @Override
         protected void setOutputStream(OutputStream baseOutputStream)
@@ -430,6 +517,12 @@ public abstract class ArchiveBuilder {
             throws TException
         {
             super(fromDir, toArchive, logger, ArchiveType.zip);
+        }
+
+        public Zip(File fromDir, OutputStream outputStream, LoggerInf logger)
+            throws TException
+        {
+            super(fromDir, outputStream, logger, ArchiveType.zip);
         }
 
         public Zip(File fromDir, File toArchive, LoggerInf logger, ArchiveType archiveType)

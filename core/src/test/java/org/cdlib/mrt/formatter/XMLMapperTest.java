@@ -46,21 +46,41 @@ public class XMLMapperTest {
 
 
     @Test
-    public void test1()
+    public void testNS()
     {
-        System.out.println("***test1***");
+        System.out.println("***testNS***");
         try {
             TestState testState = new TestState();
-            XMLMapper mapper = XMLMapper.getXMLMapper("testresources/xml-test1.properties", testState);
-            String header = mapper.getHeader("HEADER");
-            assertTrue(header.equals("bk:HEADER xmlns:bk='urn:loc.gov:books' xmlns:isbn='urn:ISBN:0-395-36341-6'"));
-            System.out.println("XMLMapperTest.test1 header=[" + header + "]");
-            String namespace = mapper.getName("NAME");
-            System.out.println("XMLMapperTest.test1 name=[" + namespace + "]");
-            assertTrue(namespace.equals("bk:NAME"));
-            namespace = mapper.getName("ISBN");
-            System.out.println("XMLMapperTest.test1 isbn=[" + namespace + "]");
-            assertTrue(namespace.equals("isbn:ISBN"));
+            XMLMapper mapper = XMLMapper.getXMLMapper("testresources/basic-prop-test-NS.properties", testState);
+            
+            String html = mapper.getXHTML();
+            System.out.println("getXHTML[" + html + ']');
+            assertTrue(html.equals("testresources/xhtml.xsl"));
+            
+            String header = mapper.getHeader("XMLMapperTest.TestState");
+            System.out.println("getHeader[" + header + ']');
+            assertTrue(header.equals("ts:XMLMapperTest.TestState xmlns:ts='http://uc3.cdlib.org/ontology/mrt/ts/service'"));
+            
+            String name = mapper.getName("hashMap");
+            System.out.println("name[" + name + ']');
+            assertTrue(name.equals("ts:hashMap"));
+            
+            String nsPrefix = mapper.getNameSpacePrefix();
+            System.out.println("nsPrefix[" + nsPrefix + ']');
+            assertTrue(nsPrefix.equals("ts"));
+            
+            String nsURI = mapper.getNameSpaceURI();
+            System.out.println("getNameSpaceURI[" + nsURI + ']');
+            assertTrue(nsURI.equals("http://uc3.cdlib.org/ontology/mrt/ts/service/"));
+            
+            String id = mapper.getIDName();
+            System.out.println("getIDName[" + id + ']');
+            assertTrue(id.equals("id"));
+            
+            String resource = mapper.getResourceName();
+            System.out.println("getResourceName[" + resource + ']');
+            assertTrue(resource.equals("resource"));
+            
             assertTrue(true);
 
         } catch (Exception ex) {
@@ -69,44 +89,41 @@ public class XMLMapperTest {
     }
 
     @Test
-    public void test2()
+    public void testNoNS()
     {
-        System.out.println("***test2***");
+        System.out.println("***testNoNS***");
         try {
             TestState testState = new TestState();
-            XMLMapper mapper = XMLMapper.getXMLMapper("testresources/xml-test2.properties", testState);
-            String header = mapper.getHeader("HEADER");
-            assertTrue(header.equals("bk:HEADER xmlns:bk='urn:loc.gov:books' xmlns:isbn='urn:ISBN:0-395-36341-6'"));
-            System.out.println("XMLMapperTest.test1 header=[" + header + "]");
-            String namespace = mapper.getName("NAME");
-            System.out.println("XMLMapperTest.test1 name=[" + namespace + "]");
-            assertTrue(namespace.equals("bk:NAME"));
-            namespace = mapper.getName("ISBN");
-            System.out.println("XMLMapperTest.test1 isbn=[" + namespace + "]");
-            assertTrue(namespace.equals("bk:ISBN"));
-            assertTrue(true);
-
-        } catch (Exception ex) {
-            assertFalse("Exception:" + ex, true);
-        }
-    }
-
-    @Test
-    public void test3()
-    {
-        System.out.println("***test3***");
-        try {
-            TestState testState = new TestState();
-            XMLMapper mapper = XMLMapper.getXMLMapper("testresources/xml-test3.properties", testState);
-            String header = mapper.getHeader("HEADER");
-            assertTrue(header.equals("HEADER xmlns='urn:loc.gov:books' xmlns:isbn='urn:ISBN:0-395-36341-6'"));
-            System.out.println("XMLMapperTest.test1 header=[" + header + "]");
-            String namespace = mapper.getName("NAME");
-            System.out.println("XMLMapperTest.test1 name=[" + namespace + "]");
-            assertTrue(namespace.equals("NAME"));
-            namespace = mapper.getName("ISBN");
-            System.out.println("XMLMapperTest.test1 isbn=[" + namespace + "]");
-            assertTrue(namespace.equals("ISBN"));
+            XMLMapper mapper = XMLMapper.getXMLMapper("testresources/basic-prop-test-NoNS.properties", testState);
+            
+            String html = mapper.getXHTML();
+            System.out.println("getXHTML[" + html + ']');
+            assertTrue(html.equals("testresources/xhtml.xsl"));
+            
+            String header = mapper.getHeader("XMLMapperTest.TestState");
+            System.out.println("getHeader[" + header + ']');
+            assertTrue(header.equals("XMLMapperTest.TestState xmlns='http://uc3.cdlib.org/ontology/mrt/ts/service'"));
+            
+            String name = mapper.getName("hashMap");
+            System.out.println("name[" + name + ']');
+            assertTrue(name.equals("hashMap"));
+            
+            String nsPrefix = mapper.getNameSpacePrefix();
+            System.out.println("nsPrefix[" + nsPrefix + ']');
+            assertTrue(nsPrefix == null);
+            
+            String nsURI = mapper.getNameSpaceURI();
+            System.out.println("getNameSpaceURI[" + nsURI + ']');
+            assertTrue(nsURI.equals("http://uc3.cdlib.org/ontology/mrt/ts/service/"));
+            
+            String id = mapper.getIDName();
+            System.out.println("getIDName[" + id + ']');
+            assertTrue(id.equals("id"));
+            
+            String resource = mapper.getResourceName();
+            System.out.println("getResourceName[" + resource + ']');
+            assertTrue(resource.equals("resource"));
+            
             assertTrue(true);
 
         } catch (Exception ex) {

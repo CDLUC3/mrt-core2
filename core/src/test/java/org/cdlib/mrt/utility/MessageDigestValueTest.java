@@ -43,6 +43,43 @@ public class MessageDigestValueTest {
     @After
     public void tearDown() {
     }
+    
+
+    @Test
+    public void testHexTo64BitToHex()
+    {
+        try {
+            testHexTo64BitToHex("2a5de3f6f44cfb38e56ead632eb89f40");
+            testHexTo64BitToHex("39d4750525f551deae9a565c709271c983cddb3a15203edd5e20d8e366f19713");
+            testHexTo64BitToHex("2ed83e4c");
+            
+        } catch (Exception ex) {
+            assertFalse("TestMD5"
+                    + " - Exception:" + ex
+                    + " - stack:" + StringUtil.stackTrace(ex)
+                    , true);
+        }
+    }
+    
+    
+    public void testHexTo64BitToHex(String hex)
+    {
+        try {
+            System.out.println("testHexTo64BitToHex hex= " + hex);
+            String testHexTo64Bit = MessageDigestValue.getChecksumBit64(hex);
+            System.out.println("testHexTo64BitToHex testHexTo64Bit= " + testHexTo64Bit);
+            String test64BitToHex = MessageDigestValue.getChecksumHex(testHexTo64Bit);
+            System.out.println("testHexTo64BitToHex test64BitToHex= " + test64BitToHex);
+            
+            assertTrue(hex.equals(test64BitToHex));
+            
+        } catch (Exception ex) {
+            assertFalse("TestMD5"
+                    + " - Exception:" + ex
+                    + " - stack:" + StringUtil.stackTrace(ex)
+                    , true);
+        }
+    }
 
     @Test
     public void TestMD5()
@@ -51,6 +88,25 @@ public class MessageDigestValueTest {
             doFixity("MD5",
                     "2a5de3f6f44cfb38e56ead632eb89f40",
                     6842);
+        } catch (Exception ex) {
+            assertFalse("TestMD5"
+                    + " - Exception:" + ex
+                    + " - stack:" + StringUtil.stackTrace(ex)
+                    , true);
+        }
+    }
+
+    @Test
+    public void TestMD5Bit64()
+    {
+        try {
+            String hexS = doFixity("MD5",
+                    "2a5de3f6f44cfb38e56ead632eb89f40",
+                    6842);
+            String bit64 = MessageDigestValue.getChecksumBit64(hexS);
+            System.out.println("****TestMD5Bit64 Bit64=\"" + bit64 + "\"");
+            assertTrue(bit64.equals("Kl3j9vRM+zjlbq1jLrifQA=="));
+            
         } catch (Exception ex) {
             assertFalse("TestMD5"
                     + " - Exception:" + ex
@@ -104,7 +160,7 @@ public class MessageDigestValueTest {
         }
     }
 
-    public void doFixity(String processChecksum, String match, int matchSize)
+    public String doFixity(String processChecksum, String match, int matchSize)
     {
         try {
             LoggerInf logger = new TFileLogger("MessageDigestValueTest", 10, 10);
@@ -120,13 +176,14 @@ public class MessageDigestValueTest {
                     size==matchSize
                             && checksum.equals(match)
                     );
-
+            return checksum;
+            
         } catch (Exception ex) {
             assertFalse("TestTmp"
                     + " - Exception:" + ex
                     + " - stack:" + StringUtil.stackTrace(ex)
                     , true);
-        }
+        }   return null;
     }
 
 

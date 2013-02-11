@@ -60,7 +60,7 @@ public class ManifestRowObject
         "#%prefix | nfo:<" + Checkm.Prefix.nfo.toString() + ">",
         "#%prefix | nie:<" + Checkm.Prefix.nie.toString() + ">",
         "#%prefix | mrt:<" + Checkm.Prefix.mrt.toString() + ">",
-        "#%columns | nfo:fileName | nfo:hashAlgorithm | nfo:hashValue | nfo:fileSize | nfo:fileLastModified"
+        "#%columns | nfo:fileName | nfo:hashAlgorithm | nfo:hashValue | nfo:fileSize | nfo:fileLastModified | nie:mimeType"
     };
 
 

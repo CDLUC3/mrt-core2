@@ -343,6 +343,8 @@ public class TLockFile
      */
     protected int getDiffCurrent()
     {
+        if ((currentLock.creationDate == null)
+                || (lockContent.creationDate == null)) return 0;
         long timeCurrent = currentLock.creationDate.getTime();
         long timeContent = lockContent.creationDate.getTime();
         long diff = timeCurrent - timeContent;

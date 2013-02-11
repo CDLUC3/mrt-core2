@@ -40,6 +40,7 @@ import org.cdlib.mrt.utility.StateStringInf;
 public class DateState
         implements StateStringInf, Serializable
 {
+    public static final String DBDATEPATTERN = "yyyy-MM-dd HH:mm:ss";
     protected Date date = null;
 
     /**
