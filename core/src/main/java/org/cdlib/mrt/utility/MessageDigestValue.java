@@ -35,6 +35,10 @@ import java.util.zip.Checksum;
 import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 
+import javax.xml.bind.DatatypeConverter;
+import org.cdlib.mrt.security.Base64;
+import org.cdlib.mrt.utility.StringUtil;
+
 
 /**
  * Perform Fixity tests
@@ -110,7 +114,7 @@ public class MessageDigestValue
      * @param checksumTypeS string form of checksum type
      * @throws TException
      */
-    protected void setChecksumType(String checksumTypeS)
+    private void setChecksumType(String checksumTypeS)
         throws TException
     {
         if (StringUtil.isEmpty(checksumTypeS)) {
@@ -126,7 +130,7 @@ public class MessageDigestValue
      * @param inputStream stream used for creating checksum
      * @throws TException process exception
      */
-    protected void setSizeChecksum(InputStream inputStream)
+    private void setSizeChecksum(InputStream inputStream)
             throws TException
     {
         if (checksumType  == MessageDigestType.crc32) {
@@ -169,7 +173,7 @@ public class MessageDigestValue
      * @return logger if non-null
      * @throws org.cdlib.mrt.utility.TException null log
      */
-    protected LoggerInf testLog(LoggerInf logger)
+    private LoggerInf testLog(LoggerInf logger)
         throws TException
     {
         if (logger == null) {
@@ -208,7 +212,7 @@ public class MessageDigestValue
     }
     
     /**
-     * return constructed checksum
+     * return constructed hex checksum
      * @return checksum
      */
     public String getChecksum()
@@ -216,6 +220,52 @@ public class MessageDigestValue
         return checksum;
     }
     
+    /**
+     * return constructed Bit 64 checksum
+     * @return checksum
+     */
+    public String getChecksumBit64()
+    {
+        return getChecksumBit64(checksum);
+    }
+    
+    /**
+     * return constructed Bit 64 checksum
+     * @return checksum
+     */
+    public static String getChecksumBit64(String checksumHex)
+    {
+        if (StringUtil.isEmpty(checksumHex)) return null;
+        byte [] bytes = toByteArray(checksumHex);
+        return getCheckSumBit64(bytes);
+    }
+    
+    /**
+     * return hex checksum from Bit 64 checksum
+     * @return checksum
+     */
+    public static String getChecksumHex(String checksumBit64)
+    {
+        if (StringUtil.isEmpty(checksumBit64)) return null;
+        byte [] bytes = Base64.decode(checksumBit64);
+        return toHexString(bytes).toLowerCase();
+    }
+    
+    public static String getCheckSumBit64(byte[] bytes)
+    {
+        if (StringUtil.isEmpty(bytes)) return null;
+        return  org.cdlib.mrt.security.Base64.encodeBytes(bytes);
+    }
+
+    public static String toHexString(byte[] array) {
+        return DatatypeConverter.printHexBinary(array);
+    }
+
+    public static byte[] toByteArray(String s) {
+        return DatatypeConverter.parseHexBinary(s);
+    }
+
+
     /**
      * return constructed checksum type
      * @return checksumType

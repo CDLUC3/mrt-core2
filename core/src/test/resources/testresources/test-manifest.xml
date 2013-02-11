@@ -1,0 +1,148 @@
+<objectInfo xmlns="http://uc3.cdlib.org/ontology/mrt/manifest">
+  <object id="ark:/13030/abcde">
+    <current>4</current>
+    <fileCount>17</fileCount>
+    <totalSize>327783</totalSize>
+    <actualCount>10</actualCount>
+    <actualSize>325753</actualSize>
+    <versionCount>4</versionCount>
+    <lastAddVersion>2012-03-02T13:09:46-08:00</lastAddVersion>
+  </object>
+  <versions>
+    <version id="1">
+      <manifest count="4" size="1715" created="2012-03-02T13:07:54-08:00">
+        <file id="system/mrt-membership.txt">
+          <digestType>SHA-256</digestType>
+          <digest>4ef54764917e17816790c1ad5f1745bef0266e7390bd1dbbdac524941cb60083</digest>
+          <size>20</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-1-.7c.-system-.2f.-mrt-membership.txt</key>
+        </file>
+        <file id="system/mrt-ingest.txt">
+          <digestType>SHA-256</digestType>
+          <digest>25ca320a3af03a0014c8b6ca3800644396c1bd0fa3a3394c746a290cd94ec510</digest>
+          <size>1594</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-1-.7c.-system-.2f.-mrt-ingest.txt</key>
+        </file>
+        <file id="system/mrt-mom.txt">
+          <digestType>SHA-256</digestType>
+          <digest>4103f9757ee6147cdbaafd92e5da1933a7cd234caf9c13bb3ff54e1e80d230f2</digest>
+          <size>82</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-1-.7c.-system-.2f.-mrt-mom.txt</key>
+        </file>
+        <file id="system/mrt-owner.txt">
+          <digestType>SHA-256</digestType>
+          <digest>cffac8feb35afef40e1682fc1df8183eddad1556b578f65689f7102b6a993a18</digest>
+          <size>19</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-1-.7c.-system-.2f.-mrt-owner.txt</key>
+        </file>
+      </manifest>
+    </version>
+    <version id="2">
+      <manifest count="4" size="1715" created="2012-03-02T13:09:20-08:00">
+        <file id="system/mrt-membership.txt">
+          <digestType>SHA-256</digestType>
+          <digest>4ef54764917e17816790c1ad5f1745bef0266e7390bd1dbbdac524941cb60083</digest>
+          <size>20</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-1-.7c.-system-.2f.-mrt-membership.txt</key>
+        </file>
+        <file id="system/mrt-ingest.txt">
+          <digestType>SHA-256</digestType>
+          <digest>25ca320a3af03a0014c8b6ca3800644396c1bd0fa3a3394c746a290cd94ec510</digest>
+          <size>1594</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-1-.7c.-system-.2f.-mrt-ingest.txt</key>
+        </file>
+        <file id="system/mrt-mom.txt">
+          <digestType>SHA-256</digestType>
+          <digest>4103f9757ee6147cdbaafd92e5da1933a7cd234caf9c13bb3ff54e1e80d230f2</digest>
+          <size>82</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-1-.7c.-system-.2f.-mrt-mom.txt</key>
+        </file>
+        <file id="system/mrt-owner.txt">
+          <digestType>SHA-256</digestType>
+          <digest>cffac8feb35afef40e1682fc1df8183eddad1556b578f65689f7102b6a993a18</digest>
+          <size>19</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-1-.7c.-system-.2f.-mrt-owner.txt</key>
+        </file>
+      </manifest>
+    </version>
+    <version id="3">
+      <manifest count="4" size="3373" created="2012-03-02T13:09:30-08:00">
+        <file id="system/mrt-mom.txt">
+          <digestType>SHA-256</digestType>
+          <digest>4103f9757ee6147cdbaafd92e5da1933a7cd234caf9c13bb3ff54e1e80d230f2</digest>
+          <size>82</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-1-.7c.-system-.2f.-mrt-mom.txt</key>
+        </file>
+        <file id="system/mrt-owner.txt">
+          <digestType>SHA-256</digestType>
+          <digest>cffac8feb35afef40e1682fc1df8183eddad1556b578f65689f7102b6a993a18</digest>
+          <size>19</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-1-.7c.-system-.2f.-mrt-owner.txt</key>
+        </file>
+        <file id="mrt-object-map.ttl">
+          <digestType>SHA-256</digestType>
+          <digest>70df0e857a3bdd45f9f10763bda676ddf71db3a70f1c0a9730599630dffddc4d</digest>
+          <size>3058</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-3-.7c.--.2f.-mrt-object-map.ttl</key>
+        </file>
+        <file id="system/mrt-erc.txt">
+          <digestType>SHA-256</digestType>
+          <digest>d5fa9569ed2ed4f3cf0abfdd8015de1b6ac3ae07ae8db66b1f07f29f734f0f94</digest>
+          <size>214</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-3-.7c.-system-.2f.-mrt-erc.txt</key>
+        </file>
+      </manifest>
+    </version>
+    <version id="4">
+      <manifest count="5" size="320980" created="2012-03-02T13:09:46-08:00">
+        <file id="system/mrt-erc.txt">
+          <digestType>SHA-256</digestType>
+          <digest>d5fa9569ed2ed4f3cf0abfdd8015de1b6ac3ae07ae8db66b1f07f29f734f0f94</digest>
+          <size>214</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-3-.7c.-system-.2f.-mrt-erc.txt</key>
+        </file>
+        <file id="producer/content/qt1k67p66s.pdf">
+          <digestType>SHA-256</digestType>
+          <digest>68dde3bad9cab583bad7b2f5450587866307148d40166327c55100b38713049c</digest>
+          <size>315660</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-4-.7c.-producer-.2f.-content-.2f.-qt1k67p66s.pdf</key>
+        </file>
+        <file id="producer/meta/qt1k67p66s.meta.xml">
+          <digestType>SHA-256</digestType>
+          <digest>748bd5450a3e8a7d2e809192250b4d4ddbfe6b24be3108131786c936cedec970</digest>
+          <size>2169</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-4-.7c.-producer-.2f.-meta-.2f.-qt1k67p66s.meta.xml</key>
+        </file>
+        <file id="producer/meta/qt1k67p66s.bp_meta.xml">
+          <digestType>SHA-256</digestType>
+          <digest>aa51abef8c70ea2fca7153e9637ade371070b56de74163f8560582dda53fef2a</digest>
+          <size>2743</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-4-.7c.-producer-.2f.-meta-.2f.-qt1k67p66s.bp-.5f.-meta.xml</key>
+        </file>
+        <file id="producer/mrt-erc.txt">
+          <digestType>SHA-256</digestType>
+          <digest>f65642ac98b4b03b19e9f74719af7a67390f4e4e5f18dfb358601ef383ee4194</digest>
+          <size>194</size>
+          <creationDate>2011-03-04T02:47:40-08:00</creationDate>
+          <key>ark-.3a.--.2f.-13030-.2f.-abcde-.7c.-4-.7c.-producer-.2f.-mrt-erc.txt</key>
+        </file>
+      </manifest>
+    </version>
+  </versions>
+</objectInfo>

@@ -370,6 +370,8 @@ public class FileComponent
         this.identifier = fileState.getIdentifier();
         this.link = fileState.getURL();
         this.created = fileState.getCreated();
+        this.localID = fileState.getLocalID();
+        this.MimeType = fileState.getMimeType();
     }
 
     /**

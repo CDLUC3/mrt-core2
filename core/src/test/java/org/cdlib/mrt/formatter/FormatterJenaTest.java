@@ -71,20 +71,9 @@ public class FormatterJenaTest
     // @Test
     // public void hello() {}
     @Test 
-    public void testReference1()
+    public void testBasic()
     {
-       testIt("testReference1", "testresources/xml-test4.properties");
-    }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
-    @Test
-    public void testReference2()
-    {
-       testIt("testReference2", "testresources/xml-test5.properties");
+       testIt("testReference1", "testresources/basic-prop-test-NS.properties");
     }
 
     // TODO add test methods here.
@@ -150,6 +139,11 @@ public class FormatterJenaTest
 
     private class TestA implements StateInf
     {
+        public int getId()
+        {
+            return 10;
+        }
+        
         public String getValue()
         {
             return "this is a value";

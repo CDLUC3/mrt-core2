@@ -30,15 +30,27 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.cdlib.mrt.utility;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
+
+
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.Header;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.protocol.HTTP;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -78,10 +90,19 @@ public class HTTPUtil {
             if (entity != null && (responseCode >= 200 && responseCode < 300)) {
                 return entity.getContent();
             }
+            if (responseCode == 404) {
+                throw new TException.REQUESTED_ITEM_NOT_FOUND(
+                    "HTTPUTIL: getObject- Error during HttpClient processing"
+                    + " - timeout:" + timeout
+                    + " - URL:" + requestURL
+                    + " - responseCode:" + responseCode
+                    );
+            }
             throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
                     "HTTPUTIL: getObject- Error during HttpClient processing"
                     + " - timeout:" + timeout
                     + " - URL:" + requestURL
+                    + " - responseCode:" + responseCode
                     );
 
         } catch( TException tex ) {
@@ -405,6 +426,9 @@ public class HTTPUtil {
             throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
         }
     }
+    
+    
+    
 
     /**
      * Send this manifestFile to mrt store
@@ -452,6 +476,95 @@ public class HTTPUtil {
         }
     }
 
+    /**
+     * Return InputStream from multipart request
+     * @param requestURL request URL
+     * @param stringParts multipart String bodies
+     * @param fileParts multipart File bodies
+     * @param timeout client timeout
+     * @return response stream from multipart request
+     * @throws TException 
+     */
+    public static InputStream postMultipartObject(
+            String requestURL, 
+            Properties stringParts, 
+            Map<String, File> fileParts,
+            int timeout)
+        throws TException
+    {
+        try {
+            HttpResponse response = postMultipartHttpResponse(requestURL, stringParts, fileParts, timeout);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                return entity.getContent();
+            }
+            throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
+                    "HTTPUTIL: postObject- Error during HttpClient processing");
+
+        } catch( Exception ex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
+        }
+    }
+    
+    /**
+     * Do multipart post
+     * @param requestURL request URL
+     * @param stringParts multipart String bodies
+     * @param fileParts multipart File bodies
+     * @param timeout client timeout
+     * @return HttpReponse from POST request
+     * @throws TException 
+     */
+    public static HttpResponse postMultipartHttpResponse(
+            String requestURL, 
+            Properties stringParts, 
+            Map<String, File> fileParts,
+            int timeout)
+        throws TException
+    {
+        HttpParams params = new BasicHttpParams();
+        params.setParameter("http.socket.timeout", new Integer(timeout));
+        params.setParameter("http.connection.timeout", new Integer(timeout));
+
+        //System.out.println("!!!!:" + MESSAGE + "getSerializeObject.requestURL=" + requestURL);
+        try {
+            HttpClient httpclient = new DefaultHttpClient(params);
+            HttpPost httppost = new HttpPost(requestURL);
+            MultipartEntity reqEntity = new MultipartEntity();
+            Enumeration e = stringParts.propertyNames();
+            String key = null;
+            String value = null;
+            while( e.hasMoreElements() )
+            {
+                key = (String)e.nextElement();
+                value = stringParts.getProperty(key);
+                if (StringUtil.isNotEmpty(value)) {
+                    StringBody body = new StringBody(value);
+                    reqEntity.addPart(key, body);
+                }
+            }
+            if (fileParts != null) {
+                Set<String> keys = fileParts.keySet();
+                for (String setKey : keys) {
+                    File addFile = fileParts.get(setKey);
+                    FileBody file = new FileBody(addFile);
+                    reqEntity.addPart(setKey, file);
+                }
+            }
+
+            httppost.setEntity(reqEntity);
+
+            System.out.println("executing request " + httppost.getRequestLine());
+            HttpResponse response = httpclient.execute(httppost);
+            return response;
+
+        } catch( Exception ex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
+        }
+    }
+    
     public static HttpResponse getHttpResponse(URL hrefURL,  int timeout, int retry)
         throws TException
     {

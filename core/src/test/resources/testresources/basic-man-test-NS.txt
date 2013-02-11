@@ -1,0 +1,2 @@
+TESTA | TestA | ta | ta/service | id
+XMLMAPPER | TestState | ts | ts/service | id | resource

@@ -127,13 +127,4 @@ public class XMLFormatter
         name = mapper.getName(name);
         write("<" + name + ">"+ value + "</" + name + ">", stream);
     }
-
-    /**
-     * get Mapper type
-     * @return mapper Type
-     */
-    public XMLMapper.Type getMapperType()
-    {
-        return mapper.getType();
-    }
 }

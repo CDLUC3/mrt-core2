@@ -63,7 +63,7 @@ public class ManifestRowAdd
         "#%prefix | nfo:<" + Checkm.Prefix.nfo.toString() + ">",
         "#%prefix | nie:<" + Checkm.Prefix.nie.toString() + ">",
         "#%prefix | mrt:<" + Checkm.Prefix.mrt.toString() + ">",
-        "#%columns | nfo:fileURL | nfo:hashAlgorithm | nfo:hashValue | nfo:fileSize | nfo:fileLastModified | nfo:fileName"
+        "#%columns | nfo:fileURL | nfo:hashAlgorithm | nfo:hashValue | nfo:fileSize | nfo:fileLastModified | nfo:fileName | nie:mimeType"
     };
 
     protected static final String[] profiles = {

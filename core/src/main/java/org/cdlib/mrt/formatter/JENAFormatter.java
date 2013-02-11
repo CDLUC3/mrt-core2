@@ -29,10 +29,11 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************/
 package org.cdlib.mrt.formatter;
 
-
-
-import com.hp.hpl.jena.rdf.model.*;
-
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;;
+import com.hp.hpl.jena.rdf.model.Resource;;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;;
 
 import java.io.PrintStream;
 import java.util.Vector;
@@ -101,7 +102,8 @@ public class JENAFormatter
             throw new TException.INVALID_OR_MISSING_PARM(MESSAGE
                     + "JENAFormatter - namespace prefix not found");
         }
-
+        
+        System.out.println(mapper.dump(MESSAGE));
         refName = mapper.getResourceName();
         idName = mapper.getIDName();
         if (StringUtil.isEmpty(refName) && StringUtil.isEmpty(idName)) {
@@ -201,6 +203,11 @@ public class JENAFormatter
     {
         if (value == null) return;
         map.put(name, value);
+        if (DEBUG) System.out.println(MESSAGE + "NAME"
+                + " - name=" + name
+                + " - refName=" + refName
+                + " - idName=" + idName
+                );
         if (StringUtil.isNotEmpty(refName) && name.equals(refName)) {
             objectRef = value;
         }

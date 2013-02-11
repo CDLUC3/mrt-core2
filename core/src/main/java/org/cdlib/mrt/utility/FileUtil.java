@@ -40,6 +40,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import org.cdlib.mrt.utility.URLEncoder;
@@ -110,7 +111,7 @@ public class FileUtil {
         FileOutputStream outStream = null;
         InputStream inStream = null;
         try {
-            inStream = HTTPUtil.getObject(urlS, 10000, retry);
+            inStream = HTTPUtil.getObject(urlS, 120000, retry);
             stream2File(inStream, outFile);
 
         } catch (TException fe) {
@@ -178,10 +179,67 @@ public class FileUtil {
             while ((len = inStream.read(buf)) >= 0) {
                 outStream.write(buf, 0, len);
             }
-
+        
         } catch(Exception ex) {
             String err = MESSAGE + "Name:" + outFile.getName();
             throw new TException.GENERAL_EXCEPTION( err, ex);
+
+
+        } finally {
+            try {
+                //System.out.println("***FILE CLOSED***");
+                inStream.close();
+                outStream.close();
+                
+            } catch (Exception finex) { }
+        }
+
+    }
+
+    /**
+     * Move url response to output stream
+     * @param urlS link to file to be extracted
+     * @param outStream output stream
+     * @param retry number of retry attempts
+     * @throws org.cdlib.mcur.utility.MException
+     */
+    public static void url2OutputStream(String urlS, OutputStream outStream, int retry)
+        throws TException
+    {
+
+        InputStream inStream = null;
+        try {
+            inStream = HTTPUtil.getObject(urlS, 120000, retry);
+            stream2Stream(inStream, outStream);
+
+        } catch (TException fe) {
+            throw fe;
+
+        } catch(Exception ex) {
+            String err = MESSAGE + "url2OutputStream - Exception:" + ex;
+            throw new TException.GENERAL_EXCEPTION( err);
+        }
+    }
+    
+    /**
+     * Copy input stream to output stream
+     * @param inStream - input stream
+     * @param outStream - output Stream
+     * @throws TException  process exception
+     */
+    public static void stream2Stream(InputStream inStream, OutputStream outStream)
+        throws TException
+    {
+
+        try {
+            byte [] buf = new byte[BUFSIZE];
+            int len = 0;
+            while ((len = inStream.read(buf)) >= 0) {
+                outStream.write(buf, 0, len);
+            }
+        
+        } catch(Exception ex) {
+            throw new TException.GENERAL_EXCEPTION(ex);
 
 
         } finally {
@@ -849,7 +907,7 @@ public class FileUtil {
      * remove line(s) from a text file
      * @param file file to be processed
      * @param lineToRemove line to be removed 
-     * @param linePortion begins, ends or matches line (BEGIN, END or MATCH, default: MATCH)
+     * @param linePortion begins, ends contains or matches line (BEGIN, END, CONTAIN or MATCH, default: MATCH)
      */
     public static void removeLineFromFile(String file, String lineToRemove, String linePortion) {
 
@@ -876,6 +934,7 @@ public class FileUtil {
         
         if ( ! ((line.trim().endsWith(lineToRemove) && linePortion.equals("END"))  ||
             (line.trim().startsWith(lineToRemove) && linePortion.equals("BEGIN")) ||
+            (line.trim().contains(lineToRemove) && linePortion.equals("CONTAIN")) ||
             (line.trim().equals(lineToRemove)))) {
 
           pw.println(line);
