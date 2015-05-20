@@ -420,6 +420,9 @@ public abstract class ArchiveBuilder {
             try {
                 tarOutputStream = new TarOutputStream(baseOutputStream);
                 tarOutputStream.setLongFileMode(TarOutputStream.LONGFILE_GNU);
+                tarOutputStream.setBigNumberMode(tarOutputStream.BIGNUMBER_STAR);
+                System.out.println("***setOutputStream(Tar): LONGFILE_GNU - BIGNUMBER_STAR");
+                
                 return;
 
             } catch (Exception ex) {
@@ -456,6 +459,7 @@ public abstract class ArchiveBuilder {
                 throw fex;
 
             } catch (Exception ex) {
+                ex.printStackTrace();
                 String errMessage = MESSAGE + "addItemFile - Exception:" + ex;
                 logger.logError(errMessage, 0);
                 logger.logError(StringUtil.stackTrace(ex), 10);
@@ -497,6 +501,8 @@ public abstract class ArchiveBuilder {
                 GZIPOutputStream gzip = new GZIPOutputStream( baseOutputStream );
                 tarOutputStream = new TarOutputStream(gzip);
                 tarOutputStream.setLongFileMode(TarOutputStream.LONGFILE_GNU);
+                tarOutputStream.setBigNumberMode(tarOutputStream.BIGNUMBER_STAR);
+                System.out.println("***setOutputStream(TarGZ): LONGFILE_GNU - BIGNUMBER_STAR");
                 return;
 
             } catch (Exception ex) {

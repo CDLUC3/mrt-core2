@@ -30,11 +30,14 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.cdlib.mrt.cloud;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import org.cdlib.mrt.cloud.ManInfo;
 
@@ -42,6 +45,9 @@ import org.cdlib.mrt.core.ComponentContent;
 import org.cdlib.mrt.core.DateState;
 import org.cdlib.mrt.core.FileComponent;
 import org.cdlib.mrt.core.Identifier;
+import org.cdlib.mrt.core.Manifest;
+import org.cdlib.mrt.core.ManifestRowAbs;
+import org.cdlib.mrt.core.ManifestRowAdd;
 import org.cdlib.mrt.core.MessageDigest;
 import org.cdlib.mrt.utility.FileUtil;
 import org.cdlib.mrt.utility.FixityTests;
@@ -49,6 +55,8 @@ import org.cdlib.mrt.utility.LinkedHashList;
 import org.cdlib.mrt.utility.LoggerInf;
 import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TException;
+import org.cdlib.mrt.utility.TFileLogger;
+import org.cdlib.mrt.utility.URLEncoder;
 
 /**
  * This object imports the formatTypes.xml and builds a local table of supported format types.
@@ -84,11 +92,64 @@ public class VersionMap
     protected DateState originalLastDeleteVersion = null;
     protected int originalVersionCnt = 0;
     protected LoggerInf logger = null;
+    protected int node = 0;
+    protected String storageBase = null;
     
     protected ArrayList<ManInfo> manList = new ArrayList<ManInfo>();
     protected HashMap<String, VersionFileComponent> keyHash = new HashMap<String, VersionFileComponent>();
     protected LinkedHashList<String, VersionFileComponent> fileHashList = new LinkedHashList<String, VersionFileComponent>();
 
+    
+    /**
+     * Get version map from manifext URL
+     * @param manifestXMLUrlS string form manifest URL
+     * @return version manifest map
+     * @throws TException process exception
+     */
+    public static VersionMap getVersionMap(String manifestXMLUrlS)
+        throws TException
+    {
+        ManInfo test = new ManInfo();
+        LoggerInf logger = new TFileLogger("TestBuild", 0, 0);
+        InputStream inStream =  null;
+        File tmpFile = null;
+        try {
+            tmpFile = FileUtil.url2TempFile(logger, manifestXMLUrlS);
+            inStream = new FileInputStream(tmpFile);
+            VersionMap map = ManifestSAX.buildMap(inStream, logger);
+            String [] parts = manifestXMLUrlS.split("\\/");
+            int pos = manifestXMLUrlS.indexOf("/manifest/");
+            String storageBase = manifestXMLUrlS.substring(0,pos);
+            map.setStorageBase(storageBase);
+            for (int p = 0; p<parts.length; p++) {
+                if (parts[p].equals("manifest")) {
+                    String nodeS = parts[p+1];
+                    int node = Integer.parseInt(nodeS);
+                    map.setNode(node);
+                    String objectIDS = parts[p+2];
+                    objectIDS = java.net.URLDecoder.decode(objectIDS,"utf-8");
+                    map.setObjectID(new Identifier(objectIDS));
+                    break;
+                }
+            }
+            return map;
+            
+        } catch (TException tex) {
+            throw tex;
+            
+        }  catch (Exception ex) {
+            System.out.println("Exception:" + ex);
+            throw new TException(ex);
+            
+        } finally {
+           if (tmpFile != null) {
+               try {
+                   tmpFile.delete();
+               } catch (Exception ex) { }
+           }
+        }
+    }
+    
     public VersionMap(Identifier objectID, LoggerInf logger)
         throws TException
     {
@@ -135,9 +196,9 @@ public class VersionMap
        
     public List<FileComponent> getVersionComponents(int versionID)
     {
+        if (versionID < 0) return null;
         ManInfo manInfo = getVersionInfo(versionID);
         if (manInfo == null) return null;
-        if (versionID < 0) return null;
         return manInfo.components.getFileComponents();
     }
        
@@ -247,6 +308,8 @@ public class VersionMap
             lastAddVersion = created;
             
         } catch (TException tex) {
+            System.out.println(MESSAGE + "Exception:" + tex);
+            tex.printStackTrace();
             throw tex;
 
         } catch (Exception ex) {
@@ -922,8 +985,180 @@ public class VersionMap
         return stats;
     }
     
+    /**
+     * Create an add Manifest in File addManifest
+     * @param fileURLS base URL of add Manifest in the form http://host:port/content/nodeid
+     * @param versionID versionID for this created add Manifest
+     * @param addManifest File to contain add Manifest
+     * @throws TException 
+     */
+    public int buildAddManifest(
+            String fileURLS,
+            int versionID,
+            File addManifest)
+        throws TException
+    {
+
+        ManifestRowAbs.ManifestType manifestType = ManifestRowAbs.ManifestType.add;
+        try {
+            if (StringUtil.isEmpty(fileURLS)) {
+                String msg = MESSAGE
+                    + "getPOSTManifest - base URL not provided";
+                throw new TException.INVALID_OR_MISSING_PARM( msg);
+            }
+            List<FileComponent> componentList =  getVersionComponents(versionID);
+            if (componentList == null) return 0;
+            ManifestRowAdd rowOut
+                    = (ManifestRowAdd)ManifestRowAbs.getManifestRow(manifestType, logger);
+            Manifest manifestAdd = Manifest.getManifest(logger, manifestType);
+            manifestAdd.openOutput(addManifest);
+            int cnt = 0;
+            for (FileComponent component : componentList) {
+                String fileName = component.getIdentifier();
+                URL fileLink = null;
+                try {
+                    fileLink = new URL(fileURLS 
+                            + '/' + URLEncoder.encode(objectID.getValue(), "utf-8")
+                            + '/' + versionID
+                            + '/' + URLEncoder.encode(fileName, "utf-8")
+                            );
+                    //fileLink = new URL(fileURLS + '/' + manifestURLName); // <-BAD FORM for testing ONLY
+                } catch (Exception ex) {
+                    throw new TException.INVALID_DATA_FORMAT(MESSAGE
+                            + "getPOSTManifest"
+                            + " - passed URL format invalid: getFileURL=" + fileURLS
+                            + " - Exception:" + ex);
+                }
+                component.setURL(fileLink);
+                rowOut.setFileComponent(component);
+                //log("getPostManifest-line:" + rowOut.getLine());
+                manifestAdd.write(rowOut);
+                cnt++;
+            }
+            manifestAdd.writeEOF();
+            manifestAdd.closeOutput();
+            return cnt;
+
+        } catch (TException fe) {
+            throw fe;
+
+        } catch(Exception ex) {
+            String err = MESSAGE + "Could not complete version file output - Exception:" + ex;
+            logger.logError(err ,  LoggerInf.LogLevel.UPDATE_EXCEPTION);
+            logger.logError(StringUtil.stackTrace(ex),  LoggerInf.LogLevel.DEBUG);
+            throw new TException.GENERAL_EXCEPTION( err);
+        }
+    }
+    
+    /**
+     * Is testMap VersionMap a subset of this.versionMap
+     * @param testMap test if this versionMap is subset of this.VersionMap
+     * @return true=testMap is subset of this.VersionMap
+     * @throws TException 
+     */
+    public boolean isThisSubset(
+            VersionMap testMap)
+        throws TException
+    {
+        if (testMap == null) return true;
+        
+        int testCurrent = testMap.getCurrent();
+        if (testCurrent < 1) return true;
+        System.out.println("isThisSubset"
+                + " - current=" + current
+                + " - testCurrent=" + testCurrent
+                );
+        if ( testCurrent > current) return false;
+        ManInfo testInfo = testMap.getVersionInfo(testCurrent);
+        ManInfo localInfo = getVersionInfo(testCurrent);
+        if ((testInfo.count != localInfo.count) || (testInfo.size != localInfo.size)) return false;
+        for (int ver=1; ver <= testCurrent; ver++) {
+            List<FileComponent> components = getVersionComponents(ver);
+            List<FileComponent> tcomponents = testMap.getVersionComponents(ver);
+            if (!isMatchComponents(components, tcomponents)) return false;
+        }
+        return true;
+    }
+    
+    public boolean isMatch(
+            VersionMap testMap)
+        throws TException
+    {
+        if (testMap == null) return retFalse("null");
+        int testCurrent = testMap.getCurrent();
+        if (testCurrent != current)
+                return retFalse("testCurrent=" + testCurrent
+                        + " - current=" + current
+                        );
+        if (getActualSize() != testMap.getActualSize()) return retFalse("ActualSize");
+        if (getTotalSize() != testMap.getTotalSize()) return retFalse("TotalSize");
+        if (getTotalCnt() != testMap.getTotalCnt()) return retFalse("TotalCnt");
+        if (getActualCnt() != testMap.getActualCnt()) return retFalse("ActualCnt");
+        if (!isMatchDate(getLastAddVersion(), testMap.getLastAddVersion())) return retFalse("LastAddDate");
+        if (!isMatchDate(getLastDeleteVersion(), testMap.getLastDeleteVersion())) return retFalse("LastDeleteVersion");
+        for (int ver=1; ver <= current; ver++) {
+            List<FileComponent> components = getVersionComponents(ver);
+            List<FileComponent> tcomponents = testMap.getVersionComponents(ver);
+            if (!isMatchComponents(components, tcomponents)) return false;
+        }
+        return true;
+    }
+    
+    public boolean isMatchComponents(
+            List<FileComponent> components,
+            List<FileComponent> tcomponents)
+        throws TException
+    {
+        if (components.size() != tcomponents.size())
+            return retFalse("components.size=" + components.size()
+                    + " - tcomponents.size=" + tcomponents.size()
+                    );
+
+        for (int cm=0; cm < components.size(); cm++) {
+            FileComponent component = components.get(cm);
+            FileComponent tcomponent = tcomponents.get(cm);
+            if (!isMatch(component, tcomponent))
+                return retFalse("component fail - components.id=" + component.getIdentifier()
+                    + " - tcomponents.id=" + tcomponent.getIdentifier()
+                    );
+        }
+        return true;
+    }
+    
+    private boolean isMatchDate(DateState in, DateState test)
+    {
+        if ((in == null) && (test == null)) return true;
+        if (!((in != null) && (test != null))) return false;
+        String inDate = in.getIsoDate();
+        String testDate = test.getIsoDate();
+        if (inDate.equals(testDate)) return true;
+        return false;
+    }
+    
+    private boolean retFalse(String head)
+    {
+        System.out.println("Match fails on:" + head);
+        return false;
+    }
+    
     public LoggerInf getLogger() {
         return logger;
+    }
+
+    public int getNode() {
+        return node;
+    }
+
+    public void setNode(int node) {
+        this.node = node;
+    }
+
+    public String getStorageBase() {
+        return storageBase;
+    }
+
+    public void setStorageBase(String storageBase) {
+        this.storageBase = storageBase;
     }
     
     public static class VersionStats

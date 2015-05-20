@@ -51,6 +51,9 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.Header;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.entity.BasicHttpEntity;
+
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -59,10 +62,11 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+//import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.client.config.RequestConfig;
+//import org.apache.http.params.BasicHttpParams;
+//import org.apache.http.params.HttpParams;
 import org.apache.http.StatusLine;
 import org.apache.http.Header;
 /**
@@ -71,7 +75,7 @@ import org.apache.http.Header;
  * @author  dloy
  */
 public class HTTPUtil {
-
+    private static final boolean DEBUG = false;
 
     /**
      * Send this manifestFile to mrt store
@@ -88,6 +92,11 @@ public class HTTPUtil {
 	    int responseCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();
             if (entity != null && (responseCode >= 200 && responseCode < 300)) {
+                if (DEBUG) {
+                    System.out.println("ContentLength=" + entity.getContentLength());
+                    System.out.println("isChunked=" + entity.isChunked());
+                    System.out.println("isStreaming=" + entity.isStreaming());
+                }
                 return entity.getContent();
             }
             if (responseCode == 404) {
@@ -106,11 +115,104 @@ public class HTTPUtil {
                     );
 
         } catch( TException tex ) {
-            System.out.println("trace:" + StringUtil.stackTrace(tex));
+            if (DEBUG) System.out.println("trace:" + StringUtil.stackTrace(tex));
             throw tex;
 
         } catch( Exception ex ) {
-            System.out.println("trace:" + StringUtil.stackTrace(ex));
+            if (DEBUG) System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
+        }
+    }
+
+    /**
+     * Send this manifestFile to mrt store
+     * @param manifestFile
+     * @return
+     * @throws org.cdlib.framework.utility.FrameworkException
+     */
+    public static HttpEntity getObjectEntity(String requestURL, int timeout, long startByte, long endByte)
+        throws TException
+    {
+        try {
+            HttpResponse response = getHttpResponse(requestURL, timeout, startByte, endByte);
+	    int responseCode = response.getStatusLine().getStatusCode();
+            HttpEntity entity = response.getEntity();
+            if (entity != null && (responseCode >= 200 && responseCode < 300)) {
+                if (DEBUG) {
+                    System.out.println("ContentLength=" + entity.getContentLength());
+                    System.out.println("isChunked=" + entity.isChunked());
+                    System.out.println("isStreaming=" + entity.isStreaming());
+                }
+                return entity;
+            }
+            if (responseCode == 404) {
+                throw new TException.REQUESTED_ITEM_NOT_FOUND(
+                    "HTTPUTIL: getObject- Error during HttpClient processing"
+                    + " - timeout:" + timeout
+                    + " - URL:" + requestURL
+                    + " - responseCode:" + responseCode
+                    );
+            }
+            throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
+                    "HTTPUTIL: getObject- Error during HttpClient processing"
+                    + " - timeout:" + timeout
+                    + " - URL:" + requestURL
+                    + " - responseCode:" + responseCode
+                    );
+
+        } catch( TException tex ) {
+            if (DEBUG) System.out.println("trace:" + StringUtil.stackTrace(tex));
+            throw tex;
+
+        } catch( Exception ex ) {
+            if (DEBUG) System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
+        }
+    }
+
+
+    /**
+     * Send this manifestFile to mrt store
+     * @param manifestFile
+     * @return
+     * @throws org.cdlib.framework.utility.FrameworkException
+     */
+    public static HttpEntity getObjectEntity(String requestURL, int timeout)
+        throws TException
+    {
+        try {
+            HttpResponse response = getHttpResponse(requestURL, timeout);
+	    int responseCode = response.getStatusLine().getStatusCode();
+            HttpEntity entity = response.getEntity();
+            if (entity != null && (responseCode >= 200 && responseCode < 300)) {
+                if (DEBUG) {
+                    System.out.println("ContentLength=" + entity.getContentLength());
+                    System.out.println("isChunked=" + entity.isChunked());
+                    System.out.println("isStreaming=" + entity.isStreaming());
+                }
+                return entity;
+            }
+            if (responseCode == 404) {
+                throw new TException.REQUESTED_ITEM_NOT_FOUND(
+                    "HTTPUTIL: getObject- Error during HttpClient processing"
+                    + " - timeout:" + timeout
+                    + " - URL:" + requestURL
+                    + " - responseCode:" + responseCode
+                    );
+            }
+            throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
+                    "HTTPUTIL: getObject- Error during HttpClient processing"
+                    + " - timeout:" + timeout
+                    + " - URL:" + requestURL
+                    + " - responseCode:" + responseCode
+                    );
+            
+        } catch( TException tex ) {
+            if (DEBUG) System.out.println("trace:" + StringUtil.stackTrace(tex));
+            throw tex;
+
+        } catch( Exception ex ) {
+            if (DEBUG) System.out.println("trace:" + StringUtil.stackTrace(ex));
             throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
         }
     }
@@ -146,6 +248,39 @@ public class HTTPUtil {
                 + " - requestURL=" + requestURL, exSave);
     }
 
+
+    /**
+     * getObject with timeout and retry
+     * @param requestURL build inputStream to this URL
+     * @param timeout milliseconds for timeout
+     * @param retry number of retry attemps
+     * @return InputStream to URL service
+     * @throws org.cdlib.mrt.utility.TException
+     */
+    public static InputStream getObject404(String requestURL, int timeout, int retry)
+        throws TException
+    {
+        InputStream inStream = null;
+        Exception exSave = null;
+        for (int i=0; i < retry; i++) {
+            try {
+                inStream = getObject(requestURL, timeout);
+                return inStream;
+
+            } catch (TException.REQUEST_INVALID tex) {
+                throw tex;
+
+            } catch (TException.REQUESTED_ITEM_NOT_FOUND rinf) {
+                throw rinf;
+
+            } catch (Exception ex) {
+                exSave = ex;
+            }
+        }
+        throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
+                "HTTPUTIL: getObject"
+                + " - requestURL=" + requestURL, exSave);
+    }
 
     /**
      * Delete
@@ -219,15 +354,65 @@ public class HTTPUtil {
     public static HttpResponse getHttpResponse(String requestURL, int timeout)
         throws TException
     {
-        HttpParams params = new BasicHttpParams();
-        params.setParameter("http.socket.timeout", new Integer(timeout));
-        params.setParameter("http.connection.timeout", new Integer(timeout));
-
-        //System.out.println("!!!!:" + MESSAGE + "getSerializeObject.requestURL=" + requestURL);
+        
         try {
-            HttpClient httpclient = new DefaultHttpClient(params);
+            //HttpClient httpclient = new DefaultHttpClient(params);
+            
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(360 * 1000).build();
+            HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
             HttpGet httpget = new HttpGet(requestURL);
-            HttpResponse response = httpclient.execute(httpget);
+	    httpget.addHeader("Accept", "*/*");
+	    //httpget.addHeader("Transfer-Encoding", "chunked");
+            
+            HttpResponse response = httpClient.execute(httpget);
+            if (response != null) {
+                return response;
+            }
+            throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
+                    "HTTPUTIL: getHttpResponse- Error during HttpClient processing");
+
+        } catch( java.net.UnknownHostException uhe) {
+            throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
+                    "HTTPUTIL: Unknown host Exception:" + uhe
+                    + " - URL:" + requestURL);
+
+        } catch( IllegalArgumentException iae ) {
+            System.out.println("trace:" + StringUtil.stackTrace(iae));
+            throw new TException.REQUEST_INVALID("HTTPUTIL: getObject- Exception:" + iae);
+
+        } catch( TException tex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(tex));
+            throw tex;
+
+        } catch( Exception ex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
+        }
+    }
+
+
+    /**
+     * Perform a GET operation
+     * @param requestURL get request
+     * @param timeout connection timeout
+     * @return http response
+     * @throws TException process exception
+     */
+    public static HttpResponse getHttpResponse(String requestURL, int timeout, long startByte, long endByte)
+        throws TException
+    {
+        
+        try {
+            //HttpClient httpclient = new DefaultHttpClient(params);
+            
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(360 * 1000).build();
+            HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+            HttpGet httpget = new HttpGet(requestURL);
+	    httpget.addHeader("Accept", "*/*");
+            httpget.addHeader("Range", "bytes=" + startByte + "-" + endByte);
+	    //httpget.addHeader("Transfer-Encoding", "chunked");
+            
+            HttpResponse response = httpClient.execute(httpget);
             if (response != null) {
                 return response;
             }
@@ -318,32 +503,42 @@ public class HTTPUtil {
         HttpEntity resEntity = null;
         try {
             Properties resultProp = new Properties();
-            StatusLine statusLine = response.getStatusLine();
             if (response == null) {
                 throw new TException.EXTERNAL_SERVICE_UNAVAILABLE("HTTPUtil.response2Property - No response");
             }
+            StatusLine statusLine = response.getStatusLine();
             int statusCode = statusLine.getStatusCode();
             resultProp.setProperty("response.status", "" + statusCode);
+            resultProp.setProperty("response.line", "" + statusLine);
+            resultProp.setProperty("response.phrase", statusLine.getReasonPhrase());
             
-            resEntity = response.getEntity();
-            String responseState = StringUtil.streamToString(resEntity.getContent(), "utf-8");
-            if (StringUtil.isNotEmpty(responseState)) {
-                resultProp.setProperty("response.value", responseState);
-                System.out.println("mrt-response:" + responseState);
-            }
             Header [] headers = response.getAllHeaders();
             for (Header header : headers) {
                 resultProp.setProperty(
                         "header." + header.getName(),
                         header.getValue());
             }
-            System.out.println(PropertiesUtil.dumpProperties("!!!!sendArchiveMultipart!!!!", resultProp, 100));
+            
+            try {
+                resEntity = response.getEntity();
+                if (resEntity == null) return resultProp;
+            } catch (Exception ex) {
+                return resultProp;
+            }
+            String responseState = StringUtil.streamToString(resEntity.getContent(), "utf-8");
+            if (StringUtil.isNotEmpty(responseState)) {
+                resultProp.setProperty("response.value", responseState);
+                if (DEBUG) System.out.println("mrt-response:" + responseState);
+            }
+            if (DEBUG) {
+                System.out.println(PropertiesUtil.dumpProperties("!!!!sendArchiveMultipart!!!!", resultProp, 100));
 
-            System.out.println("----------------------------------------");
-            System.out.println(response.getStatusLine());
-            if (resEntity != null) {
-                System.out.println("Response content length: " + resEntity.getContentLength());
-                System.out.println("Chunked?: " + resEntity.isChunked());
+                System.out.println("----------------------------------------");
+                System.out.println(response.getStatusLine());
+                if (resEntity != null) {
+                    System.out.println("Response content length: " + resEntity.getContentLength());
+                    System.out.println("Chunked?: " + resEntity.isChunked());
+                }
             }
             return resultProp;
 
@@ -374,15 +569,11 @@ public class HTTPUtil {
     public static HttpResponse deleteHttpResponse(String requestURL, int timeout)
         throws TException
     {
-        HttpParams params = new BasicHttpParams();
-        params.setParameter("http.socket.timeout", new Integer(timeout));
-        params.setParameter("http.connection.timeout", new Integer(timeout));
-
-        //System.out.println("!!!!:" + MESSAGE + "getSerializeObject.requestURL=" + requestURL);
         try {
-            HttpClient httpclient = new DefaultHttpClient(params);
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(300 * 1000).build();
+            HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
             HttpDelete httpDelete = new HttpDelete(requestURL);
-            HttpResponse response = httpclient.execute(httpDelete);
+            HttpResponse response = httpClient.execute(httpDelete);
             if (response != null) {
                 return response;
             }
@@ -439,13 +630,9 @@ public class HTTPUtil {
     public static HttpResponse postHttpResponse(String requestURL, Properties prop, int timeout)
         throws TException
     {
-        HttpParams params = new BasicHttpParams();
-        params.setParameter("http.socket.timeout", new Integer(timeout));
-        params.setParameter("http.connection.timeout", new Integer(timeout));
-
-        //System.out.println("!!!!:" + MESSAGE + "getSerializeObject.requestURL=" + requestURL);
         try {
-            HttpClient httpclient = new DefaultHttpClient(params);
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(300 * 1000).build();
+            HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
             List<BasicNameValuePair> formparams = new ArrayList<BasicNameValuePair>();
             Enumeration e = prop.propertyNames();
             String key = null;
@@ -463,7 +650,7 @@ public class HTTPUtil {
             HttpPost httppost = new HttpPost(requestURL);
             httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
             httppost.setEntity(entityForm);
-            HttpResponse response = httpclient.execute(httppost);
+            HttpResponse response = httpClient.execute(httppost);
             if (response != null) {
                 return response;
             }
@@ -523,13 +710,9 @@ public class HTTPUtil {
             int timeout)
         throws TException
     {
-        HttpParams params = new BasicHttpParams();
-        params.setParameter("http.socket.timeout", new Integer(timeout));
-        params.setParameter("http.connection.timeout", new Integer(timeout));
-
-        //System.out.println("!!!!:" + MESSAGE + "getSerializeObject.requestURL=" + requestURL);
         try {
-            HttpClient httpclient = new DefaultHttpClient(params);
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(300 * 1000).build();
+            HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
             HttpPost httppost = new HttpPost(requestURL);
             MultipartEntity reqEntity = new MultipartEntity();
             Enumeration e = stringParts.propertyNames();
@@ -556,7 +739,7 @@ public class HTTPUtil {
             httppost.setEntity(reqEntity);
 
             System.out.println("executing request " + httppost.getRequestLine());
-            HttpResponse response = httpclient.execute(httppost);
+            HttpResponse response = httpClient.execute(httppost);
             return response;
 
         } catch( Exception ex ) {

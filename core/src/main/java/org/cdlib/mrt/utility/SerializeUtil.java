@@ -163,12 +163,15 @@ public class SerializeUtil
     {
         InputStream contents = null;
         try {
-            contents = HTTPUtil.getObject(requestURL, 1000, 5);
+            contents = HTTPUtil.getObject404(requestURL, 3600000, 5);
             Serializable serial = deserialize(contents);
             if (serial instanceof TException) {
                 throw (TException) serial;
             }
             return serial;
+
+        } catch( TException.REQUESTED_ITEM_NOT_FOUND rinf) {
+            throw rinf;
 
         } catch( TException tex ) {
             System.out.println("trace:" + StringUtil.stackTrace(tex));

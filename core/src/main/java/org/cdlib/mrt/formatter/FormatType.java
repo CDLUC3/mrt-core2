@@ -13,6 +13,7 @@ import org.cdlib.mrt.utility.StringUtil;
 public enum FormatType
     {
         anvl("state", "txt", "text/x-anvl", null),
+        csv("state", "txt", "text/csv", null),
         json("state", "json", "application/json", null),
         json2("state", "json", "application/json", null),
         serial("state", "ser", "application/x-java-serialized-object", null),

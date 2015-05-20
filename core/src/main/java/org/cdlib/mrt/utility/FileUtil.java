@@ -43,8 +43,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
-import org.cdlib.mrt.utility.URLEncoder;
 import java.util.Vector;
+import org.cdlib.mrt.utility.HttpGet;
 
 /**
  * Generalized file utilities
@@ -53,7 +53,8 @@ import java.util.Vector;
 public class FileUtil {
     protected static final String NAME = "FileUtil";
     protected static final String MESSAGE = NAME + ": ";
-    protected static final int BUFSIZE = 32768;
+    protected static final int BUFSIZE = 126000;
+    protected static final int DEFAULT_TIMEOUT = 3600000;
 
     /**
      * Get content referenced by a url and save in a file
@@ -65,9 +66,9 @@ public class FileUtil {
     public static void url2File(LoggerInf m_logger, URL fileURL, File outFile)
         throws TException
     {
-        url2File(m_logger, fileURL.toString(), outFile);
+        HttpGet.getFile(fileURL, outFile, DEFAULT_TIMEOUT, m_logger);
     }
-
+    
     /**
      * Get content referenced by a url and save in a file
      * @param m_logger logger
@@ -78,8 +79,16 @@ public class FileUtil {
     public static void url2File(LoggerInf m_logger, String urlS, File outFile)
         throws TException
     {
-	int defaultRetry = 5;
-        url2File(m_logger, urlS, outFile, defaultRetry);
+        URL url = null;
+        try {
+            url = new URL(urlS);
+            
+        } catch (Exception ex) {
+            throw new TException.INVALID_OR_MISSING_PARM(MESSAGE + "String URL invalid:" + urlS 
+                    + " - Exception:" + ex
+            );
+        }
+        url2File(m_logger, url, outFile);
     }
 
     /**
@@ -93,7 +102,7 @@ public class FileUtil {
     public static void url2File(LoggerInf m_logger, URL fileURL, File outFile, int retry)
         throws TException
     {
-        url2File(m_logger, fileURL.toString(), outFile, retry);
+        url2File(m_logger, fileURL, outFile, retry);
     }
 
     /**
@@ -107,33 +116,10 @@ public class FileUtil {
     public static void url2File(LoggerInf m_logger, String urlS, File outFile, int retry)
         throws TException
     {
-
-        FileOutputStream outStream = null;
-        InputStream inStream = null;
-        try {
-            inStream = HTTPUtil.getObject(urlS, 120000, retry);
-            stream2File(inStream, outFile);
-
-        } catch (TException fe) {
-            throw fe;
-
-        } catch(Exception ex) {
-            String err = MESSAGE + "url2File - Exception:" + ex + " - name:" + outFile.getName();
-            throw new TException.GENERAL_EXCEPTION( err);
-
-
-        } finally {
-            try {
-                //System.out.println("***FILE CLOSED***");
-                inStream.close();
-                outStream.close();
-
-            } catch (Exception finex) { }
-        }
-
+        url2File(m_logger, urlS, outFile);
     }
-
-
+    
+    
     /**
      * get remote file
      * @param manifestFile
@@ -195,7 +181,7 @@ public class FileUtil {
         }
 
     }
-
+    
     /**
      * Move url response to output stream
      * @param urlS link to file to be extracted
@@ -285,6 +271,28 @@ public class FileUtil {
             File sourceFile = new File(sourceDirectory, fileName);
             InputStream inStream = new FileInputStream(sourceFile);
             File targetFile = new File(targetDirectory, fileName);
+            FileUtil.stream2File(inStream, targetFile);
+
+        } catch (Exception ex) {
+            System.out.println(StringUtil.stackTrace(ex));
+            String err = MESSAGE + "copyFile - Exception:" + ex;
+            throw new TException.GENERAL_EXCEPTION( err);
+        }
+    }
+    
+    /**
+     * Copy one file to another
+     * @param sourceFile input file
+     * @param targetFile output file
+     * @throws TException service exception
+     */
+    public static void file2file(
+            File sourceFile,
+            File targetFile)
+        throws TException
+    {
+        try {
+            InputStream inStream = new FileInputStream(sourceFile);
             FileUtil.stream2File(inStream, targetFile);
 
         } catch (Exception ex) {

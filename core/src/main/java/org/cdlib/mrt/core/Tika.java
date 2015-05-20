@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.Detector;
@@ -58,6 +59,7 @@ public class Tika
     protected Detector detector = null;
     protected MediaType mediaType = null;
     protected HashMap<String, String> alternates = new HashMap();
+    protected ArrayList<String> keys = new ArrayList();
  
     public static Tika getTika(
             LoggerInf logger)
@@ -107,16 +109,47 @@ public class Tika
      */
     private void buildAlternates()
     {
-        alternates.put("ttl", "plain/turtle");
+        /*
+            Gzip (.gz)             application/gzip
+            Zip (.zip)               application/zip
+            Bzip (.bz)             application/x-bzip
+            Bzip2 (.bz2)         application/x-bzip2
+            Tar (.tar)              application/x-tar
+            (.tar.gz)                application/x-gtar
+         */
+        add(".ttl", "plain/turtle");
+        add(".tar.gz", "application/x-gtar");
+        add(".tgz", "application/x-gtar");
+        add(".gz", "application/gzip");
+        add(".gzip", "application/gzip");
+        add(".zip", "application/zip");
+        add(".tar", "application/x-tar");
+        add(".bz", "application/x-bzip");
+        add(".bz2", "application/x-bzip2");
+        add(".cpio", "application/x-cpio");
+        add(".ar", "application/x-archive");
+        add(".hdr", "image/vnd.radiance");
+    }
+    
+    private void add(String key, String mime)
+    {
+        keys.add(key);
+        alternates.put(key, mime);
     }
     
     private String getAlternate(String fileID)
     {
-        int pos = fileID.lastIndexOf('.');
-        if (pos < 0) return null;
-        String ext = fileID.substring(pos +1);
-        //System.out.println("EXT:" + ext);
-        return alternates.get(ext);
+        for (String key : keys) {
+            String fileIDLower = fileID.toLowerCase();
+            if (fileIDLower.endsWith(key)) {
+                if (DEBUG) System.out.println("***Alternate found:"
+                        + " - key=" + key
+                        + " - mime=" + alternates.get(key)
+                        );
+                return alternates.get(key);
+            }
+        }
+        return null;
     }
 
     /**
