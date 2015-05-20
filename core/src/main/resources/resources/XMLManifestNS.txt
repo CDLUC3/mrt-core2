@@ -29,7 +29,16 @@ FIXITY_SERVICE | FixityServiceState | fix | fixity/service
 FIXITY_SUBMIT | FixitySubmittedState | fixsub | fixity/submit
 INV_SERVICE | InvServiceState | invsv | inv/service
 INV_DELETE | InvDeleteState | invd | inv/delete
+INV_PROCESS | InvProcessState | invp | inv/process
+INV_MANIFEST | InvManifestUrl | invman | inv/manifest
 INV_SELECT | InvSelectState | invse | inv/select
+INV_CN | InvCollectionNode | invcn | inv/cn
+OAI_SERVICE | OAIServiceState | oaisv | oai/service
+REPLIC_ADD | ReplicationAddState | repadd | rep/add
+REPLIC_MATCH | MatchObjectState | repmch | rep/mch
+REPLIC_MAP | ReplicationAddMapState | repmap | rep/map
+REPLIC_DELETE | ReplicationDeleteState | repdel | rep/del
+REPLIC_SERVICE | ReplicationServiceState | repsvc | rep/svc
 STORE_LOCID | LocalIDsState | locid | store/locid
 STORE_DELID | DeleteIDState | delid | store/delid
 PING | PingState | ping | ping/basic | dateTime
