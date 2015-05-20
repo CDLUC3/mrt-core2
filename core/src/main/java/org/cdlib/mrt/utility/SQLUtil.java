@@ -54,9 +54,10 @@ public class SQLUtil
         throws TException
     {
         
+        ResultSet resultSet = null;
         try {            
 
-            ResultSet resultSet =
+            resultSet =
                 executeSQLRequest(
                     sqlQuery, connection);
             return getResult(resultSet, logger);
@@ -78,7 +79,11 @@ public class SQLUtil
                 TException.GENERAL_EXCEPTION(
                 MESSAGE + "getResult cmd failed", e);
 
-        }
+        } finally {
+            try {
+                resultSet.close();
+            } catch (Exception esql) { }
+	}
  
     }
     /** Return a row from a table
@@ -160,9 +165,10 @@ public class SQLUtil
         Connection connection)
         throws SQLException
     {
+        Statement statement = null;
         try
         {
-            Statement statement = connection.createStatement();
+            statement = connection.createStatement();
             ResultSet resultSet = null;
             if (statement.execute(sqlRequest))
             {
@@ -181,7 +187,12 @@ public class SQLUtil
                 "DataManagerJDBC: Failed to execute SQL request: " +
                 sqlRequest + " Exception: " + e);
             throw new SQLException("Failed to execute SQL request");
-        }
+        } finally {
+	    try {
+	        statement.close();
+	    } catch (Exception e) {
+	    }
+	}
     }
     
 

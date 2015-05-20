@@ -75,9 +75,10 @@ public class DBUtil
         if (logger == null) {
             throw new TException.INVALID_OR_MISSING_PARM("logger not supplied");
         }
+        ResultSet resultSet = null;
         try {
             PreparedStatement pstmt = connection.prepareStatement (cmd);
-            ResultSet resultSet = pstmt.executeQuery();
+            resultSet = pstmt.executeQuery();
             Properties [] results = SQLUtil.getResult(resultSet,logger);
             if (logger.getMessageMaxLevel() >= 10) {
                 for (Properties result : results) {
@@ -93,7 +94,12 @@ public class DBUtil
 
             logger.logError(MESSAGE + "getOperation - " + msg, 0);
             throw new TException.SQL_EXCEPTION(msg, e);
-        }
+            
+        } finally {
+	    try {
+               resultSet.close();
+	    } catch(Exception e) { }
+	}
      }
 
 
@@ -109,9 +115,10 @@ public class DBUtil
         if (connection == null) {
             throw new TException.INVALID_OR_MISSING_PARM("connection not supplied");
         }
+        Statement statement = null;
         try {
 
-            Statement statement = connection.createStatement();
+            statement = connection.createStatement();
             ResultSet resultSet = null;
             boolean works = statement.execute(replaceCmd);
             return works;
@@ -124,7 +131,12 @@ public class DBUtil
             logger.logError(MESSAGE + "exec - " + msg, 0);
             System.out.println(msg);
             throw new TException.SQL_EXCEPTION(msg, e);
-        }
+        } finally {
+	    try {
+	       statement.close();
+	    } catch (Exception e) {
+	    }
+	}
     }
 
     public static String buildModify(Properties prop)
@@ -138,7 +150,27 @@ public class DBUtil
            key = (String)e.nextElement();
            value = prop.getProperty(key);
            if (buf.length() > 0) buf.append(",");
-           buf.append(key + "='"  + SQLUtil.sqlEsc(value) + "'");
+               buf.append(key + "='"  + SQLUtil.sqlEsc(value) + "'");
+           }
+        return buf.toString();
+    }
+
+    public static String buildModifyNull(Properties prop)
+    {
+        Enumeration e = prop.propertyNames();
+        String key = null;
+        String value = null;
+        StringBuffer buf = new StringBuffer();
+        while( e.hasMoreElements() )
+        {
+           key = (String)e.nextElement();
+           value = prop.getProperty(key);
+           if (buf.length() > 0) buf.append(",");
+           if (value.length() == 0) {
+               buf.append(key + "=null");
+           } else {
+               buf.append(key + "='"  + SQLUtil.sqlEsc(value) + "'");
+           }
         }
         return buf.toString();
     }

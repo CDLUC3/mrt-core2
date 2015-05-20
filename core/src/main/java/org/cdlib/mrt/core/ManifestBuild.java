@@ -70,6 +70,7 @@ public class ManifestBuild
     protected File listFile = null;
     protected File propFile = null;
     protected Properties sizeProp = new Properties();
+    protected static final long MAX_MIMETYPE_LENGTH = 50000000;
 
     public ManifestBuild(TFrame mFrame)
     {
@@ -267,6 +268,7 @@ public class ManifestBuild
                             + " - Exception:" + ex);
                 }
                 fileState.setURL(fileLink);
+
                 try {
                     String tikaString = tika.getMimeType(file);
                     fileState.setMimeType(tikaString);

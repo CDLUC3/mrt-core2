@@ -448,7 +448,13 @@ public class ManifestXML
             
             long size = component.getSize();
             if (size < 0 ) {
-                throw new TException.INVALID_OR_MISSING_PARM(MESSAGE + "getComponentElem - size missing");
+                if (digestType.equals("sha256") && digestValue.equals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")) {
+                    // empty file
+                    size = 0;
+                } else {
+                    System.out.println("WARNING: size not supplied - assumed zero length:" + id);
+                    size = 0;
+                }
             }
             Element sizeE = new Element("size", uc3Name);
             sizeE.addContent("" + size);

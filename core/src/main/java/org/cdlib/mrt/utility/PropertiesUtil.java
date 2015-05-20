@@ -32,6 +32,7 @@ package org.cdlib.mrt.utility;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 import javax.servlet.ServletRequest;
@@ -385,5 +386,16 @@ public class PropertiesUtil
             retList.put(name, value);
         }
         return retList;
+    }
+    
+    public static void prop2File(Properties prop, String header, File outFile)
+        throws TException
+    {
+        try {
+            FileOutputStream out = new FileOutputStream( outFile );
+            prop.store(out, header);
+        } catch (Exception ex) {
+            throw new TException(ex);
+        }
     }
 }

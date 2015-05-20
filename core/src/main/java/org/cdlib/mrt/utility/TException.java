@@ -636,7 +636,7 @@ public class TException
         }
         public REQUEST_ITEM_EXISTS(String msg, Exception ex)
         {
-            super(TExceptionEnum.REQUESTED_ITEM_NOT_FOUND, msg, ex);
+            super(TExceptionEnum.REQUEST_ITEM_EXISTS, msg, ex);
         }
     }
 

@@ -28,6 +28,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************/
 package org.cdlib.mrt.utility;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  * This class is a collection of XML Utility functions.
@@ -47,18 +48,51 @@ public class XMLUtil
         throws TException
     {
             try {
+                String esc = StringEscapeUtils.escapeXml(xmlString);
+                esc = numericEncoding(esc);
+                return esc;
+                /**
                 xmlString = xmlString.replace("&", "&amp;");
                 xmlString = xmlString.replace("<", "&lt;");
                 xmlString = xmlString.replace(">", "&gt;");
                 xmlString = xmlString.replace("'", "&apos;");
                 xmlString = xmlString.replace("\"", "&quot;");
+                */
 
             } catch (Exception e) {
                 throw new TException (TExceptionEnum.GENERAL_EXCEPTION, "XMLUtil.encodeXML: Error in encoding XML: " + xmlString);
             }
-
-        return xmlString;
     }
+    
+    protected static String numericEncoding(String in)
+    {
+        StringBuffer buf = new StringBuffer();
+        for (int i=0; i < in.length(); i++) {
+            char c = in.charAt(i);
+            if (c < 32) {
+                buf.append("&#" + (int)c + ";");
+            } else {
+                buf.append(c);
+            }
+        }
+        return buf.toString();
+    }
+    
+    private static void addCharEntity(int aIdx, StringBuffer aBuilder){
+        String padding = "";
+        if( aIdx <= 9 ){
+            padding = "00";
+        }
+        else if( aIdx <= 99 ){
+            padding = "0";
+        }
+       else {
+          //no prefix
+       }
+        String number = padding + aIdx;
+        aBuilder.append("&#" + number + ";");
+  }
+
 
     /**
      * Replace XML special characters with Entity references
@@ -101,6 +135,8 @@ public class XMLUtil
     {
             String encodedString = xmlString;
             try {
+                return StringEscapeUtils.unescapeXml(xmlString);
+            /**
                 encodedString = encodedString.replace("&amp;", "&");
                 encodedString = encodedString.replace("&lt;", "<");
                 encodedString = encodedString.replace("&gt;", ">");
@@ -112,12 +148,27 @@ public class XMLUtil
                 encodedString = encodedString.replace("&#62;", ">");
                 encodedString = encodedString.replace("&#39;", "'");
                 encodedString = encodedString.replace("&#34;", "\"");
+                */
 
             } catch (Exception e) {
                 throw new TException.GENERAL_EXCEPTION( "XMLUtil.encodeXML: Error in encoding XML: " + xmlString);
             }
-
-        return encodedString;
+    }
+    
+    public static String removeXMLHeader(String xml)
+        throws TException
+    {
+        String retXml = xml;
+        if (StringUtil.isAllBlank(xml)) {
+            return null;
+        }
+        String head = "<?xml";
+        int headerPos = xml.indexOf("<?xml");
+        if (headerPos >= 0) {
+            int pos = xml.indexOf("<", head.length() + 1);
+            retXml = xml.substring(pos);
+        }
+        return retXml;
     }
 
 }
