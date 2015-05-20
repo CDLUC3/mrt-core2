@@ -13,6 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.io.File;
+import java.io.FileOutputStream;
 import org.cdlib.mrt.utility.FileUtil;
 import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TException;
@@ -62,6 +63,9 @@ public class ManifestBuildTest {
             FileUtil.string2File(xFile, "abcdefghijklmnopqrstuvwxyz");
             File yFile = new File(t2, "abcdefg[jklm]nop.txt");
             FileUtil.string2File(yFile, "ABCDEFGHIJKOMNOPQRSTUVWXYZ");
+            File zFile = new File(t2, "mrt-xxx.txt");
+            FileOutputStream zStream = new FileOutputStream(zFile);
+            zStream.close();
             dumpDir("TestIt", t2);
             File manifestFile = new File(tempDir, "manifest.txt");
             ManifestBuild.PropInfo propInfo = ManifestBuild.getPostManifest("http://myserve:350/store",

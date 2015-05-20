@@ -38,6 +38,11 @@ public class XMLUtilTest {
     protected String result7 = "-test.don&#39;t-test";
     protected String test8 = "-test.\"nut\"-test";
     protected String result8 = "-test.&#34;nut&#34;-test";
+    protected int c = 0x15;
+    protected String c15 = Character.toString((char)c);
+    protected String test9 = "-test." + c15 + "-test";
+    protected String result9 = "-test.&#21;-test";
+    
     public XMLUtilTest() {
     }
 
@@ -67,6 +72,38 @@ public class XMLUtilTest {
             testEncode(test2, result2);
             testEncode(test3, result3);
             testEncode(test4, result4);
+            testEncode(test9, result9);
+        } catch (Exception ex) {
+            assertFalse("Exception:" + ex, true);
+        }
+    }
+    
+    @Test
+    public void testEncodeLoop()
+    {
+        try {
+            System.out.println("TEST ENCODING");
+            for (int c=0; c<126; c++) {
+                String ch = Character.toString((char)c);
+                String esc = XMLUtil.encodeValue(ch);
+                System.out.print("Char - " + c + " - ");
+                if (esc.equals(ch)) {
+                    System.out.println("EQUALS");
+                } else {
+                    System.out.print("NOT EQUALS:" + esc);
+                    String m = XMLUtil.decode(esc);
+                    if (esc.contains("&#")) {
+                        if (m.equals(ch)) {
+                            System.out.println(" - esc match");
+                        }
+                        else {
+                            System.out.println(" - no esc match:" + m);
+                            assertTrue("No match for c:" + c + " - char:" + ch, false);
+                        }
+                    } else System.out.println("");
+                }
+            }
+            assertTrue(true);
         } catch (Exception ex) {
             assertFalse("Exception:" + ex, true);
         }
@@ -76,15 +113,16 @@ public class XMLUtilTest {
     public void testDecode()
     {
         try {
-            testDecode(result1, test1);
+            testDecode(result1, test1, 1);
             //testDecode(result2, test2);
-            testDecode(result3, test3);
-            testDecode(result4, test4);
+            testDecode(result3, test3, 3);
+            testDecode(result4, test4, 4);
             
-            testDecode(result5, test5);
-            testDecode(result6, test6);
-            testDecode(result7, test7);
-            testDecode(result8, test8);
+            testDecode(result5, test5, 5);
+            testDecode(result6, test6, 6);
+            testDecode(result7, test7, 7);
+            testDecode(result8, test8, 8);
+            testDecode(result9, test9, 9);
         } catch (Exception ex) {
             assertFalse("Exception:" + ex, true);
         }
@@ -96,7 +134,9 @@ public class XMLUtilTest {
             System.out.println("***testEncode");
             System.out.println("in*=" + in);
             String out = XMLUtil.encodeValue(in);
-            System.out.println("out=" + out);
+            System.out.println("out='" + out + "'");
+            System.out.println("mch='" + match + "'");
+            System.out.println("test=" + out.equals(match));
             assertTrue("FAIL: out=" + out + " - match=" + match, out.equals(match));
             
         } catch (Exception ex) {
@@ -105,14 +145,18 @@ public class XMLUtilTest {
 
     }
 
-    protected void testDecode(String in, String match)
+    protected void testDecode(String in, String match, int test)
     {
         try {
-            System.out.println("***testDecode");
-            System.out.println("in*=" + in);
-            System.out.println("mch=" + match);
+            System.out.println("***testDecode:" + test);
+            System.out.println("in*='" + in + "'");
+            System.out.println("mch='" + match + "'");
             String out = XMLUtil.decode(in);
-            System.out.println("out=" + out);
+            System.out.println("out='" + out + "'");
+            System.out.println("test=" + out.equals(match));
+            if (!out.equals(match)) {
+                System.out.println("length - out=" + out.length() + " - match=" + match.length());
+            }
             assertTrue(out.equals(match));
 
         } catch (Exception ex) {
@@ -120,5 +164,7 @@ public class XMLUtilTest {
         }
 
     }
+    
+    
 
 }
