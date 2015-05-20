@@ -67,7 +67,7 @@ public class FileUtilUrl2FileTest
         assertTrue(true);
     }
     
-    @Test
+    //@Test
     public void testBigCopy()
     {
         String key = "FileUtilTest";
