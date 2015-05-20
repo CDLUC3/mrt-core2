@@ -53,7 +53,7 @@ public class TExceptionTest {
         } catch (TException ex) {
             dumpException(1, ex);
 
-            assertTrue( ex.getDetail().equals("java.lang.ArithmeticException: / by zero"));
+            assertTrue( ex.getDetail().contains("java.lang.ArithmeticException:"));
             assertTrue( ex.getStatusName().equals("GENERAL_EXCEPTION"));
             assertTrue( ex.getDescription().equals("Unexpected Programmic exception"));
             assertTrue( ex.getHTTPResponse() == 500);
@@ -153,7 +153,7 @@ public class TExceptionTest {
         } catch (TException ex) {
             dumpException(5, ex);
 
-            assertTrue( ex.getDetail().equals("java.lang.ArithmeticException: / by zero"));
+            assertTrue( ex.getDetail().contains("java.lang.ArithmeticException:"));
             assertTrue( ex.getStatusName().equals("GENERAL_EXCEPTION"));
             assertTrue( ex.getDescription().equals("Unexpected Programmic exception"));
             assertTrue( ex.getHTTPResponse() == 500);

@@ -388,5 +388,25 @@ public class FileUtilTest
         }
     }
 
+    //@Test
+    public void testRemoteFunctions()
+    {
+        String key = "FileUtilTest";
+        File testDir = null;
+        try {
+            LoggerInf logger = new TFileLogger("FixityTestsTest", 10, 10);
+            testDir = FileUtil.url2TempFile(logger, "https://lpg2.ucmerced.edu/nightingale/1864/ucm_nightingale_1864.xml");
+            System.out.println("size=" + testDir.length());
+            assertTrue(true);
+
+        } catch (Exception ex) {
+            System.out.println("key=" + key + " - Exception:" + ex);
+            assertFalse("key=" + key
+                    + " - Exception:" + ex
+                    + " - stack:" + StringUtil.stackTrace(ex)
+                    , true);
+        }
+    }
+
 
 }

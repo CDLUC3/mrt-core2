@@ -91,7 +91,7 @@ public class TallyTableTest {
             Thread.sleep(250);
             tally1.addDiffTime("diff", time1);
             long diffTime = tally1.getValue("diff");
-            assertTrue("diff=" + diffTime, diffTime >= 250);
+            assertTrue("diff=" + diffTime, diffTime >= 249);
 
 
         } catch (Exception ex) {

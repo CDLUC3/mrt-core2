@@ -1,0 +1,285 @@
+<objectInfo xmlns="http://uc3.cdlib.org/ontology/mrt/manifest">
+  <object id="ark:/13030/BIG">
+    <current>2</current>
+    <fileCount>18</fileCount>
+    <totalSize>64682529985</totalSize>
+    <actualCount>18</actualCount>
+    <actualSize>64682529985</actualSize>
+    <versionCount>1</versionCount>
+    <lastAddVersion>2013-04-25T17:22:28-07:00</lastAddVersion>
+  </object>
+  <versions>
+    <version id="1">
+      <manifest count="18" size="64682529985" created="2013-04-25T17:22:28-07:00">
+        <file id="system/mrt-ingest.txt">
+          <digestType>SHA-256</digestType>
+          <digest>cd61726c0fe471f27757a545af1bdad15efed325967eee2e87326dcd475b8941</digest>
+          <size>1832</size>
+          <creationDate>2013-02-27T18:51:13-08:00</creationDate>
+          <mimeType>text/plain</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-ingest.txt</key>
+        </file>
+        <file id="system/mrt-object-map.ttl">
+          <digestType>SHA-256</digestType>
+          <digest>03ede0506d2ec1dcec39e2a191329b88a61462590fda0f4f0140f4b6bbeb4798</digest>
+          <size>3833</size>
+          <creationDate>2013-02-27T18:51:14-08:00</creationDate>
+          <mimeType>plain/turtle</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-object-map.ttl</key>
+        </file>
+        <file id="system/mrt-owner.txt">
+          <digestType>SHA-256</digestType>
+          <digest>f6aa2758b34f0e5752358edbf8e733304a1bd223c99dd5d5acbb506ed65cff3a</digest>
+          <size>19</size>
+          <creationDate>2013-02-27T18:39:26-08:00</creationDate>
+          <mimeType>text/plain</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-owner.txt</key>
+        </file>
+        <file id="system/mrt-submission-manifest.txt">
+          <digestType>SHA-256</digestType>
+          <digest>45e986b1be0cf065a5a55b4a703e4c553bbc5369cfad19c3f2b7e25c92082602</digest>
+          <size>776</size>
+          <creationDate>2013-02-27T18:39:26-08:00</creationDate>
+          <mimeType>text/plain</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-submission-manifest.txt</key>
+        </file>
+        <file id="system/mrt-erc.txt">
+          <digestType>SHA-256</digestType>
+          <digest>94af2daa742e5707e178515e09fac4190e6aa9ea176e1501f521e4c3d05278c7</digest>
+          <size>215</size>
+          <creationDate>2013-02-27T18:39:26-08:00</creationDate>
+          <mimeType>system/mrt-erc.txt</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-erc.txt</key>
+        </file>
+        <file id="system/mrt-dc.xml">
+          <digestType>SHA-256</digestType>
+          <digest>f40dd72e54b7e93c389895de1c13922fe5ac2ac226d7159a9704ae6f19a67929</digest>
+          <size>149</size>
+          <creationDate>2013-02-27T18:42:39-08:00</creationDate>
+          <mimeType>application/xml</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-dc.xml</key>
+        </file>
+        <file id="system/mrt-mom.txt">
+          <digestType>SHA-256</digestType>
+          <digest>2d1d272cb2b2cb5fd1388d1985bbfe2debfd4f297936365a0f1f803b472c2ee0</digest>
+          <size>104</size>
+          <creationDate>2013-02-27T18:17:19-08:00</creationDate>
+          <mimeType>text/plain</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-mom.txt</key>
+        </file>
+        <file id="producer/AS020-VTQ0173-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>b14e8a7e1afe3310ea843187165efc230a868430965b02b7482e0fd48a2ad619</digest>
+          <size>9537524120</size>
+          <creationDate>2013-02-27T18:10:25-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0173-M.mp4</key>
+        </file>
+        <file id="system/mrt-membership.txt">
+          <digestType>SHA-256</digestType>
+          <digest>0210c33c498c27f4e58a9985d1913077b2ed7194ce76d8738caef84f0147278c</digest>
+          <size>20</size>
+          <creationDate>2013-02-27T18:39:26-08:00</creationDate>
+          <mimeType>text/plain</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-membership.txt</key>
+        </file>
+        <file id="producer/AS020-VTQ0098-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>6aa54ac23ef13781a564b2b7612756197f28054f94a9e29ac277ba93889150dd</digest>
+          <size>6371909109</size>
+          <creationDate>2013-02-27T18:17:19-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0098-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0039-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>448be8532e2f8924b24efaa7f697d4631932fc9f6729f7500138c10bdc6767e2</digest>
+          <size>2440441758</size>
+          <creationDate>2013-02-27T18:20:51-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0039-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0200-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>6cada7cd13b2a52c6204f39f978a434accca5b48f883538f8ec9a10ec983bbf8</digest>
+          <size>12400288221</size>
+          <creationDate>2013-02-27T18:22:16-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0200-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0065-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>8876ce9e23924665cbfa49321d7952a63743ddf4533e652727f441cfe591bd0f</digest>
+          <size>4051457704</size>
+          <creationDate>2013-02-27T18:37:09-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0065-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0137-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>cba515c99e83f9542fbe7e6d525c0dfc64f1abbcb615ad359743e6ce2f0e7856</digest>
+          <size>3918694174</size>
+          <creationDate>2013-02-27T18:39:26-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0137-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0002-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>29f377356a8184d4398c33d0c1509ab35965306ca26a040b0aadb975842a8ee4</digest>
+          <size>566637847</size>
+          <creationDate>2013-02-27T18:42:39-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0002-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0100-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>7714298da893d69afbe60f39db94ecfe1624f715c7ad00b39b64307281318935</digest>
+          <size>13860346831</size>
+          <creationDate>2013-02-27T18:42:57-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0100-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0053-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>6e6de92ea4d93151c25ed7061027c93138339f889a05b808929e1db8d693ea29</digest>
+          <size>4661150060</size>
+          <creationDate>2013-02-27T18:51:14-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0053-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0099-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>763fc2d548f71652edb5f4fe93b8878b051c2432c29697876c4f2978a7d898ea</digest>
+          <size>6874073213</size>
+          <creationDate>2013-02-27T18:53:55-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0099-M.mp4</key>
+        </file>
+      </manifest>
+    </version>
+    <version id="2">
+      <manifest count="15" size="39286959881" created="2013-04-25T17:22:28-07:00">
+        <file id="system/mrt-ingest.txt">
+          <digestType>SHA-256</digestType>
+          <digest>cd61726c0fe471f27757a545af1bdad15efed325967eee2e87326dcd475b8941</digest>
+          <size>1832</size>
+          <creationDate>2013-02-27T18:51:13-08:00</creationDate>
+          <mimeType>text/plain</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-ingest.txt</key>
+        </file>
+        <file id="system/mrt-object-map.ttl">
+          <digestType>SHA-256</digestType>
+          <digest>03ede0506d2ec1dcec39e2a191329b88a61462590fda0f4f0140f4b6bbeb4798</digest>
+          <size>3833</size>
+          <creationDate>2013-02-27T18:51:14-08:00</creationDate>
+          <mimeType>plain/turtle</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-object-map.ttl</key>
+        </file>
+        <file id="system/mrt-owner.txt">
+          <digestType>SHA-256</digestType>
+          <digest>f6aa2758b34f0e5752358edbf8e733304a1bd223c99dd5d5acbb506ed65cff3a</digest>
+          <size>19</size>
+          <creationDate>2013-02-27T18:39:26-08:00</creationDate>
+          <mimeType>text/plain</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-owner.txt</key>
+        </file>
+        <file id="system/mrt-submission-manifest.txt">
+          <digestType>SHA-256</digestType>
+          <digest>45e986b1be0cf065a5a55b4a703e4c553bbc5369cfad19c3f2b7e25c92082602</digest>
+          <size>776</size>
+          <creationDate>2013-02-27T18:39:26-08:00</creationDate>
+          <mimeType>text/plain</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-submission-manifest.txt</key>
+        </file>
+        <file id="system/mrt-erc.txt">
+          <digestType>SHA-256</digestType>
+          <digest>94af2daa742e5707e178515e09fac4190e6aa9ea176e1501f521e4c3d05278c7</digest>
+          <size>215</size>
+          <creationDate>2013-02-27T18:39:26-08:00</creationDate>
+          <mimeType>system/mrt-erc.txt</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-erc.txt</key>
+        </file>
+        <file id="system/mrt-dc.xml">
+          <digestType>SHA-256</digestType>
+          <digest>f40dd72e54b7e93c389895de1c13922fe5ac2ac226d7159a9704ae6f19a67929</digest>
+          <size>149</size>
+          <creationDate>2013-02-27T18:42:39-08:00</creationDate>
+          <mimeType>application/xml</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-dc.xml</key>
+        </file>
+        <file id="system/mrt-mom.txt">
+          <digestType>SHA-256</digestType>
+          <digest>2d1d272cb2b2cb5fd1388d1985bbfe2debfd4f297936365a0f1f803b472c2ee0</digest>
+          <size>104</size>
+          <creationDate>2013-02-27T18:17:19-08:00</creationDate>
+          <mimeType>text/plain</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-mom.txt</key>
+        </file>
+        <file id="producer/AS020-VTQ0173-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>b14e8a7e1afe3310ea843187165efc230a868430965b02b7482e0fd48a2ad619</digest>
+          <size>9537524120</size>
+          <creationDate>2013-02-27T18:10:25-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0173-M.mp4</key>
+        </file>
+        <file id="system/mrt-membership.txt">
+          <digestType>SHA-256</digestType>
+          <digest>0210c33c498c27f4e58a9985d1913077b2ed7194ce76d8738caef84f0147278c</digest>
+          <size>20</size>
+          <creationDate>2013-02-27T18:39:26-08:00</creationDate>
+          <mimeType>text/plain</mimeType>
+          <key>ark:/13030/BIG|1|system/mrt-membership.txt</key>
+        </file>
+        <file id="producer/AS020-VTQ0098-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>6aa54ac23ef13781a564b2b7612756197f28054f94a9e29ac277ba93889150dd</digest>
+          <size>6371909109</size>
+          <creationDate>2013-02-27T18:17:19-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0098-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0039-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>448be8532e2f8924b24efaa7f697d4631932fc9f6729f7500138c10bdc6767e2</digest>
+          <size>2440441758</size>
+          <creationDate>2013-02-27T18:20:51-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0039-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0200-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>6cada7cd13b2a52c6204f39f978a434accca5b48f883538f8ec9a10ec983bbf8</digest>
+          <size>12400288221</size>
+          <creationDate>2013-02-27T18:22:16-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0200-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0065-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>8876ce9e23924665cbfa49321d7952a63743ddf4533e652727f441cfe591bd0f</digest>
+          <size>4051457704</size>
+          <creationDate>2013-02-27T18:37:09-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0065-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0137-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>cba515c99e83f9542fbe7e6d525c0dfc64f1abbcb615ad359743e6ce2f0e7856</digest>
+          <size>3918694174</size>
+          <creationDate>2013-02-27T18:39:26-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0137-M.mp4</key>
+        </file>
+        <file id="producer/AS020-VTQ0002-M.mp4">
+          <digestType>SHA-256</digestType>
+          <digest>29f377356a8184d4398c33d0c1509ab35965306ca26a040b0aadb975842a8ee4</digest>
+          <size>566637847</size>
+          <creationDate>2013-02-27T18:42:39-08:00</creationDate>
+          <mimeType>video/mp4</mimeType>
+          <key>ark:/13030/BIG|1|producer/AS020-VTQ0002-M.mp4</key>
+        </file>
+      </manifest>
+    </version>
+  </versions>
+</objectInfo>
