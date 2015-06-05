@@ -4,7 +4,7 @@
   <groupId>org.cdlib.mrt</groupId>
   <artifactId>mrt-core-utilinit</artifactId>
   <packaging>pom</packaging>
-  <version>2.0</version>
+  <version>2.0-SNAPSHOT</version>
   <name>UC3-mrtCoreUtilInit</name>
   <url>http://uc3.cdlib.org</url>
 
