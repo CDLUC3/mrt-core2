@@ -403,10 +403,7 @@ public class HTTPUtil {
     {
         
         try {
-            //HttpClient httpclient = new DefaultHttpClient(params);
-            
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(360 * 1000).build();
-            HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+            HttpClient httpClient = getHttpClient(timeout);
             HttpGet httpget = new HttpGet(requestURL);
 	    httpget.addHeader("Accept", "*/*");
             httpget.addHeader("Range", "bytes=" + startByte + "-" + endByte);
@@ -570,8 +567,7 @@ public class HTTPUtil {
         throws TException
     {
         try {
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(300 * 1000).build();
-            HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+            HttpClient httpClient = getHttpClient(timeout);
             HttpDelete httpDelete = new HttpDelete(requestURL);
             HttpResponse response = httpClient.execute(httpDelete);
             if (response != null) {
@@ -631,8 +627,7 @@ public class HTTPUtil {
         throws TException
     {
         try {
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(300 * 1000).build();
-            HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+            HttpClient httpClient = getHttpClient(timeout);
             List<BasicNameValuePair> formparams = new ArrayList<BasicNameValuePair>();
             Enumeration e = prop.propertyNames();
             String key = null;
@@ -711,8 +706,7 @@ public class HTTPUtil {
         throws TException
     {
         try {
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(300 * 1000).build();
-            HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+            HttpClient httpClient = getHttpClient(timeout);
             HttpPost httppost = new HttpPost(requestURL);
             MultipartEntity reqEntity = new MultipartEntity();
             Enumeration e = stringParts.propertyNames();
@@ -882,6 +876,14 @@ public class HTTPUtil {
         }
         return params;
 
+    }
+    
+    public static HttpClient getHttpClient(int timeout)
+        throws Exception
+    {       
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).build();
+            HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+            return httpClient;
     }
 
     private static class URLConnectionTimeout implements Runnable
