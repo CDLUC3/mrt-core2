@@ -29,8 +29,6 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************/
 package org.cdlib.mrt.utility;
 
-import org.cdlib.mrt.utility.StringUtil;
-import org.cdlib.mrt.utility.HTTPUtil;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,47 +37,9 @@ import org.junit.Test;
 
 
 
-import org.cdlib.mrt.utility.TException;
-import org.cdlib.mrt.utility.TExceptionEnum;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
-
-
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.util.EntityUtils;
 
 import static org.junit.Assert.*;
 
