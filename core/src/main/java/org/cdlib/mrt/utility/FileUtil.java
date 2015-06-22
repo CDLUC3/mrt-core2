@@ -102,7 +102,7 @@ public class FileUtil {
     public static void url2File(LoggerInf m_logger, URL fileURL, File outFile, int retry)
         throws TException
     {
-        url2File(m_logger, fileURL, outFile, retry);
+        url2File(m_logger, fileURL, outFile);
     }
 
     /**
