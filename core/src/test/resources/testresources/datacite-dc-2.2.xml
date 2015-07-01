@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource xmlns='http://datacite.org/schema/kernel-2.2' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:ns='http://datacite.org/schema/kernel-2.2' xsi:schemaLocation='http://datacite.org/schema/kernel-2.2 http://schema.datacite.org/meta/kernel-2.2/metadata.xsd'>
+  <identifier identifierType='DOI'>10.5442/D0001</identifier>
+  <creators>
+    <creator>
+      <creatorName>Zhang, Xin</creatorName>
+    </creator>
+  </creators>
+  <titles>
+    <title>
+      Electrochemical and Photochemical Functionalization of Au and Si Surfaces
+      by Grafting of Diazonium and Azide Compounds
+    </title>
+  </titles>
+  <publisher>Helmholtz-Zentrum Berlin fur Materialien und Energy</publisher>
+  <publicationYear>2011</publicationYear>
+  <subjects>
+    <subject>Chemistry</subject>
+    <subject subjectScheme='DDC'>541 Physical &amp; theoretical chemistry</subject>
+  </subjects>
+  <language>eng</language>
+  <alternateIdentifiers>
+    <alternateIdentifier alternateIdentifierType='ISSN'>1868-5781</alternateIdentifier>
+  </alternateIdentifiers>
+  <sizes>
+    <size>7065 kb</size>
+    <size>123 pages</size>
+  </sizes>
+  <formats>
+    <format>text/plain</format>
+  </formats>
+  <version>1.0</version>
+</resource>

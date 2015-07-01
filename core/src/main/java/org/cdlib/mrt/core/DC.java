@@ -555,9 +555,8 @@ public class DC
 
     /**
      * Convert DataCite format to standard dc
-     * @param mods MODS xml string
+     * @param dataCite DataCite metadata
      * @param logger file logger
-     * @return OAI dc xml String
      * @throws TException process exception
      */
     public static String dataCite2dc(
@@ -565,40 +564,6 @@ public class DC
             LoggerInf logger)
         throws TException
     {
-        InputStream xslStream =  null;
-        InputStream xmlStream =  null;
-        DC temp = new DC();
-        try {
-            if (DEBUG) System.out.println("REPLACE:" + dataCite);
-            xslStream =  temp.getClass().getClassLoader().
-                getResourceAsStream("resources/stylesheets/datacite2dc.xsl");
-            xmlStream = new ByteArrayInputStream(dataCite.getBytes("utf-8"));
-
-            String response = XSLTUtil.xslConvert(
-                xmlStream,
-                xslStream,
-                null,
-                logger);
-            if (DEBUG) System.out.println("!!!!XHTMLFormatter response=" + response);
-            return response;
-
-        }  catch (Exception e) {
-            System.out.println(StringUtil.stackTrace(e));
-            throw new TException.GENERAL_EXCEPTION(
-                    "XHTMLFormatter exception:" + e);
-
-        } finally {
-            if (xslStream != null) {
-                try {
-                    xslStream.close();
-                } catch (Exception ex) { }
-            }
-            if (xmlStream != null) {
-                try {
-                    xmlStream.close();
-                } catch (Exception ex) { }
-            }
-
-        }
+        return DataciteConvert.dataCite2dc(dataCite, logger);
     }
 }

@@ -206,6 +206,7 @@ public class HttpGet {
             }
             System.out.println(MESSAGE + "End start counts=" + startCnt
                         + " - url=" + contentURL.toString()
+                        + " - file=" + outFile.getCanonicalPath()
                         + " - contentLength=" + contentLength
                         + " - testLength=" + testLength
             );
