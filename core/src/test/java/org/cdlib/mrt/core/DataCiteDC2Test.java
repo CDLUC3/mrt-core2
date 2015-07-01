@@ -6,6 +6,7 @@
 package org.cdlib.mrt.core;
 import java.io.InputStream;
 import java.util.Vector;
+import static org.cdlib.mrt.core.DataCiteDCTest.MESSAGE;
 import org.cdlib.mrt.utility.LoggerInf;
 import org.cdlib.mrt.utility.TFileLogger;
 import org.junit.After;
@@ -28,12 +29,12 @@ import org.w3c.dom.Document;
  *
  * @author dloy
  */
-public class DataCiteDCTest {
+public class DataCiteDC2Test {
 
-    protected static final String NAME = "DataCiteDCTest";
+    protected static final String NAME = "DataCiteDC2Test";
     protected static final String MESSAGE = NAME + ": ";
     protected final static String NL = System.getProperty("line.separator");
-    public DataCiteDCTest() {
+    public DataCiteDC2Test() {
     }
 
     @BeforeClass
@@ -57,10 +58,10 @@ public class DataCiteDCTest {
 
             LoggerInf logger = new TFileLogger(NAME, 50, 50);
 
-            System.out.println(MESSAGE + "***testDataCite2DC_2_2 - DC***");
+            System.out.println(MESSAGE + "***testDataCite2DC_2_2***");
             String dataCiteS = getResource("datacite-dc-2.2.xml");
             System.out.println("DataCite:\n" + dataCiteS);
-            String dc = DC.dataCite2dc(dataCiteS, logger);
+            String dc = DataciteConvert.dataCite2dc(dataCiteS, logger);
             System.out.println("DublinCore:\n" + dc);
             assertTrue(dc.length() > 0);
 
@@ -80,10 +81,10 @@ public class DataCiteDCTest {
 
             LoggerInf logger = new TFileLogger(NAME, 50, 50);
 
-            System.out.println(MESSAGE + "***testDataCite2DC_3 - DC***");
+            System.out.println(MESSAGE + "***testDataCite2DC_3***");
             String dataCiteS = getResource("datacite-dc-3.xml");
             System.out.println("DataCite:\n" + dataCiteS);
-            String dc = DC.dataCite2dc(dataCiteS, logger);
+            String dc = DataciteConvert.dataCite2dc(dataCiteS, logger);
             System.out.println("DublinCore:\n" + dc);
             assertTrue(dc.length() > 0);
 
