@@ -60,20 +60,39 @@ public class DataciteConvert
     
     public enum StyleEnum {
 
-    kernel2_1("http://datacite.org/schema/kernel-2.1", "kernel2.1_to_oaidc.xsl"),
-    kernel2_2("http://datacite.org/schema/kernel-2.2", "kernel2.2_to_oaidc.xsl"),
-    //kernelerr("http://datacite.org/schema/kernel-2.2", "kernel3_to_oaidc.xsl"),
-    kernel2_3("http://datacite.org/schema/kernel-2.3", "kernel2.3_to_oaidc.xsl"),
-    kernel3("http://datacite.org/schema/kernel-3", "kernel3_to_oaidc.xsl"),
-    kernel3_1("http://datacite.org/schema/kernel-3.1", "kernel3.1_to_oaidc.xsl");
+    kernel2_1("http://datacite.org/schema/kernel-2.1", 
+            "http://schema.datacite.org/meta/kernel-2.1/metadata.xsd", 
+            "kernel2.1_to_oaidc.xsl", 
+            "2.1"),
+    kernel2_2("http://datacite.org/schema/kernel-2.2", 
+            "http://schema.datacite.org/meta/kernel-2.2/metadata.xsd", 
+            "kernel2.2_to_oaidc.xsl", 
+            "2.2"),
+    kernel2_3("http://datacite.org/schema/kernel-2.3", 
+            "http://schema.datacite.org/meta/kernel-2.3/metadata.xsd", 
+            "kernel2.3_to_oaidc.xsl", 
+            "2.3"),
+    kernel3_1("http://datacite.org/schema/kernel-3.1", 
+            "http://schema.datacite.org/meta/kernel-3/metadata.xsd", 
+            "kernel3.1_to_oaidc.xsl", 
+            "3.1"),
+    kernel3("http://datacite.org/schema/kernel-3", 
+            "http://schema.datacite.org/meta/kernel-3/metadata.xsd", 
+            "kernel3_to_oaidc.xsl", 
+            "3.1");
 
+    //kernelerr("http://datacite.org/schema/kernel-2.2", "kernel3_to_oaidc.xsl", "2.1"),
     protected String ns = null;
+    protected String schema = null;
     protected String resourceName = null;
+    protected String version = null;
 
-        StyleEnum(String ns, String resourceName)
+        StyleEnum(String ns, String schema, String resourceName, String version)
         {
             this.ns = ns;
+            this.schema = schema;
             this.resourceName = resourceName;
+            this.version = version;
         }
 
         /**
@@ -86,6 +105,14 @@ public class DataciteConvert
         }
 
         /**
+         * Return DataCite schema
+         * @return DataCite schema
+         */
+        public String getSchema() {
+            return schema;
+        }
+
+        /**
          * return the description of the storage
          * @return storage description
          */
@@ -94,19 +121,26 @@ public class DataciteConvert
             return this.resourceName;
         }
 
+        /**
+         * return DataCite version
+         * @return DataCite version
+         */
+        public String getVersion() {
+            return version;
+        }
 
         /**
          * Match the Storage ns to ns and description
          * @param ns storage ns
          * @param resourceName storage description
-         * @return enumerated StorageType value
+         * @return StyleEnum
          */
-        public static String matchValue(String value)
+        public static StyleEnum matchValue(String value)
         {
             if (StringUtil.isEmpty(value)) return null;
             for (StyleEnum p : StyleEnum.values()) {
                 if (value.contains(p.getNS())) {
-                    return p.getResourceName();
+                    return p;
                 }
             }
             return null;
@@ -130,12 +164,13 @@ public class DataciteConvert
         DataciteConvert temp = new DataciteConvert();
         try {
             if (DEBUG) System.out.println("REPLACE:" + dataCite);
-            String resourceName = StyleEnum.matchValue(dataCite);
-            if (resourceName == null) {
+            StyleEnum se = StyleEnum.matchValue(dataCite);
+            if (se == null) {
                 throw new TException.INVALID_DATA_FORMAT(
                         MESSAGE + "no stylesheet found for:\n"
                         + dataCite);
             }
+            String resourceName = se.getResourceName();
             System.out.println("***" + MESSAGE + "resourceName=" + resourceName);
             xslStream =  temp.getClass().getClassLoader().
                 getResourceAsStream("resources/stylesheets/" + resourceName);
