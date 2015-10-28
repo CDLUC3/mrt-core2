@@ -36,7 +36,7 @@ public class LDAPUtilTest {
     protected static final String MESSAGE = NAME + ": ";
     protected final static String NL = System.getProperty("line.separator");
     protected final static String UID = "dloy";
-    protected final static String PW = "0David0";
+    protected final static String PW = "xxx";
     //protected final static String HOSTS = "ldaps://coot.ucop.edu:1636";
     //protected final static String HOSTS = "ldaps://dp08.cdlib.org:1636";
     //protected final static String HOSTS = "ldaps://ferret.cdlib.org:1636";
