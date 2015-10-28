@@ -35,14 +35,15 @@ public class LDAPUtilTest {
     protected static final String NAME = "LDAPAuthenticationTest";
     protected static final String MESSAGE = NAME + ": ";
     protected final static String NL = System.getProperty("line.separator");
-    protected final static String UID = "dloy";
-    protected final static String PW = "0David0";
+    protected final static String UID = "merritt";
+    protected final static String PW = "merritt";
     //protected final static String HOSTS = "ldaps://coot.ucop.edu:1636";
     //protected final static String HOSTS = "ldaps://dp08.cdlib.org:1636";
     //protected final static String HOSTS = "ldaps://ferret.cdlib.org:1636";
     //protected final static String HOSTS = "ldaps://ferret.cdlib.org:1636";
     //protected final static String HOSTS = "ldaps://coot.ucop.edu:1636";
     //protected final static String HOSTS = "ldaps://badger.cdlib.org:1636";
+    //protected final static String HOSTS = "ldaps://uc3-mrt-wrk1-stg.cdlib.org:1636";
     protected final static String HOSTS = "ldaps://uc3-mrt-wrk1-stg.cdlib.org:1636";
     protected final static String HOST = "ldap://badger.cdlib.org:1389";
 
@@ -87,6 +88,7 @@ public class LDAPUtilTest {
                     "merritt");
             assertTrue(prop != null);
             System.out.println(LDAPUtil.dump("TestProperties", prop));
+           /*
 
             prop = LDAPUtil.getUserProperties(
                     ldaps,
@@ -106,6 +108,7 @@ public class LDAPUtilTest {
                     "merritt",
                     "xxx");
             assertTrue(prop == null);
+                   */
 
         } catch (Exception ex) {
             System.out.println("Exception:" + ex);
@@ -119,6 +122,11 @@ public class LDAPUtilTest {
         throws TException
     {
         try {
+            System.out.println("TestAuthorize:"
+                    + " - HOSTS:" + HOSTS
+                    + " - UID:" + UID
+                    + " - PW:" + PW
+            );
             boolean there = LDAPUtil.isAuthorized(HOSTS, UID, PW, "merritt_demo");
             //boolean there = LDAPUtil.isAuthorizedOriginal(UID, PW, "merritt_demo");
             System.out.println(there);

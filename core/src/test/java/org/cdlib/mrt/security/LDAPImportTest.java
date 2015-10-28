@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  *
  * @author dloy
  */
-public class InstallCertTest {
+public class LDAPImportTest {
 
     protected static final String NAME = "LDAPAuthenticationTest";
     protected static final String MESSAGE = NAME + ": ";
@@ -43,9 +43,9 @@ public class InstallCertTest {
     //protected final static String HOSTS = "ferret.cdlib.org:1636";
     //protected final static String HOSTS = "dp08.cdlib.org:1636";
     //protected final static String HOSTS = "merritt.cdlib.org:1636";
-    //protected final static String HOSTS = "uc3-mrt-wrk1-stg.cdlib.org:1636";
-    protected final static String HOSTS = "uc3-ldap-dev.cdlib.org:1636";
-    public InstallCertTest() {
+    protected final static String HOSTS = "uc3-mrt-wrk1-stg.cdlib.org:1636";
+    protected final static String HOSTSXX = "ldaps://uc3-mrt-wrk1-stg.cdlib.org:1636";
+    public LDAPImportTest() {
     }
 
     @BeforeClass
@@ -75,13 +75,12 @@ public class InstallCertTest {
     public void Test()
         throws TException
     {
+        File outFile = null;
         try {
 
             String [] hostNames = {
                    //"badger.cdlib.org:1636",
-                   //"uc3-mrt-wrk1-stg.cdlib.org:1636"
-                   //"uc3-ldap-dev.cdlib.org"
-                    "uc3-ldap-dev.cdlib.org:1636"
+                   "uc3-mrt-wrk1-stg.cdlib.org:1636"
                    //"uc3-mrt-wrk2-stg.cdlib.org:1636"
     //protected final static String HOSTS = "dp01.cdlib.org:1636";
                     //"coot.ucop.edu:1636",
@@ -89,34 +88,63 @@ public class InstallCertTest {
                     //"dp08.cdlib.org:1636"
     //protected final static String HOSTS = "merritt.cdlib.org:1636";
             };
-            File outFile = new File("jssecacerts");
-            
-            outFile = new File("/replic/mrtHomes/sword/jssecacert2");
+            //outFile = FileUtil.getTempFile("rdf", "");
             for (String hostName : hostNames) {
-                testit(hostName, outFile);
+                testit(hostName);
             }
 
         } catch (Exception ex) {
             System.out.println("Exception:" + ex);
             ex.printStackTrace();
             assertFalse("TestIT exception:" + ex, true);
+            
         }
     }
 
-    public void testit(String hostName, File outFile)
+    public void testit(String hostName)
         throws TException
     {
+        File outFile = null;
+        String lastProp = null;
         try {
-            System.out.println("hostName=" + hostName + "\n"
+            
+            lastProp = System.getProperty("javax.net.ssl.trustStore");
+            if (lastProp == null) {
+                long nano = System.nanoTime();
+                outFile = new File("jssecacerts-" + nano);
+                System.out.println("hostName=" + hostName + "\n"
                     + "outFile=" + outFile.getCanonicalPath() + "\n"
                     );
-            InstallCert.install(hostName, "1", null, outFile);
+                ImportCert.install(hostName, "1", null, outFile);
+                System.out.println("lastProp:" + lastProp);
+                System.setProperty("javax.net.ssl.trustStore",
+                    outFile.getCanonicalPath());
+            }
+            String ldapName = "ldaps://" + hostName;
+            LinkedHashList<String,String> prop = LDAPUtil.getUserProperties(
+                    ldapName,
+                    "merritt",
+                    "merritt");
+            assertTrue(prop != null);
+            System.out.println(LDAPUtil.dump("TestProperties", prop));
             assertTrue(true);
 
         } catch (Exception ex) {
             System.out.println("Exception:" + ex);
             ex.printStackTrace();
             assertFalse("TestIT exception:" + ex, true);
+            
+        } finally {
+            try {
+                if (lastProp == null) {
+                    System.clearProperty("javax.net.ssl.trustStore");
+                    System.out.println("clear: javax.net.ssl.trustStore");
+                }
+                outFile.delete();
+                System.out.println("Delete:" + outFile.getCanonicalPath());
+            } catch (Exception ex) {
+                System.out.println("WARNING: outFile ex:" + ex);
+            }
         }
     }
 

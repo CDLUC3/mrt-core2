@@ -30,6 +30,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.cdlib.mrt.security;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import javax.naming.directory.InitialDirContext;
 import java.util.Hashtable;
@@ -42,6 +45,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.cdlib.mrt.utility.LinkedHashList;
+import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TException;
 /**
  *
@@ -50,7 +54,7 @@ import org.cdlib.mrt.utility.TException;
 public class LDAPUtil
 {
     private static final String SEP = System.getProperty("line.separator");
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     public static LinkedHashList<String,String> getUserProperties(String host, String uid, String password)
         throws TException
@@ -112,6 +116,40 @@ public class LDAPUtil
           return false;
         }
     }
+    public static boolean isAuthorized(
+            String host, 
+            String uid, 
+            String password, 
+            String className,
+            String searchId)
+    {
+        try {
+
+            LinkedHashList list = null;
+            if (searchId == null) {
+                searchId = uid;
+            }
+            String uniqueMemberKey = "uid=" + searchId + ",ou=People,ou=uc3,dc=cdlib,dc=org";
+            String returnedAtts[] = { "uniqueMember" };
+            String filter = "cn=write";
+            String searchBase = "ou=" + className + ",ou=mrt-classes,ou=uc3,dc=cdlib,dc=org";
+            list = search(
+                    uid,
+                    password,
+                    host,
+                    returnedAtts,
+                    searchBase,
+                    filter);
+
+            boolean test = match(list, "uniqueMember", uniqueMemberKey);
+            return test;
+
+        } catch (Exception ex) {
+          System.out.println("Exception:" + ex);
+          ex.printStackTrace();
+          return false;
+        }
+    }
 
     public static String getProfile(String host, String uid, String password, String className)
         throws TException
@@ -132,6 +170,9 @@ public class LDAPUtil
             String profile = getProfile(list);
             if (DEBUG) System.out.println("PROFILE=" + profile);
             return profile;
+            
+        } catch (TException tex) {
+            throw tex;
 
         } catch (Exception ex) {
           System.out.println("Exception:" + ex);
@@ -139,6 +180,65 @@ public class LDAPUtil
           return null;
         }
     }
+    
+    public static List<String> extractProfiles(String host, String uid, String password, String searchId)
+        throws TException
+    {
+        try {
+            if (searchId == null) {
+                searchId = uid;
+            }
+            ArrayList<String> profiles = new ArrayList();
+            List<String> namesList = getClassNames(host, uid, password, searchId);
+            if (namesList == null) return null;
+            for (String className : namesList) {
+                String profile = getProfile(host, uid, password, className);
+                if (profile == null) continue;
+                profiles.add(profile);
+                System.out.println("Add profile:" + profile);
+            }
+            return profiles;
+            
+        } catch (TException tex) {
+            throw tex;
+
+        } catch (Exception ex) {
+          System.out.println("Exception:" + ex);
+          ex.printStackTrace();
+          return null;
+        }
+    }
+    
+    public static List<String> getClassNames(String host, String uid, String password, String searchId)
+        throws TException
+    {
+        try {
+            if (searchId == null) {
+                searchId = uid;
+            }
+            String searchBase = "ou=mrt-classes,ou=uc3,dc=cdlib,dc=org";
+            String filter = "(&(cn=write)(uniqueMember=uid=" + searchId + "*))";
+            //****String filter = "(&(cn=write)(uniqueMember=uid=mreyes*))";
+           
+            List<String> list = contains(
+                    uid,
+                    password,
+                    host,
+                    searchBase,
+                    filter);
+            return list;
+            
+        } catch (TException tex) {
+            throw tex;
+
+        } catch (Exception ex) {
+          System.out.println("Exception:" + ex);
+          ex.printStackTrace();
+          return null;
+        }
+    }
+
+    
     public static LinkedHashList<String,String> search(
             String uid,
             String password,
@@ -149,7 +249,7 @@ public class LDAPUtil
         throws TException
     {
         try {
-            if (DEBUG) System.out.println("search"
+            if (true) System.out.println("search"
                     + " - uid=" + uid + SEP
                     + " - password=" + password + SEP
                     + " - host=" + host + SEP
@@ -188,14 +288,81 @@ public class LDAPUtil
             }
             ctx.close();
             return list;
+            
+        } catch (javax.naming.AuthenticationException ae) {
+          if (DEBUG) System.out.println("Exception:" + ae);
+          ae.printStackTrace();
+          throw new TException.USER_NOT_AUTHENTICATED(uid + " not authorized");
+            
+        } catch (Exception ex) {
+          if (DEBUG) System.out.println("Exception:" + ex);
+          ex.printStackTrace();
+          throw new TException(ex);
+        }
+    }
+    
+    public static ArrayList<String> contains
+        (
+            String uid,
+            String password,
+            String host,
+            String searchBase,
+            String filter)
+        throws TException
+    {
+        try {
+            if (DEBUG) System.out.println("contains"
+                    + " - uid=" + uid + SEP
+                    + " - password=" + password + SEP
+                    + " - host=" + host + SEP
+                    + " - searchBase=" + searchBase + SEP
+                    + " - filter=" + filter + SEP
+                    );
+            ArrayList<String> list = new ArrayList();
+            String userKey = "uid=" + uid;
+            String user = userKey + ",ou=People,ou=uc3,dc=cdlib,dc=org";
+            Hashtable env = new Hashtable();
+            env.put(Context.INITIAL_CONTEXT_FACTORY,
+                "com.sun.jndi.ldap.LdapCtxFactory");
+            env.put(Context.PROVIDER_URL, host);
+            if (DEBUG) System.out.println("searchBase=" + searchBase);
+            // Authenticate as S. User and password "mysecret"
+            env.put(Context.SECURITY_AUTHENTICATION, "simple");
+            env.put(Context.SECURITY_PRINCIPAL, user);
+            env.put(Context.SECURITY_CREDENTIALS, password);
 
+            // Create the initial context
+            DirContext ctx = new InitialDirContext(env);
+
+            SearchControls searchCtls = new SearchControls();
+            searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            String returnedAtts[]={"memberOf"};
+            //String returnedAtts[]={"memberOf", "submissionProfile"};
+            searchCtls.setReturningAttributes(returnedAtts);
+
+            NamingEnumeration<SearchResult> results = ctx.search(searchBase, filter, searchCtls);
+            while (results.hasMoreElements()) {
+                //System.out.println("***result iteration");
+                SearchResult searchResult = (SearchResult) results.next();
+                if (DEBUG) System.out.println("FOUND OBJECT : " + searchResult.getName());
+                String name = getProfileName(searchResult.getName());
+                if (name != null) list.add(name);
+            }
+            ctx.close();
+            if (list.size() == 0) list = null;
+            return list;
+            
+        } catch (javax.naming.AuthenticationException ae) {
+          if (DEBUG) System.out.println("Exception:" + ae);
+          ae.printStackTrace();
+          throw new TException.USER_NOT_AUTHENTICATED(uid + " not authorized");
+            
         } catch (Exception ex) {
           if (DEBUG) System.out.println("Exception:" + ex);
           ex.printStackTrace();
           return null;
         }
     }
-
 
     private static boolean match(LinkedHashList<String,String> list, String name, String key)
     {
@@ -297,10 +464,12 @@ public class LDAPUtil
             NamingEnumeration e = attributes.getIDs();
             while (e.hasMore()) {
                 String key = (String)e.next();
+                System.out.println("\n&key=" + key);
                 Attribute attribute = attributes.get(key);
                 NamingEnumeration v = attribute.getAll();
                 while (v.hasMore()) {
                     String value = (String)v.next();
+                System.out.println("&value=" + value);
                     list.put(key, value);
                     if (DEBUG) System.out.println("Add:" + key + "=" + value);
                 }
@@ -312,55 +481,15 @@ public class LDAPUtil
             return null;
         }
 
-    }    public static boolean isAuthorizedOriginal(String uid, String password, String className)
-        throws TException
+    }
+    
+    public static String getProfileName(String dirList)
     {
-        try {
-            LinkedHashList list = null;
-            String userKey = "uid=" + uid;
-            String uniqueMemberKey = userKey + ",ou=People,ou=uc3,dc=cdlib,dc=org";
-
-            String user = userKey + ",ou=People,ou=uc3,dc=cdlib,dc=org";
-            String url = "ldaps://coot.ucop.edu:1636";
-            String searchBase = "ou=" + className + ",ou=mrt-classes,ou=uc3,dc=cdlib,dc=org";
-            String returnedAtts[] = { "uniqueMember" };
-            Hashtable env = new Hashtable();
-            env.put(Context.INITIAL_CONTEXT_FACTORY,
-                "com.sun.jndi.ldap.LdapCtxFactory");
-            env.put(Context.PROVIDER_URL, url);
-
-            // Authenticate as S. User and password "mysecret"
-            env.put(Context.SECURITY_AUTHENTICATION, "simple");
-            env.put(Context.SECURITY_PRINCIPAL, user);
-            env.put(Context.SECURITY_CREDENTIALS, password);
-
-            // Create the initial context
-            DirContext ctx = new InitialDirContext(env);
-
-            SearchControls searchCtls = new SearchControls();
-            searchCtls.setReturningAttributes(returnedAtts);
-            //String filter = "&((cn=write)(uniqueMember=" +uniqueMemberKey + "))";
-            String filter = "cn=write";
-            NamingEnumeration<SearchResult> results = ctx.search(searchBase, filter, searchCtls);
-            //System.out.println("before while - searchBase=" + searchBase);
-            list = new LinkedHashList();
-            while (results.hasMoreElements()) {
-                SearchResult searchResult = (SearchResult) results.next();
-                //System.out.println("FOUND OBJECT : " + searchResult.getName());
-                Attributes attrs = searchResult.getAttributes();
-                if (attrs != null) {
-                    list = attributes2LinkedHash(list, attrs);
-                }
-            }
-            boolean test = match(list, "uniqueMember", uniqueMemberKey);
-
-            ctx.close();
-            return test;
-
-        } catch (Exception ex) {
-          System.out.println("Exception:" + ex);
-          ex.printStackTrace();
-          return false;
-        }
+        if (StringUtil.isAllBlank(dirList)) return null;
+        final String match = "cn=write,ou=";
+        int pos = dirList.indexOf(match);
+        if (pos >= 0) {
+            return dirList.substring(match.length());
+        } else return null;
     }
 }
