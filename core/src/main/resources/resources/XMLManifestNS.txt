@@ -33,6 +33,8 @@ INV_PROCESS | InvProcessState | invp | inv/process
 INV_MANIFEST | InvManifestUrl | invman | inv/manifest
 INV_SELECT | InvSelectState | invse | inv/select
 INV_CN | InvCollectionNode | invcn | inv/cn
+INV_LOC | LocalContainerState | invloc | inv/loc
+INV_PRM | PrimaryLocalState | invprm | inv/prm
 OAI_SERVICE | OAIServiceState | oaisv | oai/service
 REPLIC_ADD | ReplicationAddState | repadd | rep/add
 REPLIC_MATCH | MatchObjectState | repmch | rep/mch
