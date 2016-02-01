@@ -1023,4 +1023,27 @@ public class FileUtil {
             }
         }
     }
+    
+    public static void removeFile(File inputFile)
+    {
+        if (inputFile == null) return;
+        if (!inputFile.exists()) return;
+        
+        try {
+            if (false) System.out.println("removeFile before:" + inputFile.length());
+            PrintWriter pw = new PrintWriter(inputFile);
+            pw.close();
+            if (true) System.out.println("removeFile after:" 
+                    + " - length:" + inputFile.length()
+                    + " - name:" + inputFile.getCanonicalPath() 
+            );
+        } catch (Exception ex) {
+            System.out.println("Writer exception ignored:" + ex) ;
+        }
+        try {
+            inputFile.delete();
+        } catch (Exception ex) {
+            System.out.println("Delete exception ignored:" + ex) ;
+        }
+    }
 }
