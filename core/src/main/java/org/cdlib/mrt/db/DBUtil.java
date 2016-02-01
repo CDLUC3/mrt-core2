@@ -168,10 +168,8 @@ public class DBUtil
            if (buf.length() > 0) buf.append(",");
            if (value.length() == 0) {
                buf.append(key + "=null");
-           } else if (!value.contains("'")){
-               buf.append(key + "='"  + SQLUtil.sqlEsc(value) + "'");
            } else {
-               buf.append(key + "=\""  + SQLUtil.sqlEsc(value) + "\"");
+               buf.append(key + "='"  + SQLUtil.sqlEsc(value) + "'");
            }
         }
         return buf.toString();
