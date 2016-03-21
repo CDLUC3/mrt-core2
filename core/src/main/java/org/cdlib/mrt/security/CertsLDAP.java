@@ -142,6 +142,10 @@ public class CertsLDAP {
             );
             List<String> names = LDAPUtil.getClassNames(ldapName, user, pwd, searchId);
             return names;
+            
+        } catch (TException tex) {
+            System.out.println("getNames TException:" + tex);
+            throw tex;
 
         } catch (Exception ex) {
             System.out.println("Exception:" + ex);
