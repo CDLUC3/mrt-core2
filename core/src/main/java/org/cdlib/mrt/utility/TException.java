@@ -319,6 +319,20 @@ public class TException
             return dump;
     }
 
+    public String getAccessExcp()
+    {
+        String message = ""
+                    + " - detail=" + getDetail() 
+                    + " - statusName=" + getStatusName()
+                    + " - className=" + getClassName()
+                    + " - methodName=" + getMethodName()
+                    + " - lineNumber=" + getLineNumber();
+        return "{"
+            + "\"status\":" + status.getHttpResponse() + ","
+            + "\"message\":\"" + status.getDescription() + "\","
+            + "\"developer\":\"" + message + "\""
+            + "}";
+    }
 
     /**
      * INVALID_ARCHITECTURE subclass

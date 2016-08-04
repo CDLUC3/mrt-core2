@@ -31,8 +31,10 @@ package org.cdlib.mrt.cloud;
 import org.cdlib.mrt.utility.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Set;
 import org.cdlib.mrt.utility.PropertiesUtil;
+import org.cdlib.mrt.core.MessageDigest;
 
 
 
@@ -49,6 +51,19 @@ public class CloudList
     public void add(String container,String key,long size,String etag, String contentType, String lastModified)
     {
         CloudEntry entry = new CloudEntry(container, key, size, etag, contentType, lastModified);
+        list.add(entry);
+    }
+    public void add(
+            String container,
+            String key,
+            long size,
+            String etag, 
+            String contentType, 
+            String lastModified,
+            MessageDigest digest,
+            String storageClass)
+    {
+        CloudEntry entry = new CloudEntry(container, key, size, etag, contentType, lastModified, digest, storageClass);
         list.add(entry);
     }
     
@@ -96,7 +111,11 @@ public class CloudList
         public String etag = null;
         public String contentType = null;
         public String lastModified = null;
-        public CloudEntry(String container, String key, long size, String etag, String contentType, String lastModified)
+        public MessageDigest digest = null;
+        public String storageClass = null;
+        
+        public CloudEntry(
+                String container, String key, long size, String etag, String contentType, String lastModified)
         {
             this.container = container;
             this.key = key;
@@ -105,8 +124,48 @@ public class CloudList
             this.lastModified = lastModified;
             this.contentType = contentType;
         }
+        public CloudEntry(
+                String container, 
+                String key, 
+                long size, 
+                String etag, 
+                String contentType, 
+                String lastModified,
+                MessageDigest digest,
+                String storageClass)
+        {
+            this.container = container;
+            this.key = key;
+            this.size = size;
+            this.etag = etag;
+            this.lastModified = lastModified;
+            this.contentType = contentType;
+            this.digest = digest;
+            this.storageClass = storageClass;
+        }
 
         public CloudEntry() {
+        }
+        
+        public Properties getProp() {
+            Properties prop = new Properties();
+            set(prop, "container", container);
+            set(prop, "key", key);
+            set(prop, "size", "" + size);
+            set(prop, "etag", etag);
+            set(prop, "lastModified", lastModified);
+            set(prop, "contentType", contentType);
+            set(prop, "storageClass", storageClass);
+            if (digest != null) {
+                set(prop, "digest", digest.getJavaAlgorithm() + ":" + digest.getValue());
+            }
+            return prop;
+        }
+        
+        public void set(Properties prop, String key, String value) {
+            if (StringUtil.isEmpty(key)) return;
+            if (StringUtil.isEmpty(value)) return;
+            prop.setProperty(key, value);
         }
         
         public String dump(String header)
@@ -164,6 +223,40 @@ public class CloudList
         public void setEtag(String etag) {
             this.etag = etag;
         }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        public String getLastModified() {
+            return lastModified;
+        }
+
+        public void setLastModified(String lastModified) {
+            this.lastModified = lastModified;
+        }
+
+        public MessageDigest getDigest() {
+            return digest;
+        }
+
+        public void setDigest(MessageDigest digest) {
+            this.digest = digest;
+        }
+
+        public String getStorageClass() {
+            return storageClass;
+        }
+
+        public void setStorageClass(String storageClass) {
+            this.storageClass = storageClass;
+        }
+        
+        
     }
 }
 

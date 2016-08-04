@@ -114,6 +114,9 @@ public class HttpGet {
         this.timeout = timeout;
         this.logger = logger;
         this.outFile = outFile;
+        try {
+            outFile.delete();
+        } catch (Exception fex) { }
     }
     
     
@@ -165,7 +168,7 @@ public class HttpGet {
             }
             
             
-            if (true) System.out.println(MESSAGE + "build"
+            if (DEBUG) System.out.println(MESSAGE + "build"
                         + " - url=" + contentURL.toString()
                         + " - contentLength=" + contentLength
                         + " - testLength=" + testLength
@@ -204,7 +207,7 @@ public class HttpGet {
                 inStream = url2Stream( contentURL.toString(),  startByte, endByte);
                 length = outFile.length();
             }
-            System.out.println(MESSAGE + "End start counts=" + startCnt
+            if (DEBUG) System.out.println(MESSAGE + "End start counts=" + startCnt
                         + " - url=" + contentURL.toString()
                         + " - file=" + outFile.getCanonicalPath()
                         + " - contentLength=" + contentLength
