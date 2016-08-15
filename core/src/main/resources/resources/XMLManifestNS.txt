@@ -36,6 +36,7 @@ INV_CN | InvCollectionNode | invcn | inv/cn
 INV_LOC | LocalContainerState | invloc | inv/loc
 INV_PRM | PrimaryLocalState | invprm | inv/prm
 INV_ALP | LocalAfterToState | invalp | inv/alp
+INV_VRS | VersionsState | invv | inv/v
 OAI_SERVICE | OAIServiceState | oaisv | oai/service
 REPLIC_ADD | ReplicationAddState | repadd | rep/add
 REPLIC_MATCH | MatchObjectState | repmch | rep/mch
