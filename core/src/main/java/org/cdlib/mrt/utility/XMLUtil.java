@@ -38,7 +38,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
  */
 public class XMLUtil
 {
-
+    private static boolean DEBUG = false;
     /**
      * Replace XML special characters with Entity references
      * @params xmlString input string
@@ -71,7 +71,7 @@ public class XMLUtil
             char c = in.charAt(i);
             if ((c < 32) || ((c>127)&&(c<160))){
                 buf.append("&#" + (int)c + ";");
-                System.out.println("found(" + i + "):"
+                if (DEBUG) System.out.println("found(" + i + "):"
                         + " - c=" + c
                         + " - v=" + (int)c
                 );
