@@ -693,4 +693,24 @@ public class TException
         }
     }
 
+    /**
+     * SQL_EXCEPTION subclass
+     * See TExceptionEnum value for description
+     */
+    public static class NEARLINE_RESTORE_IN_PROCESS extends TException
+    {
+        public NEARLINE_RESTORE_IN_PROCESS(Exception ex)
+        {
+            super(TExceptionEnum.NEARLINE_RESTORE_IN_PROCESS, ex);
+        }
+        public NEARLINE_RESTORE_IN_PROCESS(String msg)
+        {
+            super(TExceptionEnum.NEARLINE_RESTORE_IN_PROCESS, msg);
+        }
+        public NEARLINE_RESTORE_IN_PROCESS(String msg, Exception ex)
+        {
+            super(TExceptionEnum.NEARLINE_RESTORE_IN_PROCESS, msg, ex);
+        }
+    }
+
 }

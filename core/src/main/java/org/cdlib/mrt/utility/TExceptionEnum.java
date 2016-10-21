@@ -66,6 +66,8 @@ public enum TExceptionEnum
     CONCURRENT_UPDATE("Concurrent update of same Version", 500),
 
     SQL_EXCEPTION("SQL exception", 500),
+    
+    NEARLINE_RESTORE_IN_PROCESS("Restore of nearline content in process", 202),
 
     REMOTE_IO_SERVICE_EXCEPTION("Attempt to read or write to remote IO service fails", 500),
 
