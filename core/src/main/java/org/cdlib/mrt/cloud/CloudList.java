@@ -182,6 +182,11 @@ public class CloudList
         
         public String dumpLine()
         {
+            MessageDigest digest = getDigest();
+            String digestS = null;
+            if (digest != null) {
+                digestS = digest.getValue();
+            }
             return "ENTRY:"
                     + " - container:" + container
                     + " - key:" + key
@@ -189,6 +194,7 @@ public class CloudList
                     + " - etag:" + etag
                     + " - lastModified:" + lastModified
                     + " - contentType:" + contentType
+                    + " - digest:" + digestS
                     ;
         }
         
