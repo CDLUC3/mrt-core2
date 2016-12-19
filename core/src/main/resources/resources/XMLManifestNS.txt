@@ -41,6 +41,7 @@ OAI_SERVICE | OAIServiceState | oaisv | oai/service
 REPLIC_ADD | ReplicationAddState | repadd | rep/add
 REPLIC_MATCH | MatchObjectState | repmch | rep/mch
 REPLIC_MAP | ReplicationAddMapState | repmap | rep/map
+REPLIC_NOS | NodesObjectsState | repnos | rep/nos
 REPLIC_DELETE | ReplicationDeleteState | repdel | rep/del
 REPLIC_SERVICE | ReplicationServiceState | repsvc | rep/svc
 STORE_LOCID | LocalIDsState | locid | store/locid

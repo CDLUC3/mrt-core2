@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Vector;
 
 import org.cdlib.mrt.cloud.ManInfo;
@@ -73,7 +74,7 @@ public class VersionMap
     private static final String MESSAGE = NAME + ": ";
 
     private static final String NL = System.getProperty("line.separator");
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     
     protected Identifier objectID = null;
     protected int current = -1;
@@ -380,6 +381,86 @@ public class VersionMap
             throw new TException(ex);
         }
         
+    }
+    
+    
+    public void stubVersion(int stubVersion)
+        throws TException
+    {
+        try {
+            if (DEBUG) System.out.println("****************************stubVersion***********************");
+            if (stubVersion == 1) {
+                throw new TException.REQUEST_INVALID(MESSAGE + "stubVersion - version one may not be stubbed");
+            }
+            stubFromVersions(stubVersion);
+            rebuildHash();
+            validateVersion();
+            
+        } catch (TException tex) {
+            throw tex;
+
+        } catch (Exception ex) {
+            System.out.println(MESSAGE + "Exception:" + ex);
+            ex.printStackTrace();
+            throw new TException(ex);
+        }
+        
+    }
+    
+    
+    protected void stubFromVersions(int stubVersion)
+         throws TException
+    {
+        for (int manVersion=stubVersion; manVersion <= current; manVersion++) {
+            int manInx = getVersionListInx(manVersion);
+            if (manInx < 0) { //!!!!
+                throw new TException.INVALID_ARCHITECTURE(MESSAGE + "stubVersion - version not found:" + stubVersion);
+            }
+            System.out.println("PROCESS:" + manVersion);
+            ManInfo manInfo = manList.get(manInx);
+            stubFromManList(manInfo, stubVersion);
+        }
+    }
+    
+    
+    protected void stubFromManList(ManInfo manInfo, int stubVersion)
+         throws TException
+    {
+        boolean localdebug = false;
+        System.out.println(manInfo.dump("stubFromManList"));
+        ComponentContent content = manInfo.components;
+        LinkedHashMap<String, FileComponent> componentTable = content.getFileComponentTable();
+        ArrayList<String> deleteList = new ArrayList();
+        Set<String> keys = componentTable.keySet();
+        for (String key : keys) {
+            if (localdebug) System.out.println("key:" + key);
+            FileComponent component = componentTable.get(key);
+            if (localdebug) System.out.println(component.dump("component"));
+            String componentKey = component.getLocalID();
+            if (StringUtil.isEmpty(componentKey) ) {
+                throw new TException.REQUEST_INVALID(MESSAGE + "stubFromManList - cloud keys required for this function");
+            }
+            String [] parts = component.getLocalID().split("\\|");
+            if (parts.length < 3) {
+                continue;
+            }
+            int testVersion = -1;
+            try {
+                testVersion = Integer.parseInt(parts[1]);
+            } catch (Exception ex) {
+                continue;
+            }
+            if (testVersion != stubVersion) continue;
+            if (localdebug) System.out.println("componentKey:" + componentKey);
+            deleteList.add(key);
+            
+        }
+        
+        for (String deleteKey : deleteList) {
+            System.out.println("deleteKey:" + deleteKey);
+            componentTable.remove(deleteKey);
+        }
+        return;
     }
 
     public static ManInfo buildManInfo(
