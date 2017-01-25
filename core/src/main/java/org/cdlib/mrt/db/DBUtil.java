@@ -131,14 +131,50 @@ public class DBUtil
             logger.logError(MESSAGE + "exec - " + msg, 0);
             System.out.println(msg);
             throw new TException.SQL_EXCEPTION(msg, e);
+            
         } finally {
 	    try {
 	       statement.close();
-	    } catch (Exception e) {
-	    }
+	    } catch (Exception e) {}
 	}
     }
 
+    public static int update(
+            Connection connection,
+            String replaceCmd,
+            LoggerInf logger)
+        throws TException
+    {
+        if (StringUtil.isEmpty(replaceCmd)) {
+            throw new TException.INVALID_OR_MISSING_PARM("replaceCmd not supplied");
+        }
+        if (connection == null) {
+            throw new TException.INVALID_OR_MISSING_PARM("connection not supplied");
+        }
+        Statement statement = null;
+        try {
+
+            statement = connection.createStatement();
+            ResultSet resultSet = null;
+            int rowCnt = statement.executeUpdate(replaceCmd);
+            return rowCnt;
+
+        } catch(Exception e) {
+            String msg = "Exception"
+                + " - sql=" + replaceCmd
+                + " - exception:" + e;
+
+            logger.logError(MESSAGE + "exec - " + msg, 0);
+            System.out.println(msg);
+            throw new TException.SQL_EXCEPTION(msg, e);
+            
+        } finally {
+	    try {
+	       statement.close();
+	    } catch (Exception e) {}
+	}
+    }
+    
     public static String buildModify(Properties prop)
     {
         Enumeration e = prop.propertyNames();
