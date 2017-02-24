@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Set;
 import org.cdlib.mrt.utility.PropertiesUtil;
+import org.cdlib.mrt.core.DateState;
 import org.cdlib.mrt.core.MessageDigest;
 
 
@@ -113,6 +114,9 @@ public class CloudList
         public String lastModified = null;
         public MessageDigest digest = null;
         public String storageClass = null;
+        public int version = 0;
+        public DateState created = null;
+        public String fileID = null;
         
         public CloudEntry(
                 String container, String key, long size, String etag, String contentType, String lastModified)
@@ -156,6 +160,7 @@ public class CloudList
             set(prop, "lastModified", lastModified);
             set(prop, "contentType", contentType);
             set(prop, "storageClass", storageClass);
+            set(prop, "version", "" + version);
             if (digest != null) {
                 set(prop, "digest", digest.getJavaAlgorithm() + ":" + digest.getValue());
             }
@@ -170,13 +175,21 @@ public class CloudList
         
         public String dump(String header)
         {
+            String createdS = "null";
+            if (created != null) createdS = created.getIsoDate();
+            String digestS = "null";
+            if (digest != null) digestS = digest.getValue();
             return "CloudEntry-" + header + "\n"
                     + " - container:" + container + "\n"
                     + " - key:" + key + "\n"
                     + " - size:" + size + "\n"
                     + " - etag:" + etag + "\n"
                     + " - lastModified:" + lastModified + "\n"
-                    + " - contentType:" + contentType + "\n";
+                    + " - contentType:" + contentType + "\n"
+                    + " - digest:" + digestS + "\n"
+                    + " - storageClass:" + storageClass + "\n"
+                    + " - version:" + version + "\n"
+                    + " - created:" + createdS + "\n";
         }
 
         
@@ -261,8 +274,85 @@ public class CloudList
         public void setStorageClass(String storageClass) {
             this.storageClass = storageClass;
         }
+
+        public int getVersion() {
+            return version;
+        }
+
+        public void setVersion(int version) {
+            this.version = version;
+        }
+
+        public DateState getCreated() {
+            return created;
+        }
+
+        public void setCreated(DateState created) {
+            this.created = created;
+        }
+
+        public String getFileID() {
+            return fileID;
+        }
+
+        public void setFileID(String fileID) {
+            this.fileID = fileID;
+        }
         
-        
+        public CloudEntry sSize(long size) {
+            this.size = size;
+            return this;
+        }
+
+        public CloudEntry sContainer(String container) {
+            this.container = container;
+            return this;
+        }
+
+        public CloudEntry sKey(String key) {
+            this.key = key;
+            return this;
+        }
+
+        public CloudEntry sEtag(String etag) {
+            this.etag = etag;
+            return this;
+        }
+
+        public CloudEntry sContentType(String contentType) {
+            this.contentType = contentType;
+            return this;
+        }
+
+        public CloudEntry sLastModified(String lastModified) {
+            this.lastModified = lastModified;
+            return this;
+        }
+
+        public CloudEntry sDigest(MessageDigest digest) {
+            this.digest = digest;
+            return this;
+        }
+
+        public CloudEntry sStorageClass(String storageClass) {
+            this.storageClass = storageClass;
+            return this;
+        }
+
+        public CloudEntry sVersion(int version) {
+            this.version = version;
+            return this;
+        }
+
+        public CloudEntry sCreated(DateState created) {
+            this.created = created;
+            return this;
+        }
+
+        public CloudEntry sFileID(String fileID) {
+            this.fileID = fileID;
+            return this;
+        }
     }
 }
 
