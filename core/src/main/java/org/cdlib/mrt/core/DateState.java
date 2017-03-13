@@ -67,7 +67,7 @@ public class DateState
      */
     public DateState(String dateTime)
     {
-        date = DateUtil.getIsoDateFromString(dateTime);
+            date = DateUtil.getIsoDateFromString(dateTime);
     }
 
     /**
@@ -94,7 +94,7 @@ public class DateState
     public void setDate(Date date) {
         this.date = date;
     }
-
+    
     /**
      * Return date in Iso format
      * @return Iso format date
@@ -103,6 +103,16 @@ public class DateState
     {
         if (date == null) return null;
         return DateUtil.getIsoDate(date);
+    }
+    
+    /**
+     * Return date in Iso format - Zulu
+     * @return Iso format date
+     */
+    public String getIsoZDate()
+    {
+        if (date == null) return null;
+        return DateUtil.getIsoZDate(date);
     }
 
     /**
