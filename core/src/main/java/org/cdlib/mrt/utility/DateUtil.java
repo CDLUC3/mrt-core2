@@ -40,6 +40,7 @@ import java.util.Date;
  */
 public class DateUtil
 {
+    public static final String ISOZPATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String ISOPATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
 
     /**
@@ -118,12 +119,31 @@ public class DateUtil
     {
         try {
             if (StringUtil.isEmpty(stringDate)) return null;
+            if (stringDate.endsWith("Z")) {
+                return getIsoDateFromZString(stringDate);
+            }
             //if (stringDate.equals("-")) return null;
             int len = stringDate.length();
             if (stringDate.charAt(len-3) == ':') {
                 stringDate = stringDate.substring(0,len-3) + stringDate.substring(len-2);
             }
             return getDateFromString(stringDate, ISOPATTERN);
+
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Build Date from a displayed IsoDate string
+     * @param stringDate iso string to convert to Date
+     * @return converted Date
+     */
+    public static Date getIsoDateFromZString(String stringDate)
+    {
+        try {
+            if (StringUtil.isEmpty(stringDate)) return null;
+            return getDateFromString(stringDate, ISOZPATTERN);
 
         } catch (Exception ex) {
             return null;
@@ -153,6 +173,17 @@ public class DateUtil
         if (!dateS.endsWith("Z")) {
             dateS = dateS.substring(0,len-2) + ":" + dateS.substring(len-2);
         }
+        return dateS;
+    }
+
+    /**
+     * Build an IsoDate from a passed Date
+     * @param date to conver to displayed IsoDate
+     * @return displayed IsoDate
+     */
+    public static String getIsoZDate(Date date)
+    {
+        String dateS = getDateString(date, ISOZPATTERN);
         return dateS;
     }
 
