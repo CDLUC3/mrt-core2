@@ -33,6 +33,7 @@ package org.cdlib.mrt.utility;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  *
@@ -143,8 +144,9 @@ public class DateUtil
     {
         try {
             if (StringUtil.isEmpty(stringDate)) return null;
-            return getDateFromString(stringDate, ISOZPATTERN);
-
+            Date date = (new SimpleDateFormat(ISOPATTERN)).parse(stringDate.replaceAll("Z$", "+0000"));
+            return date;
+            
         } catch (Exception ex) {
             return null;
         }
@@ -183,8 +185,10 @@ public class DateUtil
      */
     public static String getIsoZDate(Date date)
     {
-        String dateS = getDateString(date, ISOZPATTERN);
-        return dateS;
+        if (date == null) return null;
+        SimpleDateFormat df = new SimpleDateFormat(ISOZPATTERN);
+        df.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return df.format(date);
     }
 
     /**
