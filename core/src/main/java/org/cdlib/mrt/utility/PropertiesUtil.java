@@ -297,6 +297,32 @@ public class PropertiesUtil
 
         return(props);
     }
+
+    /**
+     * Loads properties from one or more properties files.
+     *
+     * @param Logger, to be used to write log messages, and to call
+     *      "getClassLoader( )".
+     * @param propertiesFileName A property file name. 
+     */
+    public static Properties loadPropertiesFileName(String propertiesFileName)
+        throws TException
+    {
+        String textMessage;
+
+        if (StringUtil.isEmpty(propertiesFileName))
+        {
+            textMessage = "PropertiesUtil.loadProperties( ):  method was " +
+                "passed a null pointer for its second parameter (a " +
+                "\"String[ ]\")";
+            throw new TException.INVALID_OR_MISSING_PARM(
+                textMessage);
+        }
+
+        File propFile = new File(propertiesFileName);
+
+        return loadFileProperties(propFile);
+    }
     
     /**
      * Loads properties from a properties files.
