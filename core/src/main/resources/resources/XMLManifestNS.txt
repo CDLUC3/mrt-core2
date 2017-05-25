@@ -44,6 +44,11 @@ REPLIC_MAP | ReplicationAddMapState | repmap | rep/map
 REPLIC_NOS | NodesObjectsState | repnos | rep/nos
 REPLIC_DELETE | ReplicationDeleteState | repdel | rep/del
 REPLIC_SERVICE | ReplicationServiceState | repsvc | rep/svc
+CLOUDHOST_SERVICE | CloudhostServiceState | chsvc | ch/svc
+CLOUDHOST_ADD | CloudhostAddState | chadd | ch/add
+CLOUDHOST_DELETE | CloudhostDeleteState | chdel | ch/del
+CLOUDHOST_FIXITY | CloudhostFixityState | chfix | ch/fix
+CLOUDHOST_META | CloudhostMetaState | chmeta | ch/meta
 STORE_LOCID | LocalIDsState | locid | store/locid
 STORE_DELID | DeleteIDState | delid | store/delid
 PING | PingState | ping | ping/basic | dateTime
