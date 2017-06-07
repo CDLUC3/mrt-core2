@@ -61,6 +61,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 //import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -69,6 +70,8 @@ import org.apache.http.client.config.RequestConfig;
 //import org.apache.http.params.HttpParams;
 import org.apache.http.StatusLine;
 import org.apache.http.Header;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 /**
  * This class will contain utilities for HTTP transactions
  *
@@ -658,6 +661,178 @@ public class HTTPUtil {
         }
     }
 
+
+    /**
+     * Return InputStream from multipart request
+     * @param requestURL request URL
+     * @param stringParts multipart String bodies
+     * @param fileParts multipart File bodies
+     * @param timeout client timeout
+     * @return response stream from multipart request
+     * @throws TException 
+     */
+    public static InputStream postMultipartObject2(
+            String requestURL, 
+            Properties stringParts, 
+            Map<String, File> fileParts,
+            int timeout)
+        throws TException
+    {
+        try {
+            HttpResponse response = postMultipartHttpResponse2(requestURL, stringParts, fileParts, timeout);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                return entity.getContent();
+            }
+            throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
+                    "HTTPUTIL: postObject- Error during HttpClient processing");
+
+        } catch( Exception ex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
+        }
+    }
+    
+    /**
+     * Do multipart post
+     * @param requestURL request URL
+     * @param stringParts multipart String bodies
+     * @param fileParts multipart File bodies
+     * @param timeout client timeout
+     * @return HttpReponse from POST request
+     * @throws TException 
+     */
+    public static HttpResponse postMultipartHttpResponse2(
+            String requestURL, 
+            Properties stringParts, 
+            Map<String, File> fileParts,
+            int timeout)
+        throws TException
+    {
+        try {
+            HttpClient httpClient = getHttpClient(timeout);
+            HttpPost httppost = new HttpPost(requestURL);
+            //CloseableHttpClient httpClient = HttpClients.createDefault();
+            //HttpPost uploadFile = new HttpPost("...");
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+
+            Enumeration e = stringParts.propertyNames();
+            String key = null;
+            String value = null;
+            while( e.hasMoreElements() )
+            {
+                key = (String)e.nextElement();
+                value = stringParts.getProperty(key);
+                if (StringUtil.isNotEmpty(value)) {
+                    builder.addTextBody(key, value, ContentType.TEXT_PLAIN);
+                }
+            }
+            if (fileParts != null) {
+                Set<String> keys = fileParts.keySet();
+                for (String setKey : keys) {
+                    File addFile = fileParts.get(setKey);
+                    builder.addBinaryBody(setKey, addFile);
+                }
+            }
+            
+            HttpEntity multipart = builder.build();
+            httppost.setEntity(multipart);
+            HttpResponse response = httpClient.execute(httppost);
+
+            return response;
+
+        } catch( Exception ex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
+        }
+    }
+
+
+    /**
+     * Return InputStream from multipart request
+     * @param requestURL request URL
+     * @param stringParts multipart String bodies
+     * @param fileParts multipart File bodies
+     * @param timeout client timeout
+     * @return response stream from multipart request
+     * @throws TException 
+     */
+    public static InputStream putMultipartObject(
+            String requestURL, 
+            Properties stringParts, 
+            Map<String, File> fileParts,
+            int timeout)
+        throws TException
+    {
+        try {
+            HttpResponse response = putMultipartHttpResponse(requestURL, stringParts, fileParts, timeout);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                return entity.getContent();
+            }
+            throw new TException.EXTERNAL_SERVICE_UNAVAILABLE(
+                    "HTTPUTIL: postObject- Error during HttpClient processing");
+
+        } catch( Exception ex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
+        }
+    }
+    
+    /**
+     * Do multipart post
+     * @param requestURL request URL
+     * @param stringParts multipart String bodies
+     * @param fileParts multipart File bodies
+     * @param timeout client timeout
+     * @return HttpReponse from POST request
+     * @throws TException 
+     */
+    public static HttpResponse putMultipartHttpResponse(
+            String requestURL, 
+            Properties stringParts, 
+            Map<String, File> fileParts,
+            int timeout)
+        throws TException
+    {
+        try {
+            HttpClient httpClient = getHttpClient(timeout);
+            HttpPut httpPut = new HttpPut(requestURL);
+            //CloseableHttpClient httpClient = HttpClients.createDefault();
+            //HttpPost uploadFile = new HttpPost("...");
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+
+            Enumeration e = stringParts.propertyNames();
+            String key = null;
+            String value = null;
+            while( e.hasMoreElements() )
+            {
+                key = (String)e.nextElement();
+                value = stringParts.getProperty(key);
+                if (StringUtil.isNotEmpty(value)) {
+                    builder.addTextBody(key, value, ContentType.TEXT_PLAIN);
+                }
+            }
+            if (fileParts != null) {
+                Set<String> keys = fileParts.keySet();
+                for (String setKey : keys) {
+                    File addFile = fileParts.get(setKey);
+                    builder.addBinaryBody(setKey, addFile);
+                }
+            }
+            
+            HttpEntity multipart = builder.build();
+            httpPut.setEntity(multipart);
+            HttpResponse response = httpClient.execute(httpPut);
+
+            return response;
+
+        } catch( Exception ex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
+        }
+    }
+    
     /**
      * Return InputStream from multipart request
      * @param requestURL request URL
