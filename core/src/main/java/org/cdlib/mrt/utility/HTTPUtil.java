@@ -361,7 +361,7 @@ public class HTTPUtil {
         try {
             //HttpClient httpclient = new DefaultHttpClient(params);
             
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(360 * 1000).build();
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).build();
             HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
             HttpGet httpget = new HttpGet(requestURL);
 	    httpget.addHeader("Accept", "*/*");
