@@ -11,6 +11,7 @@ OBJECT | ObjectState | obj | store/object | | object
 VERSION | VersionState | ver | store/version | | version
 FILE | FileState | fil | store/file | | file
 FIXITY | FileFixityState | fix | store/fix
+STOR_OBJFIX | ObjectFixityState | ofix | store/ofix
 PRIMARY | PrimaryIDState | pid | store/pid | localIdentifier
 FEEDER | FeederServiceState | feed | feeder/mets | identifier
 EXCEPTION | TException | exc | core/exc | status

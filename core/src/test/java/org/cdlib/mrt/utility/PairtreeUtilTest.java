@@ -152,6 +152,24 @@ public class PairtreeUtilTest {
         }
     }
 
+
+    @Test
+    public void testPairName()
+    {
+        try {
+            String name = PairtreeUtil.getPairName("ark:/28722/k2s75j51d");
+            System.out.println("***PairName=" + name);
+            assertTrue(true);
+
+        } catch (Exception ex) {
+             System.out.println(MESSAGE + "Exception:" + ex);
+             assertFalse(MESSAGE
+                    + " - Exception:" + ex
+                    + " - stack:" + StringUtil.stackTrace(ex)
+                    , true);
+        }
+    }
+
     protected void addFiles(File addDir)
     {
         try {
