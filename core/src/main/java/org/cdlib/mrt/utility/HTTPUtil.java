@@ -724,7 +724,7 @@ public class HTTPUtil {
                 key = (String)e.nextElement();
                 value = stringParts.getProperty(key);
                 if (StringUtil.isNotEmpty(value)) {
-                    builder.addTextBody(key, value, ContentType.TEXT_PLAIN);
+                    builder.addTextBody(key, value, ContentType.TEXT_PLAIN.withCharset("UTF-8"));
                 }
             }
             if (fileParts != null) {
@@ -810,7 +810,7 @@ public class HTTPUtil {
                 key = (String)e.nextElement();
                 value = stringParts.getProperty(key);
                 if (StringUtil.isNotEmpty(value)) {
-                    builder.addTextBody(key, value, ContentType.TEXT_PLAIN);
+                    builder.addTextBody(key, value, ContentType.TEXT_PLAIN.withCharset("UTF-8"));
                 }
             }
             if (fileParts != null) {
