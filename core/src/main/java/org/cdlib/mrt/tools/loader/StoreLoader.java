@@ -32,38 +32,19 @@ package org.cdlib.mrt.tools.loader;
 import java.io.File;
 import java.net.URL;
 
-import org.cdlib.mrt.utility.URLEncoder;
 import java.util.Properties;
-import java.util.Vector;
-
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.StatusLine;
 
 import org.cdlib.mrt.core.Identifier;
-import org.cdlib.mrt.utility.DateUtil;
 import org.cdlib.mrt.utility.ListProcessor;
 import org.cdlib.mrt.utility.ListProcessorSimple;
 
 import org.cdlib.mrt.utility.TFrame;
-import org.cdlib.mrt.core.FileContent;
 import org.cdlib.mrt.core.FileComponent;
-import org.cdlib.mrt.core.Manifest;
 import org.cdlib.mrt.core.ManifestRowAbs;
-import org.cdlib.mrt.core.ManifestRowIngest;
 import org.cdlib.mrt.core.MessageDigest;
 import org.cdlib.mrt.core.StorageAddClient;
 import org.cdlib.mrt.utility.FileUtil;
 import org.cdlib.mrt.utility.TException;
-import org.cdlib.mrt.utility.LoggerInf;
 import org.cdlib.mrt.utility.PropertiesUtil;
 import org.cdlib.mrt.utility.StringUtil;
 
