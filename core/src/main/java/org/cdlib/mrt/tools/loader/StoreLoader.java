@@ -94,7 +94,7 @@ public class StoreLoader
 
             String propertyList[] = {
                 "testresources/BatchManifest.properties"};
-            framework = new TFrame(propertyList, "BatchLoader");
+            framework = new TFrame(propertyList, "StoreLoader");
             
             // Create an instance of this object
             StoreLoader test = new StoreLoader(framework);
@@ -117,7 +117,7 @@ public class StoreLoader
         throws TException
     {
         super(framework);
-        initializeBatchLoader();
+        initializeStoreLoader();
     }
 
     @Override
@@ -137,7 +137,7 @@ public class StoreLoader
         }
     }
 
-    protected void initializeBatchLoader()
+    protected void initializeStoreLoader()
         throws TException
     {
         if (DEBUG) System.out.println("CALL BatchLoader initialize");
