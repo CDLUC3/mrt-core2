@@ -45,7 +45,7 @@ import java.util.Set;
 
 
 
-import org.apache.http.entity.mime.MultipartEntity;
+//import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.Header;
@@ -63,7 +63,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-//import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.client.config.RequestConfig;
 //import org.apache.http.params.BasicHttpParams;
@@ -550,7 +550,7 @@ public class HTTPUtil {
         } finally {
             if (resEntity != null) {
                 try {
-                    resEntity.consumeContent();
+                    EntityUtils.consume(resEntity);
                 } catch (Exception e) { }
             }
         }
@@ -660,7 +660,79 @@ public class HTTPUtil {
             throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
         }
     }
+    
+    /**
+     * Do multipart post
+     * @param requestURL request URL
+     * @param stringParts multipart String bodies
+     * @param fileParts multipart File bodies
+     * @param timeout client timeout
+     * @return HttpReponse from POST request
+     * @throws TException 
+     */
+    public static HttpResponse postMultipartHeader(
+            String requestURL, 
+            Properties mainHeaders,
+            Properties stringParts, 
+            Map<String, File> fileParts,
+            int timeout)
+        throws TException
+    {
+        try {
+            HttpClient httpClient = getHttpClient(timeout);
+            HttpPost httppost = new HttpPost(requestURL);
+            //CloseableHttpClient httpClient = HttpClients.createDefault();
+            //HttpPost uploadFile = new HttpPost("...");
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
+            //add string parts
+            Enumeration e = stringParts.propertyNames();
+            String key = null;
+            String value = null;
+            while( e.hasMoreElements() )
+            {
+                key = (String)e.nextElement();
+                value = stringParts.getProperty(key);
+                if (StringUtil.isNotEmpty(value)) {
+                    builder.addTextBody(key, value, ContentType.TEXT_PLAIN.withCharset("UTF-8"));
+                }
+            }
+            
+            //add file parts
+            if (fileParts != null) {
+                Set<String> keys = fileParts.keySet();
+                for (String setKey : keys) {
+                    File addFile = fileParts.get(setKey);
+                    builder.addBinaryBody(setKey, addFile);
+                }
+            }
+            
+            //add main headers
+            HttpEntity multipart = builder.build();
+            httppost.setEntity(multipart);
+            // add headers
+            if ((mainHeaders != null) && (mainHeaders.size() > 0)) {
+                Enumeration emh = mainHeaders.propertyNames();
+                String mhkey = null;
+                String mhvalue = null;
+                while( emh.hasMoreElements() )
+                {
+                    mhkey = (String)emh.nextElement();
+                    mhvalue = mainHeaders.getProperty(mhkey);
+                    if (StringUtil.isNotEmpty(mhvalue)) {
+                        httppost.addHeader(mhkey, mhvalue);
+                    }
+                }
+            }
+            HttpResponse response = httpClient.execute(httppost);
+
+            return response;
+
+        } catch( Exception ex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
+        }
+    }
 
     /**
      * Return InputStream from multipart request
@@ -880,41 +952,7 @@ public class HTTPUtil {
             int timeout)
         throws TException
     {
-        try {
-            HttpClient httpClient = getHttpClient(timeout);
-            HttpPost httppost = new HttpPost(requestURL);
-            MultipartEntity reqEntity = new MultipartEntity();
-            Enumeration e = stringParts.propertyNames();
-            String key = null;
-            String value = null;
-            while( e.hasMoreElements() )
-            {
-                key = (String)e.nextElement();
-                value = stringParts.getProperty(key);
-                if (StringUtil.isNotEmpty(value)) {
-                    StringBody body = new StringBody(value);
-                    reqEntity.addPart(key, body);
-                }
-            }
-            if (fileParts != null) {
-                Set<String> keys = fileParts.keySet();
-                for (String setKey : keys) {
-                    File addFile = fileParts.get(setKey);
-                    FileBody file = new FileBody(addFile);
-                    reqEntity.addPart(setKey, file);
-                }
-            }
-
-            httppost.setEntity(reqEntity);
-
-            System.out.println("executing request " + httppost.getRequestLine());
-            HttpResponse response = httpClient.execute(httppost);
-            return response;
-
-        } catch( Exception ex ) {
-            System.out.println("trace:" + StringUtil.stackTrace(ex));
-            throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
-        }
+        return postMultipartHttpResponse2(requestURL, stringParts, fileParts,timeout);
     }
     
     public static HttpResponse getHttpResponse(URL hrefURL,  int timeout, int retry)
