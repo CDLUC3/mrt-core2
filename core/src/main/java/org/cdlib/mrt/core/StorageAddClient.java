@@ -32,16 +32,20 @@ import org.apache.http.protocol.HTTP;
 
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+//import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.NameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
+import org.cdlib.mrt.utility.HTTPUtil;
+//import org.apache.http.params.BasicHttpParams;
+//import org.apache.http.params.HttpParams;
 
 
 /**
@@ -179,8 +183,12 @@ public class StorageAddClient
                 throw new TException.INVALID_OR_MISSING_PARM("objectID required");
             }
             if (StringUtil.isNotEmpty(manifestS)) {
-                testFile = FileUtil.getTempFile("txt", "txt");
-                manifestFile = testFile;
+                manifestFile = new File(manifestS);
+                if (!manifestFile.exists()) {
+                    throw new TException.INVALID_OR_MISSING_PARM(
+                            "ManifestFile does not exist:" + manifestFile.getCanonicalPath());
+                }
+                testFile = FileUtil.copy2Temp(manifestFile);
             }
             if (StringUtil.isNotEmpty(urlS)) {
                 testFile = FileUtil.url2TempFile(logger, urlS);
@@ -367,7 +375,9 @@ public class StorageAddClient
                 System.out.println("Chunked?: " + resEntity.isChunked());
             }
             if (resEntity != null) {
-                resEntity.consumeContent();
+                try {
+                    EntityUtils.consume(resEntity);
+                } catch (Exception e) { }
             }
             return resultProp;
 
@@ -393,76 +403,19 @@ public class StorageAddClient
             String formatType)
         throws TException
     {
-        try {
-            if (objectID == null) {
-                throw new TException.INVALID_OR_MISSING_PARM("objectID not supplied");
-            }
-            String objectIDS = objectID.getValue();
-            String nodeIDS = "";
-            if (nodeID != null) {
-                nodeIDS = "/" + nodeID;
-            }
-            String addVersionURLS = link + "/add"
-                    + nodeIDS
-                    + "/"+ URLEncoder.encode(objectIDS, "utf-8");
-            URL addVersionURL = new URL(addVersionURLS);
-            log(MESSAGE + "addCLient:"
-                    + " - nodeID=" + nodeID
-                    + " - objectIDS=" + objectIDS
-                    + " - context=" + localContext
-                    + " - identifier=" + localID
-                    + " - size=" + size
-                    + " - type=" + type
-                    + " - value=" + value
-                    + " - formatType=" + formatType
-                    + " - addVersionURL=" + addVersionURL
-                    + " - url=" + url
-                    + " - manifest=" + manifest
-                    ,10);
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(addVersionURL.toString());
-            MultipartEntity reqEntity = new MultipartEntity();
-            if (StringUtil.isNotEmpty(localContext)) {
-                StringBody body = new StringBody(localContext);
-                reqEntity.addPart("local-context", body);
-            }
-            if (StringUtil.isNotEmpty(localID)) {
-                StringBody body = new StringBody(localID);
-                reqEntity.addPart("local-identifier", body);
-            }
-            if (StringUtil.isNotEmpty(type)) {
-                StringBody body = new StringBody(type);
-                reqEntity.addPart("digest-type", body);
-            }
-            if (StringUtil.isNotEmpty(value)) {
-                StringBody body = new StringBody(value);
-                reqEntity.addPart("digest-value", body);
-            }
-            if (StringUtil.isNotEmpty(url)) {
-                StringBody body = new StringBody(url);
-                reqEntity.addPart("url", body);
-            }
-            if (StringUtil.isNotEmpty(formatType)) {
-                StringBody body = new StringBody(formatType);
-                reqEntity.addPart(FORMAT_NAME_MULTIPART, body);
-            }
-            if ((manifest != null) && manifest.exists()) {
-                FileBody file = new FileBody(manifest);
-                reqEntity.addPart("manifest", file);
-            }
-
-            httppost.setEntity(reqEntity);
-
-            System.out.println("executing request " + httppost.getRequestLine());
-            HttpResponse response = httpclient.execute(httppost);
-            return response;
-
-        } catch (Exception ex) {
-            log(MESSAGE + "Exception:" + ex, 3);
-            log(MESSAGE + "Trace:" + StringUtil.stackTrace(ex), 10);
-            throw new TException.GENERAL_EXCEPTION(ex);
-
-        }
+        return sendAddMultipart(
+            link,
+            nodeID,
+            objectID,
+            localContext,
+            localID,
+            manifest,
+            url,
+            size,
+            type,
+            value,
+            formatType,
+            12*60*60*1000);
     }
 
     public HttpResponse sendAddMultipart(
@@ -480,6 +433,7 @@ public class StorageAddClient
             int timeout)
         throws TException
     {
+        Properties stringProp = new Properties();
         try {
             if (objectID == null) {
                 throw new TException.INVALID_OR_MISSING_PARM("objectID not supplied");
@@ -492,7 +446,6 @@ public class StorageAddClient
             String addVersionURLS = link + "/add"
                     + nodeIDS
                     + "/"+ URLEncoder.encode(objectIDS, "utf-8");
-            URL addVersionURL = new URL(addVersionURLS);
             log(MESSAGE + "addCLient:"
                     + " - nodeID=" + nodeID
                     + " - objectIDS=" + objectIDS
@@ -502,51 +455,43 @@ public class StorageAddClient
                     + " - type=" + type
                     + " - value=" + value
                     + " - formatType=" + formatType
-                    + " - addVersionURL=" + addVersionURL
+                    + " - addVersionURL=" + addVersionURLS
                     + " - url=" + url
                     + " - manifest=" + manifest
                     ,10);
-            HttpParams params = new BasicHttpParams();
-            params.setParameter("http.socket.timeout", new Integer(timeout));
-            params.setParameter("http.connection.timeout", new Integer(timeout));
-
-            HttpClient httpclient = new DefaultHttpClient(params);
-            HttpPost httppost = new HttpPost(addVersionURL.toString());
-            MultipartEntity reqEntity = new MultipartEntity();
             if (StringUtil.isNotEmpty(localContext)) {
-                StringBody body = new StringBody(localContext);
-                reqEntity.addPart("local-context", body);
+                stringProp.setProperty("local-context", localContext);
             }
             if (StringUtil.isNotEmpty(localID)) {
-                StringBody body = new StringBody(localID);
-                reqEntity.addPart("local-identifier", body);
+                stringProp.setProperty("local-identifier", localID);
+            }
+            if (size != null) {
+                stringProp.setProperty("size", "" + size);
             }
             if (StringUtil.isNotEmpty(type)) {
-                StringBody body = new StringBody(type);
-                reqEntity.addPart("digest-type", body);
+                stringProp.setProperty("digest-type", type);
             }
             if (StringUtil.isNotEmpty(value)) {
-                StringBody body = new StringBody(value);
-                reqEntity.addPart("digest-value", body);
+                stringProp.setProperty("digest-value", value);
             }
             if (StringUtil.isNotEmpty(url)) {
-                StringBody body = new StringBody(url);
-                reqEntity.addPart("url", body);
+                stringProp.setProperty("url", url);
             }
             if (StringUtil.isNotEmpty(formatType)) {
-                StringBody body = new StringBody(formatType);
-                reqEntity.addPart(FORMAT_NAME_MULTIPART, body);
+                stringProp.setProperty("responseForm", formatType);
             }
+            Map<String, File> fileParts = new HashMap();
             if ((manifest != null) && manifest.exists()) {
-                FileBody file = new FileBody(manifest);
-                reqEntity.addPart("manifest", file);
+                fileParts.put("manifest", manifest);
             }
-
-            httppost.setEntity(reqEntity);
-
-            System.out.println("executing request " + httppost.getRequestLine());
-            HttpResponse response = httpclient.execute(httppost);
+            //HttpResponse response = HTTPUtil.postMultipartHeader(addVersionURLS, null, stringProp, fileParts, timeout);
+            HttpResponse response = HTTPUtil.postMultipartHttpResponse(addVersionURLS, stringProp, fileParts, timeout);
             return response;
+
+        } catch (TException tex) {
+            log(MESSAGE + "Exception:" + tex, 3);
+            log(MESSAGE + "Trace:" + StringUtil.stackTrace(tex), 10);
+            throw tex;
 
         } catch (Exception ex) {
             log(MESSAGE + "Exception:" + ex, 3);
@@ -570,55 +515,19 @@ public class StorageAddClient
             String formatType)
         throws TException
     {
-        try {
-            if (objectID == null) {
-                throw new TException.INVALID_OR_MISSING_PARM("objectID not supplied");
-            }
-            String objectIDS = objectID.getValue();
-            String addVersionURLS = link + "/add"
-                    + "/"+ nodeID
-                    + "/"+ URLEncoder.encode(objectIDS, "utf-8");
-            URL addVersionURL = new URL(addVersionURLS);
-            log(MESSAGE + "addCLient:"
-                    + " - nodeID=" + nodeID
-                    + " - objectIDS=" + objectIDS
-                    + " - context=" + context
-                    + " - identifier=" + identifier
-                    + " - size=" + size
-                    + " - type=" + type
-                    + " - value=" + value
-                    + " - formatType=" + formatType
-                    + " - addVersionURL=" + addVersionURL
-                    + " - url=" + url
-                    + " - manifest=" + manifest
-                    ,10);
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(addVersionURL.toString());
-
-            List <NameValuePair> nvps = new ArrayList <NameValuePair>();
-            addNameValue(nvps, "local-context", context);
-            addNameValue(nvps, "local-identifier", identifier);
-            addNameValue(nvps, "digest-type", type);
-            addNameValue(nvps, "digest-value", value);
-            addNameValue(nvps, "url", url);
-            addNameValue(nvps, FORMAT_NAME_POST, formatType);
-            if ((manifest != null) && manifest.exists()) {
-                String manifestS = FileUtil.file2String(manifest);
-                addNameValue(nvps, "manifest", manifestS);
-            }
-
-            httppost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-
-            System.out.println("executing request " + httppost.getRequestLine());
-            HttpResponse response = httpclient.execute(httppost);
-            return response;
-
-        } catch (Exception ex) {
-            log(MESSAGE + "Exception:" + ex, 3);
-            log(MESSAGE + "Trace:" + StringUtil.stackTrace(ex), 10);
-            throw new TException.GENERAL_EXCEPTION(ex);
-
-        }
+        return sendAddMultipart(
+            link,
+            nodeID,
+            objectID,
+            context,
+            identifier,
+            manifest,
+            url,
+            size,
+            type,
+            value,
+            formatType,
+            12*60*60*1000);
     }
 
     public void log(String msg, int lvl)
