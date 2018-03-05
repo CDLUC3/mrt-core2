@@ -41,27 +41,21 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+//import org.apache.http.impl.client.DefaultHttpClient;
 
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
+//import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.StatusLine;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.util.EntityUtils;
 
-import org.cdlib.mrt.core.Identifier;
-import org.cdlib.mrt.utility.DateUtil;
 import org.cdlib.mrt.utility.ListProcessor;
 import org.cdlib.mrt.utility.ListProcessorSimple;
 
 import org.cdlib.mrt.utility.TFrame;
-import org.cdlib.mrt.core.FileContent;
-import org.cdlib.mrt.core.FileComponent;
-import org.cdlib.mrt.core.Manifest;
-import org.cdlib.mrt.core.ManifestRowAbs;
-import org.cdlib.mrt.core.ManifestRowIngest;
 import org.cdlib.mrt.utility.FileUtil;
+import org.cdlib.mrt.utility.HTTPUtil;
 import org.cdlib.mrt.utility.TException;
-import org.cdlib.mrt.utility.LoggerInf;
 import org.cdlib.mrt.utility.PropertiesUtil;
 import org.cdlib.mrt.utility.StringUtil;
 
@@ -105,7 +99,7 @@ public class BatchLoader
         TFrame framework = null;
         try
         {
-
+            
             String propertyList[] = {
                 "testresources/BatchManifest.properties"};
             framework = new TFrame(propertyList, "BatchLoader");
@@ -131,6 +125,10 @@ public class BatchLoader
         throws TException
     {
         super(framework);
+        if (true) {
+            // This routine no longer compliant with Ingest
+            throw new TException.GENERAL_EXCEPTION("BatchLoader calling no longer supported - see SWORD call handling");
+        }
         initializeBatchLoader();
     }
 
@@ -415,8 +413,7 @@ public class BatchLoader
      * @param type type of ingest request
      * @return http client response
      * @throws TException process exceptions
-     */
-    protected HttpResponse sendIngestMultipart(
+    protected HttpResponse sendIngestMultipartDepricate(
             String ingestID,
             URL url,
             File ingestPackage,
@@ -424,6 +421,8 @@ public class BatchLoader
             String type)
         throws TException
     {
+        Properties prop = new Properties();
+        Map<String, File> fileParts = new HashMap();
         try {
             String ingestURLS = url.toString() + "/poster/submit";
             if (StringUtil.isNotEmpty(ingestID)) {
@@ -452,6 +451,62 @@ public class BatchLoader
 
             System.out.println("executing request " + httppost.getRequestLine());
             HttpResponse response = httpclient.execute(httppost);
+            return response;
+
+        } catch (Exception ex) {
+            log(MESSAGE + "Exception:" + ex);
+            log(MESSAGE + "Trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION(ex);
+
+        }
+    }
+
+     */
+    
+    /**
+     * Send ingest request
+     * @param ingestID
+     * @param url URL of ingest service
+     * @param ingestPackage batch file
+     * @param profileIn ingest profile
+     * @param type type of ingest request
+     * @return http client response
+     * @throws TException process exceptions
+     */
+    protected HttpResponse sendIngestMultipart(
+            String ingestID,
+            URL url,
+            File ingestPackage,
+            String profileIn,
+            String type)
+        throws TException
+    {
+        try {
+            int timeout = 2073600000;
+            HttpClient httpClient = HTTPUtil.getHttpClient(timeout);
+            //CloseableHttpClient httpClient = HttpClients.createDefault();
+            //HttpPost uploadFile = new HttpPost("...");
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            String ingestURLS = url.toString() + "/poster/submit";
+            if (StringUtil.isNotEmpty(ingestID)) {
+                ingestURLS += "/" + URLEncoder.encode(ingestID, "utf-8");
+            }
+            
+            log(MESSAGE + "runTest entered2:"
+                    + " - ingestID:" + ingestID
+                    + " - url:" + ingestURLS
+                    + " - profile:" + profileIn
+                    + " - type:" + type);
+            HttpPost httppost = new HttpPost(ingestURLS);
+            httppost.addHeader("accept", "text/xml; q=1");
+            builder.addTextBody("profile", profileIn, ContentType.TEXT_PLAIN.withCharset("UTF-8"));
+            builder.addTextBody("type", type, ContentType.TEXT_PLAIN.withCharset("UTF-8"));
+            builder.addBinaryBody("package", ingestPackage);
+            HttpEntity multipart = builder.build();
+            httppost.setEntity(multipart);
+
+            System.out.println("executing request " + httppost.getRequestLine());
+            HttpResponse response = httpClient.execute(httppost);
             return response;
 
         } catch (Exception ex) {
@@ -494,7 +549,9 @@ public class BatchLoader
                 System.out.println("Chunked?: " + resEntity.isChunked());
             }
             if (resEntity != null) {
-                resEntity.consumeContent();
+                try {
+                    EntityUtils.consume(resEntity);
+                } catch (Exception e) { }
             }
             return resultProp;
 
