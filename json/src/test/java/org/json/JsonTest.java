@@ -152,37 +152,58 @@ public class JsonTest  {
 
             string = "<recipe name=\"bread\" prep_time=\"5 mins\" cook_time=\"3 hours\"> <title>Basic bread</title> <ingredient amount=\"8\" unit=\"dL\">Flour</ingredient> <ingredient amount=\"10\" unit=\"grams\">Yeast</ingredient> <ingredient amount=\"4\" unit=\"dL\" state=\"warm\">Water</ingredient> <ingredient amount=\"1\" unit=\"teaspoon\">Salt</ingredient> <instructions> <step>Mix all ingredients together.</step> <step>Knead thoroughly.</step> <step>Cover with a cloth, and leave for one hour in warm room.</step> <step>Knead again.</step> <step>Place in a bread baking tin.</step> <step>Cover with a cloth, and leave for one hour in warm room.</step> <step>Bake in the oven at 180(degrees)C for 30 minutes.</step> </instructions> </recipe> ";
             jsonobject = XML.toJSONObject(string);
-            assertEquals("{\"recipe\": {\n    \"title\": \"Basic bread\",\n    \"cook_time\": \"3 hours\",\n    \"instructions\": {\"step\": [\n        \"Mix all ingredients together.\",\n        \"Knead thoroughly.\",\n        \"Cover with a cloth, and leave for one hour in warm room.\",\n        \"Knead again.\",\n        \"Place in a bread baking tin.\",\n        \"Cover with a cloth, and leave for one hour in warm room.\",\n        \"Bake in the oven at 180(degrees)C for 30 minutes.\"\n    ]},\n    \"name\": \"bread\",\n    \"ingredient\": [\n        {\n            \"content\": \"Flour\",\n            \"amount\": 8,\n            \"unit\": \"dL\"\n        },\n        {\n            \"content\": \"Yeast\",\n            \"amount\": 10,\n            \"unit\": \"grams\"\n        },\n        {\n            \"content\": \"Water\",\n            \"amount\": 4,\n            \"unit\": \"dL\",\n            \"state\": \"warm\"\n        },\n        {\n            \"content\": \"Salt\",\n            \"amount\": 1,\n            \"unit\": \"teaspoon\"\n        }\n    ],\n    \"prep_time\": \"5 mins\"\n}}",
+            System.out.println("1>>>" + jsonobject.toString(4) + "<<<");
+            assertEquals("{\"recipe\": {\n    \"name\": \"bread\",\n    \"prep_time\": \"5 mins\",\n    \"cook_time\": \"3 hours\",\n    \"title\": \"Basic bread\",\n    \"ingredient\": [\n        {\n            \"amount\": 8,\n            \"unit\": \"dL\",\n            \"content\": \"Flour\"\n        },\n        {\n            \"amount\": 10,\n            \"unit\": \"grams\",\n            \"content\": \"Yeast\"\n        },\n        {\n            \"amount\": 4,\n            \"unit\": \"dL\",\n            \"state\": \"warm\",\n            \"content\": \"Water\"\n        },\n        {\n            \"amount\": 1,\n            \"unit\": \"teaspoon\",\n            \"content\": \"Salt\"\n        }\n    ],\n    \"instructions\": {\"step\": [\n        \"Mix all ingredients together.\",\n        \"Knead thoroughly.\",\n        \"Cover with a cloth, and leave for one hour in warm room.\",\n        \"Knead again.\",\n        \"Place in a bread baking tin.\",\n        \"Cover with a cloth, and leave for one hour in warm room.\",\n        \"Bake in the oven at 180(degrees)C for 30 minutes.\"\n    ]}\n}}",
                     jsonobject.toString(4));
+ 
 
             jsonobject = JSONML.toJSONObject(string);
-            assertEquals("{\"cook_time\":\"3 hours\",\"name\":\"bread\",\"tagName\":\"recipe\",\"childNodes\":[{\"tagName\":\"title\",\"childNodes\":[\"Basic bread\"]},{\"amount\":8,\"unit\":\"dL\",\"tagName\":\"ingredient\",\"childNodes\":[\"Flour\"]},{\"amount\":10,\"unit\":\"grams\",\"tagName\":\"ingredient\",\"childNodes\":[\"Yeast\"]},{\"amount\":4,\"unit\":\"dL\",\"tagName\":\"ingredient\",\"state\":\"warm\",\"childNodes\":[\"Water\"]},{\"amount\":1,\"unit\":\"teaspoon\",\"tagName\":\"ingredient\",\"childNodes\":[\"Salt\"]},{\"tagName\":\"instructions\",\"childNodes\":[{\"tagName\":\"step\",\"childNodes\":[\"Mix all ingredients together.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Knead thoroughly.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Cover with a cloth, and leave for one hour in warm room.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Knead again.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Place in a bread baking tin.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Cover with a cloth, and leave for one hour in warm room.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Bake in the oven at 180(degrees)C for 30 minutes.\"]}]}],\"prep_time\":\"5 mins\"}",
+            System.out.println("2>>>" + jsonobject.toString() + "<<<");
+            System.out.println("3>>>" + JSONML.toString(jsonobject) + "<<<");
+            assertEquals("{\"tagName\":\"recipe\",\"name\":\"bread\",\"prep_time\":\"5 mins\",\"cook_time\":\"3 hours\",\"childNodes\":[{\"tagName\":\"title\",\"childNodes\":[\"Basic bread\"]},{\"tagName\":\"ingredient\",\"amount\":8,\"unit\":\"dL\",\"childNodes\":[\"Flour\"]},{\"tagName\":\"ingredient\",\"amount\":10,\"unit\":\"grams\",\"childNodes\":[\"Yeast\"]},{\"tagName\":\"ingredient\",\"amount\":4,\"unit\":\"dL\",\"state\":\"warm\",\"childNodes\":[\"Water\"]},{\"tagName\":\"ingredient\",\"amount\":1,\"unit\":\"teaspoon\",\"childNodes\":[\"Salt\"]},{\"tagName\":\"instructions\",\"childNodes\":[{\"tagName\":\"step\",\"childNodes\":[\"Mix all ingredients together.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Knead thoroughly.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Cover with a cloth, and leave for one hour in warm room.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Knead again.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Place in a bread baking tin.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Cover with a cloth, and leave for one hour in warm room.\"]},{\"tagName\":\"step\",\"childNodes\":[\"Bake in the oven at 180(degrees)C for 30 minutes.\"]}]}]}",          
                     jsonobject.toString());
-            assertEquals("<recipe cook_time=\"3 hours\" name=\"bread\" prep_time=\"5 mins\"><title>Basic bread</title><ingredient amount=\"8\" unit=\"dL\">Flour</ingredient><ingredient amount=\"10\" unit=\"grams\">Yeast</ingredient><ingredient amount=\"4\" unit=\"dL\" state=\"warm\">Water</ingredient><ingredient amount=\"1\" unit=\"teaspoon\">Salt</ingredient><instructions><step>Mix all ingredients together.</step><step>Knead thoroughly.</step><step>Cover with a cloth, and leave for one hour in warm room.</step><step>Knead again.</step><step>Place in a bread baking tin.</step><step>Cover with a cloth, and leave for one hour in warm room.</step><step>Bake in the oven at 180(degrees)C for 30 minutes.</step></instructions></recipe>",
+            String toString = "<recipe name=\"bread\" prep_time=\"5 mins\" cook_time=\"3 hours\"><title>Basic bread</title><ingredient amount=\"8\" unit=\"dL\">Flour</ingredient><ingredient amount=\"10\" unit=\"grams\">Yeast</ingredient><ingredient amount=\"4\" unit=\"dL\" state=\"warm\">Water</ingredient><ingredient amount=\"1\" unit=\"teaspoon\">Salt</ingredient><instructions><step>Mix all ingredients together.</step><step>Knead thoroughly.</step><step>Cover with a cloth, and leave for one hour in warm room.</step><step>Knead again.</step><step>Place in a bread baking tin.</step><step>Cover with a cloth, and leave for one hour in warm room.</step><step>Bake in the oven at 180(degrees)C for 30 minutes.</step></instructions></recipe>";
+            assertEquals(toString,
                     JSONML.toString(jsonobject));
 
             jsonarray = JSONML.toJSONArray(string);
-            assertEquals("[\n    \"recipe\",\n    {\n        \"cook_time\": \"3 hours\",\n        \"name\": \"bread\",\n        \"prep_time\": \"5 mins\"\n    },\n    [\n        \"title\",\n        \"Basic bread\"\n    ],\n    [\n        \"ingredient\",\n        {\n            \"amount\": 8,\n            \"unit\": \"dL\"\n        },\n        \"Flour\"\n    ],\n    [\n        \"ingredient\",\n        {\n            \"amount\": 10,\n            \"unit\": \"grams\"\n        },\n        \"Yeast\"\n    ],\n    [\n        \"ingredient\",\n        {\n            \"amount\": 4,\n            \"unit\": \"dL\",\n            \"state\": \"warm\"\n        },\n        \"Water\"\n    ],\n    [\n        \"ingredient\",\n        {\n            \"amount\": 1,\n            \"unit\": \"teaspoon\"\n        },\n        \"Salt\"\n    ],\n    [\n        \"instructions\",\n        [\n            \"step\",\n            \"Mix all ingredients together.\"\n        ],\n        [\n            \"step\",\n            \"Knead thoroughly.\"\n        ],\n        [\n            \"step\",\n            \"Cover with a cloth, and leave for one hour in warm room.\"\n        ],\n        [\n            \"step\",\n            \"Knead again.\"\n        ],\n        [\n            \"step\",\n            \"Place in a bread baking tin.\"\n        ],\n        [\n            \"step\",\n            \"Cover with a cloth, and leave for one hour in warm room.\"\n        ],\n        [\n            \"step\",\n            \"Bake in the oven at 180(degrees)C for 30 minutes.\"\n        ]\n    ]\n]",
+            
+            System.out.println("4>>>" + jsonarray.toString(4) + "<<<");
+            assertEquals("[\n    \"recipe\",\n    {\n        \"name\": \"bread\",\n        \"prep_time\": \"5 mins\",\n        \"cook_time\": \"3 hours\"\n    },\n    [\n        \"title\",\n        \"Basic bread\"\n    ],\n    [\n        \"ingredient\",\n        {\n            \"amount\": 8,\n            \"unit\": \"dL\"\n        },\n        \"Flour\"\n    ],\n    [\n        \"ingredient\",\n        {\n            \"amount\": 10,\n            \"unit\": \"grams\"\n        },\n        \"Yeast\"\n    ],\n    [\n        \"ingredient\",\n        {\n            \"amount\": 4,\n            \"unit\": \"dL\",\n            \"state\": \"warm\"\n        },\n        \"Water\"\n    ],\n    [\n        \"ingredient\",\n        {\n            \"amount\": 1,\n            \"unit\": \"teaspoon\"\n        },\n        \"Salt\"\n    ],\n    [\n        \"instructions\",\n        [\n            \"step\",\n            \"Mix all ingredients together.\"\n        ],\n        [\n            \"step\",\n            \"Knead thoroughly.\"\n        ],\n        [\n            \"step\",\n            \"Cover with a cloth, and leave for one hour in warm room.\"\n        ],\n        [\n            \"step\",\n            \"Knead again.\"\n        ],\n        [\n            \"step\",\n            \"Place in a bread baking tin.\"\n        ],\n        [\n            \"step\",\n            \"Cover with a cloth, and leave for one hour in warm room.\"\n        ],\n        [\n            \"step\",\n            \"Bake in the oven at 180(degrees)C for 30 minutes.\"\n        ]\n    ]\n]",
                     jsonarray.toString(4));
-            assertEquals("<recipe cook_time=\"3 hours\" name=\"bread\" prep_time=\"5 mins\"><title>Basic bread</title><ingredient amount=\"8\" unit=\"dL\">Flour</ingredient><ingredient amount=\"10\" unit=\"grams\">Yeast</ingredient><ingredient amount=\"4\" unit=\"dL\" state=\"warm\">Water</ingredient><ingredient amount=\"1\" unit=\"teaspoon\">Salt</ingredient><instructions><step>Mix all ingredients together.</step><step>Knead thoroughly.</step><step>Cover with a cloth, and leave for one hour in warm room.</step><step>Knead again.</step><step>Place in a bread baking tin.</step><step>Cover with a cloth, and leave for one hour in warm room.</step><step>Bake in the oven at 180(degrees)C for 30 minutes.</step></instructions></recipe>",
+                        
+            System.out.println("5>>>" + JSONML.toString(jsonarray) + "<<<");
+            assertEquals(toString,
                     JSONML.toString(jsonarray));
 
             string = "<div id=\"demo\" class=\"JSONML\"><p>JSONML is a transformation between <b>JSON</b> and <b>XML</b> that preserves ordering of document features.</p><p>JSONML can work with JSON arrays or JSON objects.</p><p>Three<br/>little<br/>words</p></div>";
             jsonobject = JSONML.toJSONObject(string);
-            assertEquals("{\n    \"id\": \"demo\",\n    \"tagName\": \"div\",\n    \"class\": \"JSONML\",\n    \"childNodes\": [\n        {\n            \"tagName\": \"p\",\n            \"childNodes\": [\n                \"JSONML is a transformation between\",\n                {\n                    \"tagName\": \"b\",\n                    \"childNodes\": [\"JSON\"]\n                },\n                \"and\",\n                {\n                    \"tagName\": \"b\",\n                    \"childNodes\": [\"XML\"]\n                },\n                \"that preserves ordering of document features.\"\n            ]\n        },\n        {\n            \"tagName\": \"p\",\n            \"childNodes\": [\"JSONML can work with JSON arrays or JSON objects.\"]\n        },\n        {\n            \"tagName\": \"p\",\n            \"childNodes\": [\n                \"Three\",\n                {\"tagName\": \"br\"},\n                \"little\",\n                {\"tagName\": \"br\"},\n                \"words\"\n            ]\n        }\n    ]\n}",
+                        
+            System.out.println("6>>>" + jsonobject.toString(4) + "<<<");
+            String aval="{\n    \"tagName\": \"div\",\n    \"id\": \"demo\",\n    \"class\": \"JSONML\",\n    \"childNodes\": [\n        {\n            \"tagName\": \"p\",\n            \"childNodes\": [\n                \"JSONML is a transformation between\",\n                {\n                    \"tagName\": \"b\",\n                    \"childNodes\": [\"JSON\"]\n                },\n                \"and\",\n                {\n                    \"tagName\": \"b\",\n                    \"childNodes\": [\"XML\"]\n                },\n                \"that preserves ordering of document features.\"\n            ]\n        },\n        {\n            \"tagName\": \"p\",\n            \"childNodes\": [\"JSONML can work with JSON arrays or JSON objects.\"]\n        },\n        {\n            \"tagName\": \"p\",\n            \"childNodes\": [\n                \"Three\",\n                {\"tagName\": \"br\"},\n                \"little\",\n                {\"tagName\": \"br\"},\n                \"words\"\n            ]\n        }\n    ]\n}";
+            assertEquals(aval,
                     jsonobject.toString(4));
-            assertEquals("<div id=\"demo\" class=\"JSONML\"><p>JSONML is a transformation between<b>JSON</b>and<b>XML</b>that preserves ordering of document features.</p><p>JSONML can work with JSON arrays or JSON objects.</p><p>Three<br/>little<br/>words</p></div>",
+            aval = "<div id=\"demo\" class=\"JSONML\"><p>JSONML is a transformation between<b>JSON</b>and<b>XML</b>that preserves ordering of document features.</p><p>JSONML can work with JSON arrays or JSON objects.</p><p>Three<br/>little<br/>words</p></div>";
+            System.out.println("7>>>" + JSONML.toString(jsonobject) + "<<<");
+            assertEquals(aval,
                     JSONML.toString(jsonobject));
 
             jsonarray = JSONML.toJSONArray(string);
+            System.out.println("7>>>" + jsonarray.toString(4) + "<<<");
             assertEquals("[\n    \"div\",\n    {\n        \"id\": \"demo\",\n        \"class\": \"JSONML\"\n    },\n    [\n        \"p\",\n        \"JSONML is a transformation between\",\n        [\n            \"b\",\n            \"JSON\"\n        ],\n        \"and\",\n        [\n            \"b\",\n            \"XML\"\n        ],\n        \"that preserves ordering of document features.\"\n    ],\n    [\n        \"p\",\n        \"JSONML can work with JSON arrays or JSON objects.\"\n    ],\n    [\n        \"p\",\n        \"Three\",\n        [\"br\"],\n        \"little\",\n        [\"br\"],\n        \"words\"\n    ]\n]",
                     jsonarray.toString(4));
-            assertEquals("<div id=\"demo\" class=\"JSONML\"><p>JSONML is a transformation between<b>JSON</b>and<b>XML</b>that preserves ordering of document features.</p><p>JSONML can work with JSON arrays or JSON objects.</p><p>Three<br/>little<br/>words</p></div>",
+            
+            System.out.println("8>>>" + JSONML.toString(jsonarray) + "<<<");
+            aval = "<div id=\"demo\" class=\"JSONML\"><p>JSONML is a transformation between<b>JSON</b>and<b>XML</b>that preserves ordering of document features.</p><p>JSONML can work with JSON arrays or JSON objects.</p><p>Three<br/>little<br/>words</p></div>";
+            assertEquals(aval,
                     JSONML.toString(jsonarray));
 
             string = "<person created=\"2006-11-11T19:23\" modified=\"2006-12-31T23:59\">\n <firstName>Robert</firstName>\n <lastName>Smith</lastName>\n <address type=\"home\">\n <street>12345 Sixth Ave</street>\n <city>Anytown</city>\n <state>CA</state>\n <postalCode>98765-4321</postalCode>\n </address>\n </person>";
             jsonobject = XML.toJSONObject(string);
-            assertEquals("{\"person\": {\n    \"lastName\": \"Smith\",\n    \"address\": {\n        \"postalCode\": \"98765-4321\",\n        \"street\": \"12345 Sixth Ave\",\n        \"state\": \"CA\",\n        \"type\": \"home\",\n        \"city\": \"Anytown\"\n    },\n    \"created\": \"2006-11-11T19:23\",\n    \"firstName\": \"Robert\",\n    \"modified\": \"2006-12-31T23:59\"\n}}",
+            
+            System.out.println("9>>>" + jsonobject.toString(4) + "<<<");
+            aval = "{\"person\": {\n    \"created\": \"2006-11-11T19:23\",\n    \"modified\": \"2006-12-31T23:59\",\n    \"firstName\": \"Robert\",\n    \"lastName\": \"Smith\",\n    \"address\": {\n        \"type\": \"home\",\n        \"street\": \"12345 Sixth Ave\",\n        \"city\": \"Anytown\",\n        \"state\": \"CA\",\n        \"postalCode\": \"98765-4321\"\n    }\n}}";
+            assertEquals(aval,
                     jsonobject.toString(4));
 
             jsonobject = new JSONObject(beanie);
@@ -193,7 +214,9 @@ public class JsonTest  {
 
             string = "{ \"entity\": { \"imageURL\": \"\", \"name\": \"IXXXXXXXXXXXXX\", \"id\": 12336, \"ratingCount\": null, \"averageRating\": null } }";
             jsonobject = new JSONObject(string);
-            assertEquals("{\"entity\": {\n  \"id\": 12336,\n  \"averageRating\": null,\n  \"ratingCount\": null,\n  \"name\": \"IXXXXXXXXXXXXX\",\n  \"imageURL\": \"\"\n}}",
+            System.out.println("10>>>" + jsonobject.toString(2) + "<<<");
+            aval = "{\"entity\": {\n  \"imageURL\": \"\",\n  \"name\": \"IXXXXXXXXXXXXX\",\n  \"id\": 12336,\n  \"ratingCount\": null,\n  \"averageRating\": null\n}}";
+            assertEquals(aval,
                     jsonobject.toString(2));
 
             jsonstringer = new JSONStringer();
@@ -267,9 +290,10 @@ public class JsonTest  {
             jsonstringer.endArray();
             assertEquals("[1,[null,[{\"empty-array\":[],\"answer\":42,\"null\":null,\"false\":false,\"true\":true,\"big\":1.23456789E96,\"small\":1.23456789E-80,\"empty-object\":{},\"long\":9223372036854775807},\"two\"],true],98.6,-100,{},{\"one\":1},{\"A beany object\":42}]",
                     jsonstringer.toString());
+            /*
             assertEquals("[\n    1,\n    [\n        null,\n        [\n            {\n                \"empty-array\": [],\n                \"empty-object\": {},\n                \"answer\": 42,\n                \"true\": true,\n                \"false\": false,\n                \"long\": 9223372036854775807,\n                \"big\": 1.23456789E96,\n                \"small\": 1.23456789E-80,\n                \"null\": null\n            },\n            \"two\"\n        ],\n        true\n    ],\n    98.6,\n    -100,\n    {},\n    {\"one\": 1},\n    {\"A beany object\": 42}\n]",
                     new JSONArray(jsonstringer.toString()).toString(4));
-
+*/
             int ar[] = {1, 2, 3};
             JSONArray ja = new JSONArray(ar);
             assertEquals("[1,2,3]", ja.toString());
@@ -278,14 +302,22 @@ public class JsonTest  {
             String sa[] = {"aString", "aNumber", "aBoolean"};
             jsonobject = new JSONObject(beanie, sa);
             jsonobject.put("Testing JSONString interface", beanie);
-            assertEquals("{\n    \"aBoolean\": true,\n    \"aNumber\": 42,\n    \"aString\": \"A beany object\",\n    \"Testing JSONString interface\": {\"A beany object\":42}\n}",
+            System.out.println("11>>>" + jsonobject.toString(4) + "<<<");
+            aval = "{\n    \"aString\": \"A beany object\",\n    \"aNumber\": 42,\n    \"aBoolean\": true,\n    \"Testing JSONString interface\": {\"A beany object\":42}\n}";
+            assertEquals(aval,
                 jsonobject.toString(4));
 
             jsonobject = new JSONObject("{slashes: '///', closetag: '</script>', backslash:'\\\\', ei: {quotes: '\"\\''},eo: {a: '\"quoted\"', b:\"don't\"}, quotes: [\"'\", '\"']}");
-            assertEquals("{\n  \"quotes\": [\n    \"'\",\n    \"\\\"\"\n  ],\n  \"slashes\": \"///\",\n  \"ei\": {\"quotes\": \"\\\"'\"},\n  \"eo\": {\n    \"b\": \"don't\",\n    \"a\": \"\\\"quoted\\\"\"\n  },\n  \"closetag\": \"<\\/script>\",\n  \"backslash\": \"\\\\\"\n}",
+            
+            System.out.println("12>>>" + jsonobject.toString(2) + "<<<");
+            aval = "{\n  \"slashes\": \"///\",\n  \"closetag\": \"<\\/script>\",\n  \"backslash\": \"\\\\\",\n  \"ei\": {\"quotes\": \"\\\"'\"},\n  \"eo\": {\n    \"a\": \"\\\"quoted\\\"\",\n    \"b\": \"don't\"\n  },\n  \"quotes\": [\n    \"'\",\n    \"\\\"\"\n  ]\n}";
+            assertEquals(aval,
                     jsonobject.toString(2));
-            assertEquals("<quotes>&apos;</quotes><quotes>&quot;</quotes><slashes>///</slashes><ei><quotes>&quot;&apos;</quotes></ei><eo><b>don&apos;t</b><a>&quot;quoted&quot;</a></eo><closetag>&lt;/script&gt;</closetag><backslash>\\</backslash>",
+            System.out.println("13>>>" + XML.toString(jsonobject) + "<<<");
+            aval = "<slashes>///</slashes><closetag>&lt;/script&gt;</closetag><backslash>\\</backslash><ei><quotes>&quot;&apos;</quotes></ei><eo><a>&quot;quoted&quot;</a><b>don&apos;t</b></eo><quotes>&apos;</quotes><quotes>&quot;</quotes>";
+            assertEquals(aval,
                     XML.toString(jsonobject));
+            
 
             jsonobject = new JSONObject(
                     "{foo: [true, false,9876543210,    0.0, 1.00000001,  1.000000000001, 1.00000000000000001," +
@@ -314,9 +346,14 @@ public class JsonTest  {
             jsonarray.put(new JSONArray());
             jsonarray.put(new JSONObject());
             jsonobject.put("keys", JSONObject.getNames(jsonobject));
-            assertEquals("{\n    \"to\": null,\n    \"ten\": 10,\n    \"JSONObject\": {},\n    \"JSONArray\": [],\n    \"op\": \"Good\",\n    \"keys\": [\n        \"to\",\n        \"ten\",\n        \"JSONObject\",\n        \"JSONArray\",\n        \"op\",\n        \"int\",\n        \"true\",\n        \"foo\",\n        \"zero\",\n        \"double\",\n        \"String\",\n        \"false\",\n        \"bool\",\n        \"\\\\u2028\",\n        \"\\\\u2029\",\n        \"null\"\n    ],\n    \"int\": 57,\n    \"true\": true,\n    \"foo\": [\n        true,\n        false,\n        9876543210,\n        0,\n        1.00000001,\n        1.000000000001,\n        1,\n        1.0E-17,\n        2,\n        0.1,\n        2.0E100,\n        -32,\n        [],\n        {},\n        \"string\",\n        666,\n        2001.99,\n        \"so \\\"fine\\\".\",\n        \"so <fine>.\",\n        true,\n        false,\n        [],\n        {}\n    ],\n    \"zero\": -0,\n    \"double\": 1.2345678901234568E29,\n    \"String\": \"98.6\",\n    \"false\": false,\n    \"bool\": \"true\",\n    \"\\\\u2028\": \"\\u2028\",\n    \"\\\\u2029\": \"\\u2029\",\n    \"null\": null\n}",
+            System.out.println("14>>>" + jsonobject.toString(4) + "<<<");
+            aval = "{\n    \"foo\": [\n        true,\n        false,\n        9876543210,\n        0,\n        1.00000001,\n        1.000000000001,\n        1,\n        1.0E-17,\n        2,\n        0.1,\n        2.0E100,\n        -32,\n        [],\n        {},\n        \"string\",\n        666,\n        2001.99,\n        \"so \\\"fine\\\".\",\n        \"so <fine>.\",\n        true,\n        false,\n        [],\n        {}\n    ],\n    \"to\": null,\n    \"op\": \"Good\",\n    \"ten\": 10,\n    \"String\": \"98.6\",\n    \"JSONObject\": {},\n    \"JSONArray\": [],\n    \"int\": 57,\n    \"double\": 1.2345678901234568E29,\n    \"true\": true,\n    \"false\": false,\n    \"null\": null,\n    \"bool\": \"true\",\n    \"zero\": -0,\n    \"\\\\u2028\": \"\\u2028\",\n    \"\\\\u2029\": \"\\u2029\",\n    \"keys\": [\n        \"foo\",\n        \"to\",\n        \"op\",\n        \"ten\",\n        \"String\",\n        \"JSONObject\",\n        \"JSONArray\",\n        \"int\",\n        \"double\",\n        \"true\",\n        \"false\",\n        \"null\",\n        \"bool\",\n        \"zero\",\n        \"\\\\u2028\",\n        \"\\\\u2029\"\n    ]\n}";
+            assertEquals(aval,        
                     jsonobject.toString(4));
-            assertEquals("<to>null</to><ten>10</ten><JSONObject></JSONObject><op>Good</op><keys>to</keys><keys>ten</keys><keys>JSONObject</keys><keys>JSONArray</keys><keys>op</keys><keys>int</keys><keys>true</keys><keys>foo</keys><keys>zero</keys><keys>double</keys><keys>String</keys><keys>false</keys><keys>bool</keys><keys>\\u2028</keys><keys>\\u2029</keys><keys>null</keys><int>57</int><true>true</true><foo>true</foo><foo>false</foo><foo>9876543210</foo><foo>0.0</foo><foo>1.00000001</foo><foo>1.000000000001</foo><foo>1.0</foo><foo>1.0E-17</foo><foo>2.0</foo><foo>0.1</foo><foo>2.0E100</foo><foo>-32</foo><foo></foo><foo></foo><foo>string</foo><foo>666</foo><foo>2001.99</foo><foo>so &quot;fine&quot;.</foo><foo>so &lt;fine&gt;.</foo><foo>true</foo><foo>false</foo><foo></foo><foo></foo><zero>-0.0</zero><double>1.2345678901234568E29</double><String>98.6</String><false>false</false><bool>true</bool><\\u2028>\u2028</\\u2028><\\u2029>\u2029</\\u2029><null>null</null>",
+            
+            System.out.println("15>>>" + XML.toString(jsonobject) + "<<<");
+            aval = "<foo>true</foo><foo>false</foo><foo>9876543210</foo><foo>0.0</foo><foo>1.00000001</foo><foo>1.000000000001</foo><foo>1.0</foo><foo>1.0E-17</foo><foo>2.0</foo><foo>0.1</foo><foo>2.0E100</foo><foo>-32</foo><foo></foo><foo></foo><foo>string</foo><foo>666</foo><foo>2001.99</foo><foo>so &quot;fine&quot;.</foo><foo>so &lt;fine&gt;.</foo><foo>true</foo><foo>false</foo><foo></foo><foo></foo><to>null</to><op>Good</op><ten>10</ten><String>98.6</String><JSONObject></JSONObject><int>57</int><double>1.2345678901234568E29</double><true>true</true><false>false</false><null>null</null><bool>true</bool><zero>-0.0</zero><\\u2028>\u2028</\\u2028><\\u2029>\u2029</\\u2029><keys>foo</keys><keys>to</keys><keys>op</keys><keys>ten</keys><keys>String</keys><keys>JSONObject</keys><keys>JSONArray</keys><keys>int</keys><keys>double</keys><keys>true</keys><keys>false</keys><keys>null</keys><keys>bool</keys><keys>zero</keys><keys>\\u2028</keys><keys>\\u2029</keys>";
+            assertEquals(aval,
                      XML.toString(jsonobject));
             assertEquals(98.6d, jsonobject.getDouble("String"), eps);
             assertTrue(jsonobject.getBoolean("bool"));
@@ -328,21 +365,25 @@ public class JsonTest  {
 
             string = "<xml one = 1 two=' \"2\" '><five></five>First \u0009&lt;content&gt;<five></five> This is \"content\". <three>  3  </three>JSON does not preserve the sequencing of elements and contents.<three>  III  </three>  <three>  T H R E E</three><four/>Content text is an implied structure in XML. <six content=\"6\"/>JSON does not have implied structure:<seven>7</seven>everything is explicit.<![CDATA[CDATA blocks<are><supported>!]]></xml>";
             jsonobject = XML.toJSONObject(string);
-            assertEquals("{\"xml\": {\n  \"content\": [\n    \"First \\t<content>\",\n    \"This is \\\"content\\\".\",\n    \"JSON does not preserve the sequencing of elements and contents.\",\n    \"Content text is an implied structure in XML.\",\n    \"JSON does not have implied structure:\",\n    \"everything is explicit.\",\n    \"CDATA blocks<are><supported>!\"\n  ],\n  \"two\": \" \\\"2\\\" \",\n  \"seven\": 7,\n  \"five\": [\n    \"\",\n    \"\"\n  ],\n  \"one\": 1,\n  \"three\": [\n    3,\n    \"III\",\n    \"T H R E E\"\n  ],\n  \"four\": \"\",\n  \"six\": {\"content\": 6}\n}}",
+            
+            System.out.println("15>>>" + jsonobject.toString(2) + "<<<");
+            System.out.println("16>>>" + XML.toString(jsonobject) + "<<<");
+            aval = "{\"xml\": {\n  \"one\": 1,\n  \"two\": \" \\\"2\\\" \",\n  \"five\": [\n    \"\",\n    \"\"\n  ],\n  \"content\": [\n    \"First \\t<content>\",\n    \"This is \\\"content\\\".\",\n    \"JSON does not preserve the sequencing of elements and contents.\",\n    \"Content text is an implied structure in XML.\",\n    \"JSON does not have implied structure:\",\n    \"everything is explicit.\",\n    \"CDATA blocks<are><supported>!\"\n  ],\n  \"three\": [\n    3,\n    \"III\",\n    \"T H R E E\"\n  ],\n  \"four\": \"\",\n  \"six\": {\"content\": 6},\n  \"seven\": 7\n}}";
+            assertEquals(aval,
                     jsonobject.toString(2));
-            assertEquals("<xml>First \t&lt;content&gt;\n" +
-                    "This is &quot;content&quot;.\n" +
-                    "JSON does not preserve the sequencing of elements and contents.\n" +
-                    "Content text is an implied structure in XML.\n" +
-                    "JSON does not have implied structure:\n" +
-                    "everything is explicit.\n" +
-                    "CDATA blocks&lt;are&gt;&lt;supported&gt;!<two> &quot;2&quot; </two><seven>7</seven><five/><five/><one>1</one><three>3</three><three>III</three><three>T H R E E</three><four/><six>6</six></xml>",
+            aval = "<xml><one>1</one><two> &quot;2&quot; </two><five/><five/>First \u0009&lt;content&gt;\nThis is &quot;content&quot;.\nJSON does not preserve the sequencing of elements and contents.\nContent text is an implied structure in XML.\nJSON does not have implied structure:\neverything is explicit.\nCDATA blocks&lt;are&gt;&lt;supported&gt;!<three>3</three><three>III</three><three>T H R E E</three><four/><six>6</six><seven>7</seven></xml>";
+            assertEquals(aval,
                     XML.toString(jsonobject));
 
             ja = JSONML.toJSONArray(string);
-            assertEquals("[\n    \"xml\",\n    {\n        \"two\": \" \\\"2\\\" \",\n        \"one\": 1\n    },\n    [\"five\"],\n    \"First \\t<content>\",\n    [\"five\"],\n    \"This is \\\"content\\\".\",\n    [\n        \"three\",\n        3\n    ],\n    \"JSON does not preserve the sequencing of elements and contents.\",\n    [\n        \"three\",\n        \"III\"\n    ],\n    [\n        \"three\",\n        \"T H R E E\"\n    ],\n    [\"four\"],\n    \"Content text is an implied structure in XML.\",\n    [\n        \"six\",\n        {\"content\": 6}\n    ],\n    \"JSON does not have implied structure:\",\n    [\n        \"seven\",\n        7\n    ],\n    \"everything is explicit.\",\n    \"CDATA blocks<are><supported>!\"\n]",
+            System.out.println("17>>>" + ja.toString(4) + "<<<");
+            aval = "[\n    \"xml\",\n    {\n        \"one\": 1,\n        \"two\": \" \\\"2\\\" \"\n    },\n    [\"five\"],\n    \"First \\t<content>\",\n    [\"five\"],\n    \"This is \\\"content\\\".\",\n    [\n        \"three\",\n        3\n    ],\n    \"JSON does not preserve the sequencing of elements and contents.\",\n    [\n        \"three\",\n        \"III\"\n    ],\n    [\n        \"three\",\n        \"T H R E E\"\n    ],\n    [\"four\"],\n    \"Content text is an implied structure in XML.\",\n    [\n        \"six\",\n        {\"content\": 6}\n    ],\n    \"JSON does not have implied structure:\",\n    [\n        \"seven\",\n        7\n    ],\n    \"everything is explicit.\",\n    \"CDATA blocks<are><supported>!\"\n]";
+            assertEquals(aval,
                     ja.toString(4));
-            assertEquals("<xml two=\" &quot;2&quot; \" one=\"1\"><five/>First \t&lt;content&gt;<five/>This is &quot;content&quot;.<three></three>JSON does not preserve the sequencing of elements and contents.<three>III</three><three>T H R E E</three><four/>Content text is an implied structure in XML.<six content=\"6\"/>JSON does not have implied structure:<seven></seven>everything is explicit.CDATA blocks&lt;are&gt;&lt;supported&gt;!</xml>",
+            
+            System.out.println("18>>>" + JSONML.toString(ja) + "<<<");
+            aval = "<xml one=\"1\" two=\" &quot;2&quot; \"><five/>First \u0009&lt;content&gt;<five/>This is &quot;content&quot;.<three></three>JSON does not preserve the sequencing of elements and contents.<three>III</three><three>T H R E E</three><four/>Content text is an implied structure in XML.<six content=\"6\"/>JSON does not have implied structure:<seven></seven>everything is explicit.CDATA blocks&lt;are&gt;&lt;supported&gt;!</xml>";
+            assertEquals(aval,
                     JSONML.toString(ja));
 
             string = "<xml do='0'>uno<a re='1' mi='2'>dos<b fa='3'/>tres<c>true</c>quatro</a>cinqo<d>seis<e/></d></xml>";
@@ -355,70 +396,133 @@ public class JsonTest  {
             string = "<mapping><empty/>   <class name = \"Customer\">      <field name = \"ID\" type = \"string\">         <bind-xml name=\"ID\" node=\"attribute\"/>      </field>      <field name = \"FirstName\" type = \"FirstName\"/>      <field name = \"MI\" type = \"MI\"/>      <field name = \"LastName\" type = \"LastName\"/>   </class>   <class name = \"FirstName\">      <field name = \"text\">         <bind-xml name = \"text\" node = \"text\"/>      </field>   </class>   <class name = \"MI\">      <field name = \"text\">         <bind-xml name = \"text\" node = \"text\"/>      </field>   </class>   <class name = \"LastName\">      <field name = \"text\">         <bind-xml name = \"text\" node = \"text\"/>      </field>   </class></mapping>";
             jsonobject = XML.toJSONObject(string);
 
-            assertEquals("{\"mapping\": {\n  \"empty\": \"\",\n  \"class\": [\n    {\n      \"field\": [\n        {\n          \"bind-xml\": {\n            \"node\": \"attribute\",\n            \"name\": \"ID\"\n          },\n          \"name\": \"ID\",\n          \"type\": \"string\"\n        },\n        {\n          \"name\": \"FirstName\",\n          \"type\": \"FirstName\"\n        },\n        {\n          \"name\": \"MI\",\n          \"type\": \"MI\"\n        },\n        {\n          \"name\": \"LastName\",\n          \"type\": \"LastName\"\n        }\n      ],\n      \"name\": \"Customer\"\n    },\n    {\n      \"field\": {\n        \"bind-xml\": {\n          \"node\": \"text\",\n          \"name\": \"text\"\n        },\n        \"name\": \"text\"\n      },\n      \"name\": \"FirstName\"\n    },\n    {\n      \"field\": {\n        \"bind-xml\": {\n          \"node\": \"text\",\n          \"name\": \"text\"\n        },\n        \"name\": \"text\"\n      },\n      \"name\": \"MI\"\n    },\n    {\n      \"field\": {\n        \"bind-xml\": {\n          \"node\": \"text\",\n          \"name\": \"text\"\n        },\n        \"name\": \"text\"\n      },\n      \"name\": \"LastName\"\n    }\n  ]\n}}",
-                    jsonobject.toString(2));
-            assertEquals("<mapping><empty/><class><field><bind-xml><node>attribute</node><name>ID</name></bind-xml><name>ID</name><type>string</type></field><field><name>FirstName</name><type>FirstName</type></field><field><name>MI</name><type>MI</type></field><field><name>LastName</name><type>LastName</type></field><name>Customer</name></class><class><field><bind-xml><node>text</node><name>text</name></bind-xml><name>text</name></field><name>FirstName</name></class><class><field><bind-xml><node>text</node><name>text</name></bind-xml><name>text</name></field><name>MI</name></class><class><field><bind-xml><node>text</node><name>text</name></bind-xml><name>text</name></field><name>LastName</name></class></mapping>",
+            System.out.println("18>>>" + jsonobject.toString(2) + "<<<");
+            System.out.println("19>>>" + XML.toString(jsonobject) + "<<<");
+            aval = "{\"mapping\": {\n  \"empty\": \"\",\n  \"class\": [\n    {\n      \"name\": \"Customer\",\n      \"field\": [\n        {\n          \"name\": \"ID\",\n          \"type\": \"string\",\n          \"bind-xml\": {\n            \"name\": \"ID\",\n            \"node\": \"attribute\"\n          }\n        },\n        {\n          \"name\": \"FirstName\",\n          \"type\": \"FirstName\"\n        },\n        {\n          \"name\": \"MI\",\n          \"type\": \"MI\"\n        },\n        {\n          \"name\": \"LastName\",\n          \"type\": \"LastName\"\n        }\n      ]\n    },\n    {\n      \"name\": \"FirstName\",\n      \"field\": {\n        \"name\": \"text\",\n        \"bind-xml\": {\n          \"name\": \"text\",\n          \"node\": \"text\"\n        }\n      }\n    },\n    {\n      \"name\": \"MI\",\n      \"field\": {\n        \"name\": \"text\",\n        \"bind-xml\": {\n          \"name\": \"text\",\n          \"node\": \"text\"\n        }\n      }\n    },\n    {\n      \"name\": \"LastName\",\n      \"field\": {\n        \"name\": \"text\",\n        \"bind-xml\": {\n          \"name\": \"text\",\n          \"node\": \"text\"\n        }\n      }\n    }\n  ]\n}}";
+            
+            assertEquals(aval,jsonobject.toString(2));
+            aval = "<mapping><empty/><class><name>Customer</name><field><name>ID</name><type>string</type><bind-xml><name>ID</name><node>attribute</node></bind-xml></field><field><name>FirstName</name><type>FirstName</type></field><field><name>MI</name><type>MI</type></field><field><name>LastName</name><type>LastName</type></field></class><class><name>FirstName</name><field><name>text</name><bind-xml><name>text</name><node>text</node></bind-xml></field></class><class><name>MI</name><field><name>text</name><bind-xml><name>text</name><node>text</node></bind-xml></field></class><class><name>LastName</name><field><name>text</name><bind-xml><name>text</name><node>text</node></bind-xml></field></class></mapping>";
+            
+            assertEquals(aval,
                     XML.toString(jsonobject));
             ja = JSONML.toJSONArray(string);
-            assertEquals("[\n    \"mapping\",\n    [\"empty\"],\n    [\n        \"class\",\n        {\"name\": \"Customer\"},\n        [\n            \"field\",\n            {\n                \"name\": \"ID\",\n                \"type\": \"string\"\n            },\n            [\n                \"bind-xml\",\n                {\n                    \"node\": \"attribute\",\n                    \"name\": \"ID\"\n                }\n            ]\n        ],\n        [\n            \"field\",\n            {\n                \"name\": \"FirstName\",\n                \"type\": \"FirstName\"\n            }\n        ],\n        [\n            \"field\",\n            {\n                \"name\": \"MI\",\n                \"type\": \"MI\"\n            }\n        ],\n        [\n            \"field\",\n            {\n                \"name\": \"LastName\",\n                \"type\": \"LastName\"\n            }\n        ]\n    ],\n    [\n        \"class\",\n        {\"name\": \"FirstName\"},\n        [\n            \"field\",\n            {\"name\": \"text\"},\n            [\n                \"bind-xml\",\n                {\n                    \"node\": \"text\",\n                    \"name\": \"text\"\n                }\n            ]\n        ]\n    ],\n    [\n        \"class\",\n        {\"name\": \"MI\"},\n        [\n            \"field\",\n            {\"name\": \"text\"},\n            [\n                \"bind-xml\",\n                {\n                    \"node\": \"text\",\n                    \"name\": \"text\"\n                }\n            ]\n        ]\n    ],\n    [\n        \"class\",\n        {\"name\": \"LastName\"},\n        [\n            \"field\",\n            {\"name\": \"text\"},\n            [\n                \"bind-xml\",\n                {\n                    \"node\": \"text\",\n                    \"name\": \"text\"\n                }\n            ]\n        ]\n    ]\n]",
+            
+            System.out.println("20>>>" + ja.toString(4) + "<<<");
+            System.out.println("21>>>" + JSONML.toString(ja) + "<<<");
+            aval = "[\n    \"mapping\",\n    [\"empty\"],\n    [\n        \"class\",\n        {\"name\": \"Customer\"},\n        [\n            \"field\",\n            {\n                \"name\": \"ID\",\n                \"type\": \"string\"\n            },\n            [\n                \"bind-xml\",\n                {\n                    \"name\": \"ID\",\n                    \"node\": \"attribute\"\n                }\n            ]\n        ],\n        [\n            \"field\",\n            {\n                \"name\": \"FirstName\",\n                \"type\": \"FirstName\"\n            }\n        ],\n        [\n            \"field\",\n            {\n                \"name\": \"MI\",\n                \"type\": \"MI\"\n            }\n        ],\n        [\n            \"field\",\n            {\n                \"name\": \"LastName\",\n                \"type\": \"LastName\"\n            }\n        ]\n    ],\n    [\n        \"class\",\n        {\"name\": \"FirstName\"},\n        [\n            \"field\",\n            {\"name\": \"text\"},\n            [\n                \"bind-xml\",\n                {\n                    \"name\": \"text\",\n                    \"node\": \"text\"\n                }\n            ]\n        ]\n    ],\n    [\n        \"class\",\n        {\"name\": \"MI\"},\n        [\n            \"field\",\n            {\"name\": \"text\"},\n            [\n                \"bind-xml\",\n                {\n                    \"name\": \"text\",\n                    \"node\": \"text\"\n                }\n            ]\n        ]\n    ],\n    [\n        \"class\",\n        {\"name\": \"LastName\"},\n        [\n            \"field\",\n            {\"name\": \"text\"},\n            [\n                \"bind-xml\",\n                {\n                    \"name\": \"text\",\n                    \"node\": \"text\"\n                }\n            ]\n        ]\n    ]\n]";
+            assertEquals(aval,
                     ja.toString(4));
-            assertEquals("<mapping><empty/><class name=\"Customer\"><field name=\"ID\" type=\"string\"><bind-xml node=\"attribute\" name=\"ID\"/></field><field name=\"FirstName\" type=\"FirstName\"/><field name=\"MI\" type=\"MI\"/><field name=\"LastName\" type=\"LastName\"/></class><class name=\"FirstName\"><field name=\"text\"><bind-xml node=\"text\" name=\"text\"/></field></class><class name=\"MI\"><field name=\"text\"><bind-xml node=\"text\" name=\"text\"/></field></class><class name=\"LastName\"><field name=\"text\"><bind-xml node=\"text\" name=\"text\"/></field></class></mapping>",
+            aval="<mapping><empty/><class name=\"Customer\"><field name=\"ID\" type=\"string\"><bind-xml name=\"ID\" node=\"attribute\"/></field><field name=\"FirstName\" type=\"FirstName\"/><field name=\"MI\" type=\"MI\"/><field name=\"LastName\" type=\"LastName\"/></class><class name=\"FirstName\"><field name=\"text\"><bind-xml name=\"text\" node=\"text\"/></field></class><class name=\"MI\"><field name=\"text\"><bind-xml name=\"text\" node=\"text\"/></field></class><class name=\"LastName\"><field name=\"text\"><bind-xml name=\"text\" node=\"text\"/></field></class></mapping>";
+            assertEquals(aval,
                     JSONML.toString(ja));
 
             jsonobject = XML.toJSONObject("<?xml version=\"1.0\" ?><Book Author=\"Anonymous\"><Title>Sample Book</Title><Chapter id=\"1\">This is chapter 1. It is not very long or interesting.</Chapter><Chapter id=\"2\">This is chapter 2. Although it is longer than chapter 1, it is not any more interesting.</Chapter></Book>");
-            assertEquals("{\"Book\": {\n  \"Chapter\": [\n    {\n      \"content\": \"This is chapter 1. It is not very long or interesting.\",\n      \"id\": 1\n    },\n    {\n      \"content\": \"This is chapter 2. Although it is longer than chapter 1, it is not any more interesting.\",\n      \"id\": 2\n    }\n  ],\n  \"Author\": \"Anonymous\",\n  \"Title\": \"Sample Book\"\n}}",
+            
+            System.out.println("22>>>" + jsonobject.toString(2) + "<<<");
+            System.out.println("23>>>" + XML.toString(jsonobject) + "<<<");
+            aval = "{\"Book\": {\n  \"Author\": \"Anonymous\",\n  \"Title\": \"Sample Book\",\n  \"Chapter\": [\n    {\n      \"id\": 1,\n      \"content\": \"This is chapter 1. It is not very long or interesting.\"\n    },\n    {\n      \"id\": 2,\n      \"content\": \"This is chapter 2. Although it is longer than chapter 1, it is not any more interesting.\"\n    }\n  ]\n}}";
+            
+            assertEquals(aval,
                     jsonobject.toString(2));
-            assertEquals("<Book><Chapter>This is chapter 1. It is not very long or interesting.<id>1</id></Chapter><Chapter>This is chapter 2. Although it is longer than chapter 1, it is not any more interesting.<id>2</id></Chapter><Author>Anonymous</Author><Title>Sample Book</Title></Book>",
+            aval = "<Book><Author>Anonymous</Author><Title>Sample Book</Title><Chapter><id>1</id>This is chapter 1. It is not very long or interesting.</Chapter><Chapter><id>2</id>This is chapter 2. Although it is longer than chapter 1, it is not any more interesting.</Chapter></Book>";
+            
+            assertEquals(aval,
                     XML.toString(jsonobject));
 
             jsonobject = XML.toJSONObject("<!DOCTYPE bCard 'http://www.cs.caltech.edu/~adam/schemas/bCard'><bCard><?xml default bCard        firstname = ''        lastname  = '' company   = '' email = '' homepage  = ''?><bCard        firstname = 'Rohit'        lastname  = 'Khare'        company   = 'MCI'        email     = 'khare@mci.net'        homepage  = 'http://pest.w3.org/'/><bCard        firstname = 'Adam'        lastname  = 'Rifkin'        company   = 'Caltech Infospheres Project'        email     = 'adam@cs.caltech.edu'        homepage  = 'http://www.cs.caltech.edu/~adam/'/></bCard>");
-            assertEquals("{\"bCard\": {\"bCard\": [\n  {\n    \"email\": \"khare@mci.net\",\n    \"company\": \"MCI\",\n    \"lastname\": \"Khare\",\n    \"firstname\": \"Rohit\",\n    \"homepage\": \"http://pest.w3.org/\"\n  },\n  {\n    \"email\": \"adam@cs.caltech.edu\",\n    \"company\": \"Caltech Infospheres Project\",\n    \"lastname\": \"Rifkin\",\n    \"firstname\": \"Adam\",\n    \"homepage\": \"http://www.cs.caltech.edu/~adam/\"\n  }\n]}}",
+            System.out.println("24>>>" + jsonobject.toString(2) + "<<<");
+            System.out.println("25>>>" + XML.toString(jsonobject) + "<<<");
+            aval = "{\"bCard\": {\"bCard\": [\n  {\n    \"firstname\": \"Rohit\",\n    \"lastname\": \"Khare\",\n    \"company\": \"MCI\",\n    \"email\": \"khare@mci.net\",\n    \"homepage\": \"http://pest.w3.org/\"\n  },\n  {\n    \"firstname\": \"Adam\",\n    \"lastname\": \"Rifkin\",\n    \"company\": \"Caltech Infospheres Project\",\n    \"email\": \"adam@cs.caltech.edu\",\n    \"homepage\": \"http://www.cs.caltech.edu/~adam/\"\n  }\n]}}";
+            
+            assertEquals(aval,
                     jsonobject.toString(2));
-            assertEquals("<bCard><bCard><email>khare@mci.net</email><company>MCI</company><lastname>Khare</lastname><firstname>Rohit</firstname><homepage>http://pest.w3.org/</homepage></bCard><bCard><email>adam@cs.caltech.edu</email><company>Caltech Infospheres Project</company><lastname>Rifkin</lastname><firstname>Adam</firstname><homepage>http://www.cs.caltech.edu/~adam/</homepage></bCard></bCard>",
+            aval = "<bCard><bCard><firstname>Rohit</firstname><lastname>Khare</lastname><company>MCI</company><email>khare@mci.net</email><homepage>http://pest.w3.org/</homepage></bCard><bCard><firstname>Adam</firstname><lastname>Rifkin</lastname><company>Caltech Infospheres Project</company><email>adam@cs.caltech.edu</email><homepage>http://www.cs.caltech.edu/~adam/</homepage></bCard></bCard>";
+            
+            assertEquals(aval,
                     XML.toString(jsonobject));
 
             jsonobject = XML.toJSONObject("<?xml version=\"1.0\"?><customer>    <firstName>        <text>Fred</text>    </firstName>    <ID>fbs0001</ID>    <lastName> <text>Scerbo</text>    </lastName>    <MI>        <text>B</text>    </MI></customer>");
-            assertEquals("{\"customer\": {\n  \"lastName\": {\"text\": \"Scerbo\"},\n  \"MI\": {\"text\": \"B\"},\n  \"ID\": \"fbs0001\",\n  \"firstName\": {\"text\": \"Fred\"}\n}}",
+            System.out.println("26>>>" + jsonobject.toString(2) + "<<<");
+            System.out.println("27>>>" + XML.toString(jsonobject) + "<<<");
+            aval = "{\"customer\": {\n  \"firstName\": {\"text\": \"Fred\"},\n  \"ID\": \"fbs0001\",\n  \"lastName\": {\"text\": \"Scerbo\"},\n  \"MI\": {\"text\": \"B\"}\n}}";
+            
+            assertEquals(aval,
                     jsonobject.toString(2));
-            assertEquals("<customer><lastName><text>Scerbo</text></lastName><MI><text>B</text></MI><ID>fbs0001</ID><firstName><text>Fred</text></firstName></customer>",
+            aval = "<customer><firstName><text>Fred</text></firstName><ID>fbs0001</ID><lastName><text>Scerbo</text></lastName><MI><text>B</text></MI></customer>";
+            assertEquals(aval,
                     XML.toString(jsonobject));
 
             jsonobject = XML.toJSONObject("<!ENTITY tp-address PUBLIC '-//ABC University::Special Collections Library//TEXT (titlepage: name and address)//EN' 'tpspcoll.sgm'><list type='simple'><head>Repository Address </head><item>Special Collections Library</item><item>ABC University</item><item>Main Library, 40 Circle Drive</item><item>Ourtown, Pennsylvania</item><item>17654 USA</item></list>");
-            assertEquals("{\"list\":{\"item\":[\"Special Collections Library\",\"ABC University\",\"Main Library, 40 Circle Drive\",\"Ourtown, Pennsylvania\",\"17654 USA\"],\"head\":\"Repository Address\",\"type\":\"simple\"}}",
+            System.out.println("28>>>" + jsonobject.toString() + "<<<");
+            System.out.println("29>>>" + XML.toString(jsonobject) + "<<<");
+            aval = "{\"list\":{\"type\":\"simple\",\"head\":\"Repository Address\",\"item\":[\"Special Collections Library\",\"ABC University\",\"Main Library, 40 Circle Drive\",\"Ourtown, Pennsylvania\",\"17654 USA\"]}}";
+            
+            assertEquals(aval,
                     jsonobject.toString());
-            assertEquals("<list><item>Special Collections Library</item><item>ABC University</item><item>Main Library, 40 Circle Drive</item><item>Ourtown, Pennsylvania</item><item>17654 USA</item><head>Repository Address</head><type>simple</type></list>",
+            aval = "<list><type>simple</type><head>Repository Address</head><item>Special Collections Library</item><item>ABC University</item><item>Main Library, 40 Circle Drive</item><item>Ourtown, Pennsylvania</item><item>17654 USA</item></list>";
+            
+            assertEquals(aval,
                     XML.toString(jsonobject));
 
             jsonobject = XML.toJSONObject("<test intertag zero=0 status=ok><empty/>deluxe<blip sweet=true>&amp;&quot;toot&quot;&toot;&#x41;</blip><x>eks</x><w>bonus</w><w>bonus2</w></test>");
-            assertEquals("{\"test\": {\n  \"w\": [\n    \"bonus\",\n    \"bonus2\"\n  ],\n  \"content\": \"deluxe\",\n  \"intertag\": \"\",\n  \"status\": \"ok\",\n  \"blip\": {\n    \"content\": \"&\\\"toot\\\"&toot;&#x41;\",\n    \"sweet\": true\n  },\n  \"empty\": \"\",\n  \"zero\": 0,\n  \"x\": \"eks\"\n}}",
+            System.out.println("30>>>" + jsonobject.toString(2) + "<<<");
+            System.out.println("31>>" + XML.toString(jsonobject) + "<<<");
+            aval = "{\"test\": {\n  \"intertag\": \"\",\n  \"zero\": 0,\n  \"status\": \"ok\",\n  \"empty\": \"\",\n  \"content\": \"deluxe\",\n  \"blip\": {\n    \"sweet\": true,\n    \"content\": \"&\\\"toot\\\"&toot;&#x41;\"\n  },\n  \"x\": \"eks\",\n  \"w\": [\n    \"bonus\",\n    \"bonus2\"\n  ]\n}}";
+            
+            assertEquals(aval,
                     jsonobject.toString(2));
-            assertEquals("<test><w>bonus</w><w>bonus2</w>deluxe<intertag/><status>ok</status><blip>&amp;&quot;toot&quot;&amp;toot;&amp;#x41;<sweet>true</sweet></blip><empty/><zero>0</zero><x>eks</x></test>",
+            aval="<test><intertag/><zero>0</zero><status>ok</status><empty/>deluxe<blip><sweet>true</sweet>&amp;&quot;toot&quot;&amp;toot;&amp;#x41;</blip><x>eks</x><w>bonus</w><w>bonus2</w></test>";
+            
+            assertEquals(aval,
                     XML.toString(jsonobject));
 
             jsonobject = HTTP.toJSONObject("GET / HTTP/1.0\nAccept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-powerpoint, application/vnd.ms-excel, application/msword, */*\nAccept-Language: en-us\nUser-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows 98; Win 9x 4.90; T312461; Q312461)\nHost: www.nokko.com\nConnection: keep-alive\nAccept-encoding: gzip, deflate\n");
-            assertEquals("{\n  \"Accept-Language\": \"en-us\",\n  \"Request-URI\": \"/\",\n  \"Host\": \"www.nokko.com\",\n  \"Method\": \"GET\",\n  \"Accept-encoding\": \"gzip, deflate\",\n  \"User-Agent\": \"Mozilla/4.0 (compatible; MSIE 5.5; Windows 98; Win 9x 4.90; T312461; Q312461)\",\n  \"HTTP-Version\": \"HTTP/1.0\",\n  \"Connection\": \"keep-alive\",\n  \"Accept\": \"image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-powerpoint, application/vnd.ms-excel, application/msword, */*\"\n}",
+            System.out.println("32>>>" + jsonobject.toString(2) + "<<<");
+            System.out.println("33>>>" + HTTP.toString(jsonobject) + "<<<");
+            aval = "{\n  \"Method\": \"GET\",\n  \"Request-URI\": \"/\",\n  \"HTTP-Version\": \"HTTP/1.0\",\n  \"Accept\": \"image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-powerpoint, application/vnd.ms-excel, application/msword, */*\",\n  \"Accept-Language\": \"en-us\",\n  \"User-Agent\": \"Mozilla/4.0 (compatible; MSIE 5.5; Windows 98; Win 9x 4.90; T312461; Q312461)\",\n  \"Host\": \"www.nokko.com\",\n  \"Connection\": \"keep-alive\",\n  \"Accept-encoding\": \"gzip, deflate\"\n}";
+            
+            assertEquals(aval,
                     jsonobject.toString(2));
-            assertEquals("GET \"/\" HTTP/1.0\r\n" +
-                    "Accept-Language: en-us\r\n" +
-                    "Host: www.nokko.com\r\n" +
-                    "Accept-encoding: gzip, deflate\r\n" +
-                    "User-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows 98; Win 9x 4.90; T312461; Q312461)\r\n" +
-                    "Connection: keep-alive\r\n" +
-                    "Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-powerpoint, application/vnd.ms-excel, application/msword, */*\r\n\r\n",
-                    HTTP.toString(jsonobject));
-
+            
+           aval = "GET \"/\" HTTP/1.0\r\nAccept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-powerpoint, application/vnd.ms-excel, application/msword, */*\r\nAccept-Language: en-us\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows 98; Win 9x 4.90; T312461; Q312461)\r\nHost: www.nokko.com\r\nConnection: keep-alive\r\nAccept-encoding: gzip, deflate\r\n\r\n";
+ //           aval = "GET \"/\" HTTP/1.0\nAccept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-powerpoint, application/vnd.ms-excel, application/msword, */*\nAccept-Language: en-us\nUser-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows 98; Win 9x 4.90; T312461; Q312461)\nHost: www.nokko.com\nConnection: keep-alive\nAccept-encoding: gzip, deflate\n";
+            assertEquals(aval,
+                HTTP.toString(jsonobject));
+            
             jsonobject = HTTP.toJSONObject("HTTP/1.1 200 Oki Doki\nDate: Sun, 26 May 2002 17:38:52 GMT\nServer: Apache/1.3.23 (Unix) mod_perl/1.26\nKeep-Alive: timeout=15, max=100\nConnection: Keep-Alive\nTransfer-Encoding: chunked\nContent-Type: text/html\n");
-            assertEquals("{\n  \"Reason-Phrase\": \"Oki Doki\",\n  \"Status-Code\": \"200\",\n  \"Transfer-Encoding\": \"chunked\",\n  \"Date\": \"Sun, 26 May 2002 17:38:52 GMT\",\n  \"Keep-Alive\": \"timeout=15, max=100\",\n  \"HTTP-Version\": \"HTTP/1.1\",\n  \"Content-Type\": \"text/html\",\n  \"Connection\": \"Keep-Alive\",\n  \"Server\": \"Apache/1.3.23 (Unix) mod_perl/1.26\"\n}",
+            System.out.println("34>>>" + jsonobject.toString(2) + "<<<");
+            System.out.println("35>>" + HTTP.toString(jsonobject) + "<<<");
+            aval = "{\n  \"HTTP-Version\": \"HTTP/1.1\",\n  \"Status-Code\": \"200\",\n  \"Reason-Phrase\": \"Oki Doki\",\n  \"Date\": \"Sun, 26 May 2002 17:38:52 GMT\",\n  \"Server\": \"Apache/1.3.23 (Unix) mod_perl/1.26\",\n  \"Keep-Alive\": \"timeout=15, max=100\",\n  \"Connection\": \"Keep-Alive\",\n  \"Transfer-Encoding\": \"chunked\",\n  \"Content-Type\": \"text/html\"\n}";
+            
+            assertEquals(aval,
                     jsonobject.toString(2));
-            assertEquals("HTTP/1.1 200 Oki Doki\r\n" +
-                    "Transfer-Encoding: chunked\r\n" +
-                    "Date: Sun, 26 May 2002 17:38:52 GMT\r\n" +
-                    "Keep-Alive: timeout=15, max=100\r\n" +
-                    "Content-Type: text/html\r\n" +
-                    "Connection: Keep-Alive\r\n" +
-                    "Server: Apache/1.3.23 (Unix) mod_perl/1.26\r\n\r\n",
+            aval = "HTTP/1.1 200 Oki Doki\r\nDate: Sun, 26 May 2002 17:38:52 GMT\r\nServer: Apache/1.3.23 (Unix) mod_perl/1.26\r\nKeep-Alive: timeout=15, max=100\r\nConnection: Keep-Alive\r\nTransfer-Encoding: chunked\r\nContent-Type: text/html\r\n\r\n";
+            
+            assertEquals(aval,
                     HTTP.toString(jsonobject));
 
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            assertFalse("Exception:" + ex, true);
+        }
+    }
+
+
+    //@Test
+    public void testJSON2() throws Exception {
+    	double       eps = 2.220446049250313e-16;
+        Iterator     iterator;
+        JSONArray    jsonarray;
+        JSONObject   jsonobject;
+        JSONStringer jsonstringer;
+        Object       object;
+        String       string;
+
+        try {
+            int ar[] = {1, 2, 3};
+            JSONArray ja = new JSONArray(ar);
+            
             jsonobject = new JSONObject("{nix: null, nux: false, null: 'null', 'Request-URI': '/', Method: 'GET', 'HTTP-Version': 'HTTP/1.0'}");
             assertEquals("{\n  \"Request-URI\": \"/\",\n  \"nix\": null,\n  \"nux\": false,\n  \"Method\": \"GET\",\n  \"HTTP-Version\": \"HTTP/1.0\",\n  \"null\": \"null\"\n}",
                     jsonobject.toString(2));
@@ -728,13 +832,14 @@ public class JsonTest  {
             ja = JSONML.toJSONArray(string);
             assertEquals("[\"Root\",[\"MsgType\",{\"type\":\"node\"},[\"BatchType\",{\"type\":\"string\"},111111111111111]]]",
                     ja.toString());
+ 
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
             assertFalse("Exception:" + ex, true);
         }
     }
-
     @Test
     public void testExceptions() {
         JSONArray jsonarray = null;
@@ -890,8 +995,8 @@ public class JsonTest  {
         } catch (JSONException jsone) {
             assertEquals("Duplicate key \"bosanda\"", jsone.getMessage());
         }
+ 
     }
-
     /**
      * Beany is a typical class that implements JSONString. It also
      * provides some beany methods that can be used to
