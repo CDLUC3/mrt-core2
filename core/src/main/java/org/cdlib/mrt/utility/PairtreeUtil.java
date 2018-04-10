@@ -46,6 +46,7 @@ public class PairtreeUtil
 {
     protected static final String NAME = "PairtreeUtil";
     protected static final String MESSAGE = NAME + ": ";
+    protected static final boolean DEBUG = false;
 
     
     /**
@@ -125,7 +126,7 @@ public class PairtreeUtil
             return true;
         }
         try {
-            System.out.println(MESSAGE + "removePairDirectory:"
+            if (DEBUG) System.out.println(MESSAGE + "removePairDirectory:"
                     + " - deleteDirectory=" + deleteDirectory.getAbsolutePath()
                     );
             File parentFile = deleteDirectory.getParentFile();
@@ -166,7 +167,7 @@ public class PairtreeUtil
                     if (!success) return null;
                 }
             }
-            //System.out.println("getObjectDirectory:" + moveDir.getAbsolutePath());
+            if (DEBUG) System.out.println("getObjectDirectory:" + moveDir.getAbsolutePath());
             return moveDir;
 
         } catch (Exception ex) {
@@ -193,7 +194,7 @@ public class PairtreeUtil
                 String lvldir = lvls.get(i);
                 moveDir = new File(moveDir, lvldir);
             }
-            //System.out.println("getObjectDirectory:" + moveDir.getAbsolutePath());
+            if (DEBUG) System.out.println("getObjectDirectory:" + moveDir.getAbsolutePath());
             return moveDir;
 
         } catch (Exception ex) {
@@ -253,7 +254,7 @@ public class PairtreeUtil
         for (int i=0; i < seg.length(); i += 2) {
             int len = seg.length() - i == 1 ? 1 : 2;
             String lvldir = seg.substring(i, i + len);
-            //System.out.println("getLvls i=" + i + " - len=" + len + " - lvldir=" + lvldir);
+            if (DEBUG) System.out.println("getLvls i=" + i + " - len=" + len + " - lvldir=" + lvldir);
             lvls.add(lvldir);
         }
         lvls.add(name);

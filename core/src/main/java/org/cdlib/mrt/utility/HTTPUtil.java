@@ -35,6 +35,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLConnection;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -42,6 +44,8 @@ import java.util.Map;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 
 
 
@@ -68,10 +72,19 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.client.config.RequestConfig;
 //import org.apache.http.params.BasicHttpParams;
 //import org.apache.http.params.HttpParams;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.StatusLine;
 import org.apache.http.Header;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.TrustStrategy;
 /**
  * This class will contain utilities for HTTP transactions
  *
@@ -79,7 +92,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
  */
 public class HTTPUtil {
     private static final boolean DEBUG = false;
-
+	
     /**
      * Send this manifestFile to mrt store
      * @param manifestFile
@@ -359,10 +372,8 @@ public class HTTPUtil {
     {
         
         try {
-            //HttpClient httpclient = new DefaultHttpClient(params);
             
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).build();
-            HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+            HttpClient httpClient = getHttpClient(requestURL, timeout);
             HttpGet httpget = new HttpGet(requestURL);
 	    httpget.addHeader("Accept", "*/*");
 	    //httpget.addHeader("Transfer-Encoding", "chunked");
@@ -406,7 +417,7 @@ public class HTTPUtil {
     {
         
         try {
-            HttpClient httpClient = getHttpClient(timeout);
+            HttpClient httpClient = getHttpClient(requestURL, timeout);
             HttpGet httpget = new HttpGet(requestURL);
 	    httpget.addHeader("Accept", "*/*");
             httpget.addHeader("Range", "bytes=" + startByte + "-" + endByte);
@@ -570,7 +581,7 @@ public class HTTPUtil {
         throws TException
     {
         try {
-            HttpClient httpClient = getHttpClient(timeout);
+            HttpClient httpClient = getHttpClient(requestURL, timeout);
             HttpDelete httpDelete = new HttpDelete(requestURL);
             HttpResponse response = httpClient.execute(httpDelete);
             if (response != null) {
@@ -630,7 +641,7 @@ public class HTTPUtil {
         throws TException
     {
         try {
-            HttpClient httpClient = getHttpClient(timeout);
+            HttpClient httpClient = getHttpClient(requestURL, timeout);
             List<BasicNameValuePair> formparams = new ArrayList<BasicNameValuePair>();
             Enumeration e = prop.propertyNames();
             String key = null;
@@ -679,7 +690,7 @@ public class HTTPUtil {
         throws TException
     {
         try {
-            HttpClient httpClient = getHttpClient(timeout);
+            HttpClient httpClient = getHttpClient(requestURL, timeout);
             HttpPost httppost = new HttpPost(requestURL);
             //CloseableHttpClient httpClient = HttpClients.createDefault();
             //HttpPost uploadFile = new HttpPost("...");
@@ -782,7 +793,7 @@ public class HTTPUtil {
         throws TException
     {
         try {
-            HttpClient httpClient = getHttpClient(timeout);
+            HttpClient httpClient = getHttpClient(requestURL, timeout);
             HttpPost httppost = new HttpPost(requestURL);
             //CloseableHttpClient httpClient = HttpClients.createDefault();
             //HttpPost uploadFile = new HttpPost("...");
@@ -868,7 +879,7 @@ public class HTTPUtil {
         throws TException
     {
         try {
-            HttpClient httpClient = getHttpClient(timeout);
+            HttpClient httpClient = getHttpClient(requestURL, timeout);
             HttpPut httpPut = new HttpPut(requestURL);
             //CloseableHttpClient httpClient = HttpClients.createDefault();
             //HttpPost uploadFile = new HttpPost("...");
@@ -1091,11 +1102,64 @@ public class HTTPUtil {
 
     }
     
+    public static HttpClient createHttpClient_AcceptsUntrustedCerts() 
+        throws Exception
+    {
+        HttpClientBuilder b = HttpClientBuilder.create();
+ 
+        // setup a Trust Strategy that allows all certificates.
+        //
+        SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+            public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                return true;
+            }
+        }).build();
+        b.setSslcontext( sslContext);
+
+        // don't check Hostnames, either.
+        //      -- use SSLConnectionSocketFactory.getDefaultHostnameVerifier(), if you don't want to weaken
+
+        // here's the special part:
+        //      -- need to create an SSL Socket Factory, to use our weakened "trust strategy";
+        //      -- and create a Registry, to register it.
+        //
+        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", sslSocketFactory)
+                .build();
+
+        // now, we create connection-manager using our Registry.
+        //      -- allows multi-threaded use
+        PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager( socketFactoryRegistry);
+        b.setConnectionManager( connMgr);
+
+        // finally, build the HttpClient;
+        //      -- done!
+        HttpClient client = b.build();
+        return client;
+    }
+    
+    //non-https version
     public static HttpClient getHttpClient(int timeout)
         throws Exception
     {       
             RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).build();
             HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+            return httpClient;
+    }
+    
+    public static HttpClient getHttpClient(String requestURL, int timeout)
+        throws Exception
+    {       
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).build();
+            HttpClient httpClient = null;
+            if (requestURL.toLowerCase().startsWith("https:")) {
+                httpClient = createHttpClient_AcceptsUntrustedCerts();
+                
+            } else if (requestURL.toLowerCase().startsWith("http:")) {
+                httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+            }
             return httpClient;
     }
 
