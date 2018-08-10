@@ -43,6 +43,7 @@ REPLIC_ADD | ReplicationAddState | repadd | rep/add
 REPLIC_MATCH | MatchObjectState | repmch | rep/mch
 REPLIC_MAP | ReplicationAddMapState | repmap | rep/map
 REPLIC_NOS | NodesObjectsState | repnos | rep/nos
+REPLIC_PROP | ReplicationPropertiesState | repprp | rep/prp
 REPLIC_DELETE | ReplicationDeleteState | repdel | rep/del
 REPLIC_SERVICE | ReplicationServiceState | repsvc | rep/svc
 CLOUDHOST_SERVICE | CloudhostServiceState | chsvc | ch/svc
