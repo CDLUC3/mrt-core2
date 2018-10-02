@@ -1,11 +1,14 @@
 package org.cdlib.mrt.core;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -18,18 +21,35 @@ public class DateStateTest {
     // Fixture
 
     private static final ZoneId SYSTEM_ZONE_ID = ZoneId.systemDefault();
+    private static final ZoneOffset SYSTEM_ZONE_OFFSET = SYSTEM_ZONE_ID.getRules().getOffset(Instant.now());
+
+    private static final ZoneOffset OTHER_ZONE_OFFSET;
+    static {
+        int systemOffsetSeconds = SYSTEM_ZONE_OFFSET.getTotalSeconds();
+        int otherOffsetSeconds = systemOffsetSeconds + 3600;
+        if (otherOffsetSeconds < ZoneOffset.MAX.getTotalSeconds()) {
+            OTHER_ZONE_OFFSET = ZoneOffset.ofTotalSeconds(otherOffsetSeconds);
+        } else {
+            OTHER_ZONE_OFFSET = ZoneOffset.ofTotalSeconds(systemOffsetSeconds - 3600);
+        }
+    }
 
     // ------------------------------------------------------------
     // Helper methods
 
     private static long nowMillis() {
-        long nowSeconds = Instant.now().atZone(SYSTEM_ZONE_ID).toEpochSecond();
-        return TimeUnit.SECONDS.toMillis(nowSeconds);
+        ZonedDateTime zdt = Instant.now().atZone(SYSTEM_ZONE_ID);
+        return toMillis(zdt);
     }
 
     private Date nowDate() {
         long nowMillis = nowMillis();
         return new Date(nowMillis);
+    }
+
+    private static long toMillis(ZonedDateTime zdt) {
+        long nowSeconds = zdt.toEpochSecond();
+        return TimeUnit.SECONDS.toMillis(nowSeconds);
     }
 
     private String formatIso8601(Date date) {
@@ -88,6 +108,26 @@ public class DateStateTest {
         assertEquals(nowDate, state.getDate());
     }
 
+    @Test
+    public void constructWithStringSupportsUTC() {
+        // .withNano(0) is a hack to get DateTimeFormatter not to output fractional seconds
+        ZonedDateTime nowUtcZDT = ZonedDateTime.now(ZoneOffset.UTC).withNano(0);
+        String nowUtcIso8601 = nowUtcZDT.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        DateState state = new DateState(nowUtcIso8601);
+        long expected = toMillis(nowUtcZDT);
+        assertEquals(expected, state.getTimeLong());
+    }
+
+    @Test
+    public void constructWithStringSupportsOtherTimeZones() {
+        // .withNano(0) is a hack to get DateTimeFormatter not to output fractional seconds
+        ZonedDateTime nowOtherZdt = ZonedDateTime.now(OTHER_ZONE_OFFSET).withNano(0);
+        String nowOtherIso8601 = nowOtherZdt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        DateState state = new DateState(nowOtherIso8601);
+        long expected = toMillis(nowOtherZdt);
+        assertEquals(expected, state.getTimeLong());
+    }
+
     // ------------------------------
     // Accessors
 
@@ -136,6 +176,27 @@ public class DateStateTest {
         DateState state = new DateState(nowMillis);
         String expected = formatIso8601(nowDate);
         assertEquals(expected, state.toString());
+    }
+
+    @Ignore
+    @Test
+    public void toStringPreservesLocalTime() {
+        // TODO: test this directly in Checkm.getLine()
+        fail("not implemented");
+    }
+
+    @Ignore
+    @Test
+    public void toStringPreservesUTCTime() {
+        // TODO: test this directly in Checkm.getLine()
+        fail("not implemented");
+    }
+
+    @Ignore
+    @Test
+    public void toStringPreservesOtherTimeZone() {
+        // TODO: test this directly in Checkm.getLine()
+        fail("not implemented");
     }
 
     @Test
