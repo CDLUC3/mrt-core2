@@ -54,11 +54,11 @@ public class DateState
 
     /**
      * Constructor
-     * @param seconds base second count
+     * @param milliseconds base millisecond count
      */
-    public DateState(long seconds)
+    public DateState(long milliseconds)
     {
-        setDate(new Date(seconds));
+        setDate(new Date(milliseconds));
     }
 
     /**
@@ -127,8 +127,8 @@ public class DateState
     }
 
     /**
-     * Return second format of this Date
-     * @return second count for this Date
+     * Return milliseconds since January 1, 1970, 00:00:00 GMT for this date
+     * @return millisecond count for this Date, or 0 if the wrapped date is null
      */
     public long getTimeLong()
     {
