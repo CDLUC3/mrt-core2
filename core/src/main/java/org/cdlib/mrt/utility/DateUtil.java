@@ -32,6 +32,12 @@ package org.cdlib.mrt.utility;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -43,6 +49,7 @@ public class DateUtil
 {
     public static final String ISOZPATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String ISOPATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
+    private static final ZoneId SYSTEM_ZONE_ID = ZoneId.systemDefault();
 
     /**
      * get current Date
@@ -53,7 +60,11 @@ public class DateUtil
         Date date = new Date();
         return date;
     }
-    
+
+    public static ZonedDateTime getCurrentZonedDateTime() {
+        return ZonedDateTime.now();
+    }
+
     /**
      * return the Date for current + millisecond update
      * @param millSecs adjust for current date
@@ -136,6 +147,19 @@ public class DateUtil
     }
 
     /**
+     * Build ZonedDateTime from a displayed IsoDate string
+     * @param stringDate iso string to convert to Instant
+     * @return converted ZonedDateTime, or null if the string cannot be parsed
+     */
+    public static ZonedDateTime getZonedDateTimeFromString(String stringDate) {
+        try {
+            return ZonedDateTime.parse(stringDate);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
+    /**
      * Build Date from a displayed IsoDate string
      * @param stringDate iso string to convert to Date
      * @return converted Date
@@ -152,6 +176,35 @@ public class DateUtil
         }
     }
 
+    /**
+     * Returns a ZonedDateTime (in the system time zone) representing the specified
+     * number of milliseconds since the epoch
+     * @param milliseconds the number of milliseconds
+     * @return the ZonedDateTime
+     */
+    public static ZonedDateTime getZonedDateTimeFromEpochMilli(long milliseconds) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(milliseconds), SYSTEM_ZONE_ID);
+    }
+
+    /**
+     * Returns a ZonedDateTime (in the system time zone) representing the same
+     * number of milliseconds since the epoch as the specified Date
+     * @param date the date
+     * @return the ZonedDateTime
+     */
+    public static ZonedDateTime getZonedDateTimeFromDate(Date date) {
+        return getZonedDateTimeFromEpochMilli(date.getTime());
+    }
+
+    /**
+     * Returns a Date (in local time) representing the same number of milliseconds
+     * since the epoch as the specified ZonedDateTime
+     * @param zonedDateTime The ZonedDateTime
+     * @return the Date
+     */
+    public static Date getDateFromZonedDateTime(ZonedDateTime zonedDateTime) {
+        return new Date(zonedDateTime.toInstant().toEpochMilli());
+    }
 
     /**
      * Get the current IsoDate String
@@ -201,4 +254,32 @@ public class DateUtil
         Date currentTime = new Date();
         return currentTime.getTime();
     }
+
+    /**
+     * Converts the specified ZonedDateTime to an ISO8601 string.
+     * @param zonedDateTime the ZonedDateTime
+     * @param truncateToSeconds whether to truncate the time to the nearest second
+     * @return the ISO8601 string
+     */
+    public static String getIsoDate(ZonedDateTime zonedDateTime, boolean truncateToSeconds) {
+        // .withNano(0) is a hack to get DateTimeFormatter not to output fractional seconds
+        ZonedDateTime zdt = truncateToSeconds ? zonedDateTime.withNano(0) : zonedDateTime;
+        return zdt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    }
+
+    /**
+     * Converts the specified ZonedDateTime to an ISO8601 string in UTC ('Z') time.
+     * @param zonedDateTime the ZonedDateTime
+     * @param truncateToSeconds whether to truncate the time to the nearest second
+     * @return the ISO8601 string
+     */
+    public static String getIsoZDate(ZonedDateTime zonedDateTime, boolean truncateToSeconds) {
+        ZonedDateTime zdt = zonedDateTime.withZoneSameInstant(ZoneOffset.UTC);
+        if (truncateToSeconds) {
+            // .withNano(0) is a hack to get DateTimeFormatter not to output fractional seconds
+            zdt = zdt.withNano(0);
+        }
+        return zdt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    }
+
 }

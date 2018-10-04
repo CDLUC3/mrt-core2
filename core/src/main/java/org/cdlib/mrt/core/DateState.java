@@ -30,6 +30,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.cdlib.mrt.core;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import org.cdlib.mrt.utility.DateUtil;
 import org.cdlib.mrt.utility.StateStringInf;
@@ -41,7 +42,8 @@ public class DateState
         implements StateStringInf, Serializable
 {
     public static final String DBDATEPATTERN = "yyyy-MM-dd HH:mm:ss";
-    protected Date date = null;
+
+    private ZonedDateTime date;
 
     /**
      * Constructor
@@ -49,16 +51,16 @@ public class DateState
      */
     public DateState(Date date)
     {
-        setDate(date);
+        this(date == null ? null : DateUtil.getZonedDateTimeFromDate(date));
     }
 
     /**
      * Constructor
-     * @param seconds base second count
+     * @param milliseconds base millisecond count
      */
-    public DateState(long seconds)
+    public DateState(long milliseconds)
     {
-        setDate(new Date(seconds));
+        this(DateUtil.getZonedDateTimeFromEpochMilli(milliseconds));
     }
 
     /**
@@ -67,16 +69,19 @@ public class DateState
      */
     public DateState(String dateTime)
     {
-            date = DateUtil.getIsoDateFromString(dateTime);
+        this(DateUtil.getZonedDateTimeFromString(dateTime));
     }
 
     /**
      * Contructor
-     * @param dateTime Iso format for date
      */
     public DateState()
     {
-        date = DateUtil.getCurrentDate();
+        this(DateUtil.getCurrentZonedDateTime());
+    }
+
+    public DateState(ZonedDateTime date) {
+        this.date = date;
     }
 
     /**
@@ -84,7 +89,7 @@ public class DateState
      * @return standard date
      */
     public Date getDate() {
-        return date;
+        return this.date == null ? null : DateUtil.getDateFromZonedDateTime(date);
     }
 
     /**
@@ -92,7 +97,7 @@ public class DateState
      * @param date Date value used for State
      */
     public void setDate(Date date) {
-        this.date = date;
+        this.date = date == null ? null : DateUtil.getZonedDateTimeFromEpochMilli(date.getTime());
     }
     
     /**
@@ -102,7 +107,7 @@ public class DateState
     public String getIsoDate()
     {
         if (date == null) return null;
-        return DateUtil.getIsoDate(date);
+        return DateUtil.getIsoDate(date, true);
     }
     
     /**
@@ -112,7 +117,7 @@ public class DateState
     public String getIsoZDate()
     {
         if (date == null) return null;
-        return DateUtil.getIsoZDate(date);
+        return DateUtil.getIsoZDate(date, true);
     }
 
     /**
@@ -123,17 +128,17 @@ public class DateState
     public String toString()
     {
         if (date == null) return "empty";
-        return DateUtil.getIsoDate(date);
+        return getIsoDate();
     }
 
     /**
-     * Return second format of this Date
-     * @return second count for this Date
+     * Return milliseconds since January 1, 1970, 00:00:00 GMT for this date
+     * @return millisecond count for this Date, or 0 if the wrapped date is null
      */
     public long getTimeLong()
     {
         if (date == null) return 0;
-        return date.getTime();
+        return date.toInstant().toEpochMilli();
     }
 
     /**
