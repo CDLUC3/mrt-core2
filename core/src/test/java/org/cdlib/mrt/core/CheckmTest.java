@@ -15,7 +15,6 @@ import static org.cdlib.mrt.core.ManifestRowBatch.cols;
 import static org.cdlib.mrt.core.ManifestRowBatch.profiles;
 import static org.cdlib.mrt.core.ManifestRowCheckmAbs.getHeaders;
 import static org.cdlib.mrt.utility.LoggerInf.LogLevel.DEBUG_LOW;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CheckmTest {

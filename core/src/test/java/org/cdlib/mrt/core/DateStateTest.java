@@ -23,6 +23,7 @@ public class DateStateTest {
     private static final ZoneOffset SYSTEM_ZONE_OFFSET = SYSTEM_ZONE_ID.getRules().getOffset(Instant.now());
 
     private static final ZoneOffset OTHER_ZONE_OFFSET;
+
     static {
         int systemOffsetSeconds = SYSTEM_ZONE_OFFSET.getTotalSeconds();
         int otherOffsetSeconds = systemOffsetSeconds + 3600;
