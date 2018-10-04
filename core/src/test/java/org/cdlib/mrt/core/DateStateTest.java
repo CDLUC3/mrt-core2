@@ -1,6 +1,5 @@
 package org.cdlib.mrt.core;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
@@ -45,6 +44,27 @@ public class DateStateTest {
     private Date nowDate() {
         long nowMillis = nowMillis();
         return new Date(nowMillis);
+    }
+
+    private ZonedDateTime nowZdt(ZoneOffset offset) {
+        // .withNano(0) is a hack to get DateTimeFormatter not to output fractional seconds
+        return ZonedDateTime.now(offset).withNano(0);
+    }
+
+    private ZonedDateTime nowSystemZdt() {
+        return nowZdt(SYSTEM_ZONE_OFFSET);
+    }
+
+    private ZonedDateTime nowUtcZdt() {
+        return nowZdt(ZoneOffset.UTC);
+    }
+
+    private ZonedDateTime nowOtherZdt() {
+        return nowZdt(OTHER_ZONE_OFFSET);
+    }
+
+    private String toIso8601(ZonedDateTime zdt) {
+        return zdt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
     private static long toMillis(ZonedDateTime zdt) {
@@ -110,9 +130,8 @@ public class DateStateTest {
 
     @Test
     public void constructWithStringSupportsUTC() {
-        // .withNano(0) is a hack to get DateTimeFormatter not to output fractional seconds
-        ZonedDateTime nowUtcZDT = ZonedDateTime.now(ZoneOffset.UTC).withNano(0);
-        String nowUtcIso8601 = nowUtcZDT.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        ZonedDateTime nowUtcZDT = nowUtcZdt();
+        String nowUtcIso8601 = toIso8601(nowUtcZDT);
         DateState state = new DateState(nowUtcIso8601);
         long expected = toMillis(nowUtcZDT);
         assertEquals(expected, state.getTimeLong());
@@ -120,9 +139,8 @@ public class DateStateTest {
 
     @Test
     public void constructWithStringSupportsOtherTimeZones() {
-        // .withNano(0) is a hack to get DateTimeFormatter not to output fractional seconds
-        ZonedDateTime nowOtherZdt = ZonedDateTime.now(OTHER_ZONE_OFFSET).withNano(0);
-        String nowOtherIso8601 = nowOtherZdt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        ZonedDateTime nowOtherZdt = nowOtherZdt();
+        String nowOtherIso8601 = toIso8601(nowOtherZdt);
         DateState state = new DateState(nowOtherIso8601);
         long expected = toMillis(nowOtherZdt);
         assertEquals(expected, state.getTimeLong());
@@ -178,25 +196,26 @@ public class DateStateTest {
         assertEquals(expected, state.toString());
     }
 
-    @Ignore
     @Test
-    public void toStringPreservesLocalTime() {
-        // TODO: test this directly in Checkm.getLine()
-        fail("not implemented");
+    public void toStringPreservesSystemTime() {
+        String nowSystemIso8601 = toIso8601(nowSystemZdt());
+        DateState state = new DateState(nowSystemIso8601);
+        assertEquals(nowSystemIso8601, state.toString());
     }
 
-    @Ignore
     @Test
     public void toStringPreservesUTCTime() {
-        // TODO: test this directly in Checkm.getLine()
-        fail("not implemented");
+        String nowUtcIso8601 = toIso8601(nowUtcZdt());
+        DateState state = new DateState(nowUtcIso8601);
+        assertEquals(nowUtcIso8601, state.toString());
     }
 
-    @Ignore
     @Test
     public void toStringPreservesOtherTimeZone() {
         // TODO: test this directly in Checkm.getLine()
-        fail("not implemented");
+        String nowOtherIso8601 = toIso8601(nowOtherZdt());
+        DateState state = new DateState(nowOtherIso8601);
+        assertEquals(nowOtherIso8601, state.toString());
     }
 
     @Test
