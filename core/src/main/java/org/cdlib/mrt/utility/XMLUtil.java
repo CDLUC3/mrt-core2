@@ -69,7 +69,7 @@ public class XMLUtil
         StringBuffer buf = new StringBuffer();
         for (int i=0; i < in.length(); i++) {
             char c = in.charAt(i);
-            if ((c < 32) || ((c>127)&&(c<160))){
+            if ((c < 32) || ((c>=127)&&(c<160))){
                 buf.append("&#" + (int)c + ";");
                 if (DEBUG) System.out.println("found(" + i + "):"
                         + " - c=" + c
