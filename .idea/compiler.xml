@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="mrt-core" />
+        <module name="mrt-jena" />
+        <module name="mrt-json" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="mrt-core" target="1.8" />
+      <module name="mrt-core-util" target="1.5" />
+      <module name="mrt-core-utilinit" target="1.5" />
+      <module name="mrt-jena" target="1.5" />
+      <module name="mrt-json" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
