@@ -10,6 +10,7 @@ pipeline {
     maven 'maven'
     jdk 'jdk8' // TODO: figure out how to parameterize this
   }
+
   stages {
     stage('Build') {
       steps {
