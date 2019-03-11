@@ -18,6 +18,7 @@ pipeline {
       }
     }
     stage('Archive') {
+      // TODO: fix tests so they don't delete JARs we want to keep
       steps {
         archiveArtifacts '**/target/*.jar'
       }
