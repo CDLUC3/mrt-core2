@@ -13,3 +13,7 @@ cd mrt-core
 mvn clean
 mvn install
 ________________________________
+
+* Maven release
+
+mvn --batch-mode -DreleaseVersion=2019.1.alpha -DdevelopmentVersion=2.0-SNAPSHOT -Dtag=2019.1.alpha release:prepare
