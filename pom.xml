@@ -11,6 +11,41 @@
     <description>UC3 Merritt Micro-Services</description>
     <url>http://uc3.cdlib.org</url>
 
+    <scm>
+        <!-- TODO: can we pick this up from git config somehow? wrapper script? -->
+        <connection>scm:git:https://github.com/dmolesUC3/mrt-core2.git</connection>
+        <developerConnection>scm:git:git@github.com-dmolesUC3:dmolesUC3/mrt-core2.git</developerConnection>
+        <url>https://github.com/dmolesUC3/mrt-core2</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>cdl-releases</id>
+            <url>http://mvn.cdlib.org/content/repositories/cdl-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <uniqueVersion>true</uniqueVersion>
+            <id>cdl-snapshots</id>
+            <url>http://mvn.cdlib.org/content/repositories/cdl-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <modules>
         <module>core-util-init</module>
         <module>jena</module>
