@@ -11,9 +11,6 @@ pipeline {
 
   tools {
     maven 'maven'
-  }
-
-  tools {
     jdk params.JDK
   }
   stages {
