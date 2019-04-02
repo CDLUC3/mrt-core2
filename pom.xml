@@ -1,6 +1,4 @@
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>mrt-core-util</artifactId>
     <groupId>org.cdlib.mrt</groupId>
@@ -12,11 +10,7 @@
     <url>http://uc3.cdlib.org</url>
 
     <scm>
-        <!-- TODO: can we pick this up from git config somehow? wrapper script? -->
-        <connection>scm:git:https://github.com/dmolesUC3/mrt-core2.git</connection>
-        <developerConnection>scm:git:git@github.com-dmolesUC3:dmolesUC3/mrt-core2.git</developerConnection>
-        <url>https://github.com/dmolesUC3/mrt-core2</url>
-        <tag>HEAD</tag>
+        <developerConnection>scm:git:origin</developerConnection>
     </scm>
 
     <build>
@@ -54,6 +48,3 @@
     </modules>
 
 </project>
-
-
-
