@@ -1,14 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>mrt-core-util</artifactId>
     <groupId>org.cdlib.mrt</groupId>
-    <version>2.0-SNAPSHOT</version>
+    <version>2019.1</version>
   </parent>
   <artifactId>mrt-core-utilinit</artifactId>
   <packaging>pom</packaging>
-  <version>2.0-SNAPSHOT</version>
+  <version>2019.1</version>
   <name>UC3-mrtCoreUtilInit</name>
   <url>http://uc3.cdlib.org</url>
 
@@ -22,7 +21,7 @@
                     <phase>initialize</phase>
                     <configuration>
                         <tasks>
-        <ant dir="." antfile="build.xml" target="cleanup"/>
+        <ant dir="." antfile="build.xml" target="cleanup" />
                         </tasks>
                     </configuration>
                     <goals>

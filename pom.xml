@@ -4,14 +4,15 @@
     <groupId>org.cdlib.mrt</groupId>
 
     <packaging>pom</packaging>
-    <version>2.0-SNAPSHOT</version>
+    <version>2019.1</version>
     <name>UC3-mrtcore</name>
     <description>UC3 Merritt Micro-Services</description>
     <url>http://uc3.cdlib.org</url>
 
     <scm>
         <developerConnection>scm:git:origin</developerConnection>
-    </scm>
+      <tag>2019.1</tag>
+  </scm>
 
     <build>
         <plugins>
