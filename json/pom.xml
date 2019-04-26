@@ -3,10 +3,10 @@
   <parent>
     <artifactId>mrt-core-util</artifactId>
     <groupId>org.cdlib.mrt</groupId>
-    <version>2019.1</version>
+    <version>2019.2-SNAPSHOT</version>
   </parent>
   <artifactId>mrt-json</artifactId>
-  <version>2019.1</version>
+  <version>2019.2-SNAPSHOT</version>
   <name>UC3-mrtJson</name>
   <url>http://uc3.cdlib.org</url>
 

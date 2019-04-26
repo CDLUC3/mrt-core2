@@ -3,11 +3,11 @@
   <parent>
     <artifactId>mrt-core-util</artifactId>
     <groupId>org.cdlib.mrt</groupId>
-    <version>2019.1</version>
+    <version>2019.2-SNAPSHOT</version>
   </parent>
   <artifactId>mrt-core-utilinit</artifactId>
   <packaging>pom</packaging>
-  <version>2019.1</version>
+  <version>2019.2-SNAPSHOT</version>
   <name>UC3-mrtCoreUtilInit</name>
   <url>http://uc3.cdlib.org</url>
 
