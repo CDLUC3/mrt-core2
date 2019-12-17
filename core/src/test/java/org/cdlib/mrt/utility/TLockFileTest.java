@@ -12,7 +12,7 @@ import java.util.Vector;
 
 import org.cdlib.mrt.utility.TFrame;
 import org.cdlib.mrt.utility.FileUtil;
-import org.cdlib.mrt.utility.TException;;
+import org.cdlib.mrt.utility.TException;
 import org.cdlib.mrt.utility.TLockFile;
 import org.cdlib.mrt.utility.LoggerInf;
 import org.cdlib.mrt.utility.StringUtil;
