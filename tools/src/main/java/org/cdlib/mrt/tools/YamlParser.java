@@ -20,9 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -30,47 +27,53 @@ import org.yaml.snakeyaml.Yaml;
 
 public class YamlParser {
     final Yaml yaml = new Yaml();
-    private SSM ssm = null;
+    private SSMInterface ssm = null;
     private LinkedHashMap<String, Object> loadedYaml = new LinkedHashMap<>();
     private LinkedHashMap<String, Object> resolvedYaml = new LinkedHashMap<>();
     private String ssmPrefix = "";
-    //private AWSSimpleSystemsManagement ssm = AWSSimpleSystemsManagementClientBuilder.defaultClient();
+    private String defaultReturn = null;
 
-    
+	public YamlParser(SSMInterface ssm) {
+        this.ssm = ssm;
+        this.ssmPrefix = ssm.getSsmPath();
+	}
+
 	public YamlParser(String ssmPrefix) {
-                this.ssm = new SSM(ssmPrefix);
-                this.ssmPrefix = ssm.getSsmPath();
+        this(new SSM(ssmPrefix));
 	}
-	   
+
 	public YamlParser() {
-                this.ssm = new SSM();
-                this.ssmPrefix = ssm.getSsmPath();
+        this(new SSM());
 	}
-        
-	public void parse(String fs) throws FileNotFoundException 
-        {
-            File f = new File(fs);
-            loadedYaml = (LinkedHashMap<String, Object>)yaml.load(new FileReader(f));
+
+	public void setDefaultReturn(String defaultReturn) {
+		this.defaultReturn = defaultReturn;
 	}
-	
-	public void parseString(String s) 
-                throws FileNotFoundException 
-        {
-            loadedYaml = (LinkedHashMap<String, Object>)yaml.load(new StringReader(s));
+
+	public void parse(String fs) throws FileNotFoundException
+    {
+        File f = new File(fs);
+        loadedYaml = (LinkedHashMap<String, Object>)yaml.load(new FileReader(f));
 	}
-	
-	public String dumpJson() 
-        {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            return gson.toJson(resolvedYaml, resolvedYaml.getClass());		
+
+	public void parseString(String s)
+                throws FileNotFoundException
+    {
+        loadedYaml = (LinkedHashMap<String, Object>)yaml.load(new StringReader(s));
 	}
-	
-	public void resolveValues() 
-        {
+
+	public String dumpJson()
+    {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(resolvedYaml, resolvedYaml.getClass());
+	}
+
+	public void resolveValues() throws RuntimeConfigException
+    {
 		resolvedYaml = resolveValues(loadedYaml);
 	}
 
-	public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) {
+	public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) throws RuntimeConfigException {
 		LinkedHashMap<String, Object> copy = new LinkedHashMap<>();
 		for(String k: lmap.keySet()) {
 			Object obj = lmap.get(k);
@@ -78,9 +81,9 @@ public class YamlParser {
 		}
 		return copy;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public Object resolveObjectValue(Object obj) {
+	public Object resolveObjectValue(Object obj) throws RuntimeConfigException {
 		if (obj instanceof LinkedHashMap) {
 			return resolveValues((LinkedHashMap<String, Object>)obj);
 		} else if (obj instanceof ArrayList) {
@@ -92,43 +95,53 @@ public class YamlParser {
 		} else if (obj instanceof String) {
 			return resolveObjectValue((String)obj);
 		} else {
-			return obj;				
+			return obj;
 		}
 	}
 
 	public static Pattern pToken = Pattern.compile("\\{!(ENV|SSM):\\s*([^\\}!]*)(!DEFAULT:\\s([^\\}]*))?\\}");
-	
+
 	public String getValue(String a, String def) {
-		return a == null ? def : a;
+		if (a != null) {
+			return a;
+		}
+		if (def != null) {
+			return def;
+		}
+		if (this.defaultReturn != null) {
+			return this.defaultReturn;
+		}
+		return null;
 	}
-	
-	public String resolveObjectValue(String s) {
+
+	public String resolveObjectValue(String s) throws RuntimeConfigException {
 		Matcher m = pToken.matcher(s);
 		if (m.matches()) {
 			String type = getValue(m.group(1), "");
 			String key = getValue(m.group(2), "");
-			String def = getValue(m.group(4), String.format("*%s-%s*", type, key));
-			
+			String def = getValue(m.group(4), null);
+
+			String ret = null;
 			if (type.equals("ENV")) {
-				return getValue(System.getenv(m.group(2)), def);
+				ret = getValue(System.getenv(m.group(2)), def);
 			}
 			if (type.equals("SSM")) {
-                           
-			    GetParameterRequest request = new GetParameterRequest();
-			    request.setName(this.ssmPrefix + key);
 			    try {
-                                        String value = this.ssm.get(key);
-					return getValue(value, def);
+                    String value = this.ssm.get(key);
+					ret = getValue(value, def);
 			    } catch(Exception e) {
-			    	return def;
+			    	ret = def;
 			    }
 			}
-			
+
+			if (ret == null) {
+				throw new RuntimeConfigException("Cannot resolve " + s);
+			}
 			return def;
 		}
 		return s;
 	}
-	
+
     public static void main(String[] argv) {
     	String fs = (argv.length == 0) ? "config.yml" : argv[0];
     	YamlParser yp = new YamlParser("/demo/service1/dev/");
@@ -136,10 +149,9 @@ public class YamlParser {
         	yp.parse(fs);
         	yp.resolveValues();
         	System.out.println(yp.dumpJson());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
 }
-

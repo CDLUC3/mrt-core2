@@ -30,11 +30,10 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.cdlib.mrt.tools;
 
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
 import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TException;
+
+import java.util.HashMap;
 
 /**
  *
@@ -42,16 +41,13 @@ import org.cdlib.mrt.utility.TException;
  * Class used to 
  *
  */
-public class SSM implements SSMInterface
+public class SSMMock implements SSMInterface
 {
     
-    protected static final String NAME = "SSM";
-    protected static final String MESSAGE = NAME + ": ";
     private String ssmPath = null;
+    private HashMap<String, String> map = new HashMap<>();
     
-    private AWSSimpleSystemsManagement ssm = AWSSimpleSystemsManagementClientBuilder.defaultClient();
-    
-    public SSM(String prefix) 
+    public SSMMock(String prefix) 
     { 
         if (StringUtil.isAllBlank(prefix)) {
             setPath(System.getenv("SSM_ROOT_PATH"));
@@ -60,7 +56,7 @@ public class SSM implements SSMInterface
         }
     }
     
-    public SSM() 
+    public SSMMock() 
     { 
         setPath(System.getenv("SSM_ROOT_PATH"));
     }
@@ -74,10 +70,13 @@ public class SSM implements SSMInterface
         this.ssmPath = prefix;
     }
     
+    public void add(String key, String value) {
+    	map.put(key, value);
+    }
+    
     public String get(String parameterName)
         throws TException
     {
-        GetParameterRequest request = new GetParameterRequest();
         if (StringUtil.isAllBlank(parameterName)) {
             throw new TException.INVALID_OR_MISSING_PARM("SSM parameter empty");
         }
@@ -91,23 +90,16 @@ public class SSM implements SSMInterface
             }
             searchName = ssmPath + parameterName;
         }
-        request.setName(searchName);
-        request.setWithDecryption(true);
-        return ssm.getParameter(request).getParameter().getValue(); 
+        if (!map.containsKey(searchName)) {
+        	throw new TException.INVALID_OR_MISSING_PARM("SSM key not found: " + searchName);
+        }
+        return map.get(searchName);
     }
     
     public String getNode(long num)
         throws TException
     {
-        if (ssmPath == null) {
-            throw new TException.INVALID_OR_MISSING_PARM(
-                "getNode - SSM path required");
-        }
-        GetParameterRequest request = new GetParameterRequest();
-        String nodePath = ssmPath + "cloud/nodes/" + num;
-        request.setName(nodePath);
-        request.setWithDecryption(true);
-        return ssm.getParameter(request).getParameter().getValue(); 
+    	return get(ssmPath + "cloud/nodes/" + num);
     }
 
     public String getSsmPath() {
@@ -118,15 +110,4 @@ public class SSM implements SSMInterface
         this.ssmPath = ssmPath;
     }
     
-    public static void main(String[] argv) {
-    	
-    	try {
-            SSM ssm = new SSM();
-            String ssmVal = ssm.getNode(9555);
-            
-        } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-        }
-    }
 }
