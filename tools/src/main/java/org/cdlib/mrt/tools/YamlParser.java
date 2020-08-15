@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
@@ -30,12 +29,10 @@ public class YamlParser {
     private SSMInterface ssm = null;
     private LinkedHashMap<String, Object> loadedYaml = new LinkedHashMap<>();
     private LinkedHashMap<String, Object> resolvedYaml = new LinkedHashMap<>();
-    private String ssmPrefix = "";
     private String defaultReturn = null;
 
 	public YamlParser(SSMInterface ssm) {
         this.ssm = ssm;
-        this.ssmPrefix = ssm.getSsmPath();
 	}
 
 	public YamlParser(String ssmPrefix) {
@@ -50,28 +47,40 @@ public class YamlParser {
 		this.defaultReturn = defaultReturn;
 	}
 
-	public void parse(String fs) throws FileNotFoundException
+	@SuppressWarnings("unchecked")
+	public LinkedHashMap<String, Object> parse(String fs) throws FileNotFoundException
     {
         File f = new File(fs);
         loadedYaml = (LinkedHashMap<String, Object>)yaml.load(new FileReader(f));
+        return loadedYaml;
 	}
 
-	public void parseString(String s)
-                throws FileNotFoundException
+	@SuppressWarnings("unchecked")
+	public LinkedHashMap<String, Object> parseString(String s)
     {
         loadedYaml = (LinkedHashMap<String, Object>)yaml.load(new StringReader(s));
+        return loadedYaml;
 	}
 
 	public String dumpJson()
-    {
+  {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson.toJson(resolvedYaml, resolvedYaml.getClass());
 	}
 
-	public void resolveValues() throws RuntimeConfigException
-    {
+	public LinkedHashMap<String, Object> resolveValues() throws RuntimeConfigException
+  {
 		resolvedYaml = resolveValues(loadedYaml);
+    return resolvedYaml;
 	}
+
+  public LinkedHashMap<String, Object> getParsedValues() {
+    return loadedYaml;
+  }
+
+  public LinkedHashMap<String, Object> getResolvedValues() {
+    return resolvedYaml;
+  }
 
 	public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) throws RuntimeConfigException {
 		LinkedHashMap<String, Object> copy = new LinkedHashMap<>();
