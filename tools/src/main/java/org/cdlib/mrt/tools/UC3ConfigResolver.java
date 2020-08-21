@@ -37,10 +37,13 @@ import org.cdlib.mrt.utility.TException;
  * Class used to define the interface to the SSM Class (for the purpose of implementing a mock)
  *
  */
-public interface SSMInterface 
+public interface UC3ConfigResolver 
 {
-    public String get(String parameterName) throws TException;
-    public String getNode(long num) throws TException;
+    public String getResolvedValue(String parameterName) throws TException;
+    public String getResolvedStorageNode(long num) throws TException;
     public String getSsmPath();
     public void setSsmPath(String ssmPath);
+    public void setDefaultReturn(String defaultReturn);
+    public String getValueOrDefault(String a, String def);
+    public String resolveConfigValue(String s) throws RuntimeConfigException;
 }

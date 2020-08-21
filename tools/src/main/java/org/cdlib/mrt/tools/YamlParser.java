@@ -16,8 +16,6 @@ import java.io.FileReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,25 +24,20 @@ import org.yaml.snakeyaml.Yaml;
 
 public class YamlParser {
     final Yaml yaml = new Yaml();
-    private SSMInterface ssm = null;
+    private UC3ConfigResolver uc3configResolver = null;
     private LinkedHashMap<String, Object> loadedYaml = new LinkedHashMap<>();
     private LinkedHashMap<String, Object> resolvedYaml = new LinkedHashMap<>();
-    private String defaultReturn = null;
 
-	public YamlParser(SSMInterface ssm) {
-        this.ssm = ssm;
+	public YamlParser(UC3ConfigResolver ssm) {
+        this.uc3configResolver = ssm;
 	}
 
 	public YamlParser(String ssmPrefix) {
-        this(new SSM(ssmPrefix));
+        this(new SSMConfigResolver(ssmPrefix));
 	}
 
 	public YamlParser() {
-        this(new SSM());
-	}
-
-	public void setDefaultReturn(String defaultReturn) {
-		this.defaultReturn = defaultReturn;
+        this(new SSMConfigResolver());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -86,7 +79,11 @@ public class YamlParser {
 		LinkedHashMap<String, Object> copy = new LinkedHashMap<>();
 		for(String k: lmap.keySet()) {
 			Object obj = lmap.get(k);
-			copy.put(k, resolveObjectValue(obj));
+			if (obj instanceof String) {
+				copy.put(k, uc3configResolver.resolveConfigValue((String)obj));
+			} else {
+				copy.put(k, resolveObjectValue(obj));
+			}
 		}
 		return copy;
 	}
@@ -98,57 +95,18 @@ public class YamlParser {
 		} else if (obj instanceof ArrayList) {
 			ArrayList<Object> copy = new ArrayList<>();
 			for(Object aobj: (ArrayList<Object>)obj) {
-				copy.add(resolveObjectValue(aobj));
+				if (aobj instanceof String) {
+					copy.add(uc3configResolver.resolveConfigValue((String)aobj));
+				} else {
+					copy.add(resolveObjectValue(aobj));
+				}
 			}
 			return copy;
 		} else if (obj instanceof String) {
-			return resolveObjectValue((String)obj);
+			return uc3configResolver.resolveConfigValue((String)obj);
 		} else {
 			return obj;
 		}
-	}
-
-	public static Pattern pToken = Pattern.compile("\\{!(ENV|SSM):\\s*([^\\}!]*)(!DEFAULT:\\s([^\\}]*))?\\}");
-
-	public String getValue(String a, String def) {
-		if (a != null) {
-			return a;
-		}
-		if (def != null) {
-			return def;
-		}
-		if (this.defaultReturn != null) {
-			return this.defaultReturn;
-		}
-		return null;
-	}
-
-	public String resolveObjectValue(String s) throws RuntimeConfigException {
-		Matcher m = pToken.matcher(s);
-		if (m.matches()) {
-			String type = getValue(m.group(1), "");
-			String key = getValue(m.group(2), "");
-			String def = getValue(m.group(4), null);
-
-			String ret = null;
-			if (type.equals("ENV")) {
-				ret = getValue(System.getenv(m.group(2)), def);
-			}
-			if (type.equals("SSM")) {
-			    try {
-                    String value = this.ssm.get(key);
-					ret = getValue(value, def);
-			    } catch(Exception e) {
-			    	ret = def;
-			    }
-			}
-
-			if (ret == null) {
-				throw new RuntimeConfigException("Cannot resolve " + s);
-			}
-			return def;
-		}
-		return s;
 	}
 
     public static void main(String[] argv) {

@@ -30,10 +30,16 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.cdlib.mrt.tools;
 
-import org.cdlib.mrt.utility.StringUtil;
-import org.cdlib.mrt.utility.TException;
+import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
+import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
+import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.cdlib.mrt.utility.StringUtil;
+import org.cdlib.mrt.utility.TException;
 
 /**
  *
@@ -41,73 +47,44 @@ import java.util.HashMap;
  * Class used to 
  *
  */
-public class SSMMock implements SSMInterface
+public class MockConfigResolver extends DefaultConfigResolver
 {
-    
-    private String ssmPath = null;
     private HashMap<String, String> map = new HashMap<>();
     
-    public SSMMock(String prefix) 
+    public MockConfigResolver(String prefix) 
     { 
-        if (StringUtil.isAllBlank(prefix)) {
-            setPath(System.getenv("SSM_ROOT_PATH"));
-        } else {
-            setPath(prefix);
-        }
+    	super(prefix);
     }
     
-    public SSMMock() 
+    public MockConfigResolver() 
     { 
-        setPath(System.getenv("SSM_ROOT_PATH"));
+        super();
     }
     
-    private void setPath(String prefix)
-    {
-        if (prefix == null) return;
-        if (!prefix.endsWith("/")) {
-                prefix += "/";
-        }
-        this.ssmPath = prefix;
-    }
-    
-    public void add(String key, String value) {
+    public void addMockSsmValue(String key, String value) {
     	map.put(key, value);
     }
-    
-    public String get(String parameterName)
+
+    public String getResolvedValue(String parameterName)
         throws TException
     {
-        if (StringUtil.isAllBlank(parameterName)) {
+    	if (StringUtil.isAllBlank(parameterName)) {
             throw new TException.INVALID_OR_MISSING_PARM("SSM parameter empty");
         }
         String init = parameterName.substring(0,1);
         String searchName = parameterName;
         if (!init.equals("/")) {
-            if (ssmPath == null) {
+            if (getSsmPath() == null) {
                 throw new TException.INVALID_OR_MISSING_PARM(
                     "SSM parameter is relative and no SSM_ROOT_PATH supplied:" 
                     + parameterName);
             }
-            searchName = ssmPath + parameterName;
+            searchName = getSsmPath() + parameterName;
         }
         if (!map.containsKey(searchName)) {
         	throw new TException.INVALID_OR_MISSING_PARM("SSM key not found: " + searchName);
         }
         return map.get(searchName);
     }
-    
-    public String getNode(long num)
-        throws TException
-    {
-    	return get(ssmPath + "cloud/nodes/" + num);
-    }
 
-    public String getSsmPath() {
-        return ssmPath;
-    }
-
-    public void setSsmPath(String ssmPath) {
-        this.ssmPath = ssmPath;
-    }
-    
 }

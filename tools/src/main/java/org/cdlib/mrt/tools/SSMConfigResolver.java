@@ -33,6 +33,10 @@ package org.cdlib.mrt.tools;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TException;
 
@@ -42,39 +46,21 @@ import org.cdlib.mrt.utility.TException;
  * Class used to 
  *
  */
-public class SSM implements SSMInterface
+public class SSMConfigResolver extends DefaultConfigResolver
 {
-    
-    protected static final String NAME = "SSM";
-    protected static final String MESSAGE = NAME + ": ";
-    private String ssmPath = null;
-    
     private AWSSimpleSystemsManagement ssm = AWSSimpleSystemsManagementClientBuilder.defaultClient();
     
-    public SSM(String prefix) 
+    public SSMConfigResolver(String prefix) 
     { 
-        if (StringUtil.isAllBlank(prefix)) {
-            setPath(System.getenv("SSM_ROOT_PATH"));
-        } else {
-            setPath(prefix);
-        }
+    	super(prefix);
     }
     
-    public SSM() 
+    public SSMConfigResolver() 
     { 
-        setPath(System.getenv("SSM_ROOT_PATH"));
+        super();
     }
     
-    private void setPath(String prefix)
-    {
-        if (prefix == null) return;
-        if (!prefix.endsWith("/")) {
-                prefix += "/";
-        }
-        this.ssmPath = prefix;
-    }
-    
-    public String get(String parameterName)
+    public String getResolvedValue(String parameterName)
         throws TException
     {
         GetParameterRequest request = new GetParameterRequest();
@@ -84,45 +70,23 @@ public class SSM implements SSMInterface
         String init = parameterName.substring(0,1);
         String searchName = parameterName;
         if (!init.equals("/")) {
-            if (ssmPath == null) {
+            if (getSsmPath() == null) {
                 throw new TException.INVALID_OR_MISSING_PARM(
                     "SSM parameter is relative and no SSM_ROOT_PATH supplied:" 
                     + parameterName);
             }
-            searchName = ssmPath + parameterName;
+            searchName = getSsmPath() + parameterName;
         }
         request.setName(searchName);
         request.setWithDecryption(true);
         return ssm.getParameter(request).getParameter().getValue(); 
     }
     
-    public String getNode(long num)
-        throws TException
-    {
-        if (ssmPath == null) {
-            throw new TException.INVALID_OR_MISSING_PARM(
-                "getNode - SSM path required");
-        }
-        GetParameterRequest request = new GetParameterRequest();
-        String nodePath = ssmPath + "cloud/nodes/" + num;
-        request.setName(nodePath);
-        request.setWithDecryption(true);
-        return ssm.getParameter(request).getParameter().getValue(); 
-    }
-
-    public String getSsmPath() {
-        return ssmPath;
-    }
-
-    public void setSsmPath(String ssmPath) {
-        this.ssmPath = ssmPath;
-    }
-    
-    public static void main(String[] argv) {
+	public static void main(String[] argv) {
     	
     	try {
-            SSM ssm = new SSM();
-            String ssmVal = ssm.getNode(9555);
+            SSMConfigResolver ssm = new SSMConfigResolver();
+            String ssmVal = ssm.getResolvedStorageNode(9555);
             
         } catch (Exception e) {
                 // TODO Auto-generated catch block
