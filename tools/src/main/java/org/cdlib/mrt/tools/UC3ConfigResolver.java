@@ -29,6 +29,8 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
 
 package org.cdlib.mrt.tools;
+import java.util.LinkedHashMap;
+
 import org.cdlib.mrt.utility.TException;
 
 /**
@@ -44,6 +46,6 @@ public interface UC3ConfigResolver
     public String getSsmPath();
     public void setSsmPath(String ssmPath);
     public void setDefaultReturn(String defaultReturn);
-    public String getValueOrDefault(String a, String def);
-    public String resolveConfigValue(String s) throws RuntimeConfigException;
+	public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) throws RuntimeConfigException;
+	public LinkedHashMap<String, Object> partiallyResolveValues(LinkedHashMap<String, Object> lmap, String partialKey) throws RuntimeConfigException;
 }

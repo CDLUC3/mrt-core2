@@ -33,6 +33,8 @@ package org.cdlib.mrt.tools;
 import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TException;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,14 +120,12 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
 		return null;
 	}
 
-	@Override
 	public void setDefaultReturn(String defaultReturn) {
 		this.defaultReturn = defaultReturn;
 	}
 
 	public static Pattern pToken = Pattern.compile("^(.*)\\{!(ENV|SSM):\\s*([^\\}!]*)(!DEFAULT:\\s([^\\}]*))?\\}(.*)$");
 
-	@Override
 	public String resolveConfigValue(String s) throws RuntimeConfigException {
 		Matcher m = pToken.matcher(s);
 		if (m.matches()) {
@@ -157,6 +157,48 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
 			return resolveConfigValue(String.format("%s%s%s", prefix, ret, suffix));
 		}
 		return s;
+	}
+
+	public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) throws RuntimeConfigException {
+		return partiallyResolveValues(lmap, null);
+	}
+
+	public LinkedHashMap<String, Object> partiallyResolveValues(LinkedHashMap<String, Object> lmap, String partialKey) throws RuntimeConfigException {
+		LinkedHashMap<String, Object> copy = new LinkedHashMap<>();
+		for(String k: lmap.keySet()) {
+			Object obj = lmap.get(k);
+			if (k.equals(partialKey) || partialKey == null) {
+				if (obj instanceof String) {
+					copy.put(k, resolveConfigValue((String)obj));
+				} else {
+					copy.put(k, resolveObjectValue(obj));
+				}
+			} else {
+				copy.put(k, lmap.get(k));
+			}
+		}
+		return copy;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Object resolveObjectValue(Object obj) throws RuntimeConfigException {
+		if (obj instanceof LinkedHashMap) {
+			return resolveValues((LinkedHashMap<String, Object>)obj);
+		} else if (obj instanceof ArrayList) {
+			ArrayList<Object> copy = new ArrayList<>();
+			for(Object aobj: (ArrayList<Object>)obj) {
+				if (aobj instanceof String) {
+					copy.add(resolveConfigValue((String)aobj));
+				} else {
+					copy.add(resolveObjectValue(aobj));
+				}
+			}
+			return copy;
+		} else if (obj instanceof String) {
+			return resolveConfigValue((String)obj);
+		} else {
+			return obj;
+		}
 	}
 
 }

@@ -173,6 +173,7 @@ public class YamlParserTest  {
         	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
         	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
         	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+        	assertEquals(getHashArrayValueAsString(config, "c", "e", 1), "2");
     	} catch(RuntimeConfigException e) {
     		System.err.println(e);
     		e.printStackTrace();

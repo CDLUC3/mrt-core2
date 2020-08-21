@@ -34,10 +34,6 @@ import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TException;
 
 /**
@@ -70,15 +66,4 @@ public class SSMConfigResolver extends DefaultConfigResolver
         return ssm.getParameter(request).getParameter().getValue(); 
     }
     
-	public static void main(String[] argv) {
-    	
-    	try {
-            SSMConfigResolver ssm = new SSMConfigResolver();
-            String ssmVal = ssm.getResolvedStorageNode(9555);
-            
-        } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-        }
-    }
 }
