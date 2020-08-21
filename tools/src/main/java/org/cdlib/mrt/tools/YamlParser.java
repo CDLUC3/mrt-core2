@@ -13,6 +13,7 @@ package org.cdlib.mrt.tools;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -41,17 +42,24 @@ public class YamlParser {
 	}
 
 	@SuppressWarnings("unchecked")
-	public LinkedHashMap<String, Object> parse(String fs) throws FileNotFoundException
+	public LinkedHashMap<String, Object> parse(String fs) throws FileNotFoundException, RuntimeConfigException
     {
-        File f = new File(fs);
-        loadedYaml = (LinkedHashMap<String, Object>)yaml.load(new FileReader(f));
-        return loadedYaml;
+        return parse(new FileReader(new File(fs)));
 	}
 
 	@SuppressWarnings("unchecked")
-	public LinkedHashMap<String, Object> parseString(String s)
+	public LinkedHashMap<String, Object> parseString(String s) throws RuntimeConfigException
     {
-        loadedYaml = (LinkedHashMap<String, Object>)yaml.load(new StringReader(s));
+        return parse(new StringReader(s));
+	}
+
+    @SuppressWarnings("unchecked")
+	public LinkedHashMap<String, Object> parse(Reader r) throws RuntimeConfigException
+    {
+        loadedYaml = (LinkedHashMap<String, Object>)yaml.load(r);
+        if (loadedYaml == null) {
+        	throw new RuntimeConfigException("No Yaml content was parsed");
+        }
         return loadedYaml;
 	}
 
@@ -76,13 +84,21 @@ public class YamlParser {
   }
 
 	public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) throws RuntimeConfigException {
+		return partiallyResolveValues(lmap, null);
+	}
+
+	public LinkedHashMap<String, Object> partiallyResolveValues(LinkedHashMap<String, Object> lmap, String partialKey) throws RuntimeConfigException {
 		LinkedHashMap<String, Object> copy = new LinkedHashMap<>();
 		for(String k: lmap.keySet()) {
 			Object obj = lmap.get(k);
-			if (obj instanceof String) {
-				copy.put(k, uc3configResolver.resolveConfigValue((String)obj));
+			if (k.equals(partialKey) || partialKey == null) {
+				if (obj instanceof String) {
+					copy.put(k, uc3configResolver.resolveConfigValue((String)obj));
+				} else {
+					copy.put(k, resolveObjectValue(obj));
+				}
 			} else {
-				copy.put(k, resolveObjectValue(obj));
+				copy.put(k, lmap.get(k));
 			}
 		}
 		return copy;

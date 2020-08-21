@@ -31,7 +31,7 @@ public class YamlParserTest  {
     public static void tearDownClass() throws Exception {
     }
 
-    private LinkedHashMap<String, Object> get_basic_hash() {
+    private LinkedHashMap<String, Object> get_basic_hash() throws RuntimeConfigException {
     	/*
         {
           a: 1,
@@ -48,8 +48,7 @@ public class YamlParserTest  {
       		+ "c: \n"
       		+ "  d: 3\n"
       		+ "  e: [ 1, 2, 3 ]";
-        LinkedHashMap<String, Object> res = resolver.parseString(yaml);
-      	return res;
+        return resolver_no_def.parseString(yaml);
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -68,21 +67,24 @@ public class YamlParserTest  {
         ((Map<String, String>) field.get(env)).remove(name);
     }
 
-    private YamlParser resolver;
+    private YamlParser resolver_no_def;
     private YamlParser resolver_def;
     private YamlParser resolver_prefix;
-    private MockConfigResolver ssm_mock;
+    private MockConfigResolver ssm_mock_no_def;
+    private MockConfigResolver ssm_mock_def;
     private MockConfigResolver ssm_mock_prefix;
+    public static final String NOT_APPLICABLE = "NOT-APPLICABLE";
 
     @Before
     public void setUp() {
-    	ssm_mock = new MockConfigResolver();
-    	resolver = new YamlParser(ssm_mock);
-    	resolver_def = new YamlParser(ssm_mock);
-    	ssm_mock.setDefaultReturn("NOT-APPLICABLE");
+    	ssm_mock_no_def = new MockConfigResolver();
+    	resolver_no_def = new YamlParser(ssm_mock_no_def);
+    	ssm_mock_def = new MockConfigResolver();
+    	ssm_mock_def.setDefaultReturn(NOT_APPLICABLE);
+    	resolver_def = new YamlParser(ssm_mock_def);
     	ssm_mock_prefix = new MockConfigResolver("/root/path/");
+    	ssm_mock_prefix.setDefaultReturn(NOT_APPLICABLE);
     	resolver_prefix = new YamlParser(ssm_mock_prefix);
-    	ssm_mock_prefix.setDefaultReturn("NOT-APPLICABLE");
     }
 
     @After
@@ -127,20 +129,45 @@ public class YamlParserTest  {
     	return Integer.parseInt(m.get(k2).toString());
     }
 
-    private int getHashArrayValueAsInt(LinkedHashMap<String, Object> config, String k, String k2, int i) throws RuntimeConfigException {
+    private void setHashStringValue(LinkedHashMap<String, Object> config, String k, String k2, String v) throws RuntimeConfigException {
     	@SuppressWarnings("unchecked")
-		LinkedHashMap<String, Object> m = (LinkedHashMap<String, Object>)config.get(k);
-    	@SuppressWarnings("unchecked")
-		ArrayList<Integer> arr = (ArrayList<Integer>)m.get(k2);
-    	return arr.get(i);
+    	LinkedHashMap<String, Object> hash = (LinkedHashMap<String, Object>)config.get(k);
+    	hash.put(k2, v);
     }
 
+    private void setHashArrayValue(LinkedHashMap<String, Object> config, String k, String k2, int i, String v) throws RuntimeConfigException {
+    	@SuppressWarnings("unchecked")
+    	LinkedHashMap<String, Object> hash = (LinkedHashMap<String, Object>)config.get(k);
+    	@SuppressWarnings("unchecked")
+		ArrayList<Object> arr = (ArrayList<Object>)hash.get(k2);
+    	arr.set(i, v);
+    }
+
+    private int getHashArrayValueAsInt(LinkedHashMap<String, Object> config, String k, String k2, int i) throws RuntimeConfigException {
+    	@SuppressWarnings("unchecked")
+		LinkedHashMap<String, Object> hash = (LinkedHashMap<String, Object>)config.get(k);
+    	@SuppressWarnings("unchecked")
+		ArrayList<Object> arr = (ArrayList<Object>)hash.get(k2);
+    	return Integer.parseInt(arr.get(i).toString());
+    }
+
+    private String getHashArrayValueAsString(LinkedHashMap<String, Object> config, String k, String k2, int i) throws RuntimeConfigException {
+    	@SuppressWarnings("unchecked")
+		LinkedHashMap<String, Object> hash = (LinkedHashMap<String, Object>)config.get(k);
+    	@SuppressWarnings("unchecked")
+		ArrayList<Object> arr = (ArrayList<Object>)hash.get(k2);
+    	return arr.get(i).toString();
+    }
+
+    /*
+     * Test Basic static values
+     */
     @Test
     public void testBasicValues()
     {
     	try {
         	LinkedHashMap<String, Object> config_in = get_basic_hash();
-        	LinkedHashMap<String, Object> config = resolver.resolveValues(config_in);
+        	LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
 
         	assertEquals(getValueAsInt(config, "a"), 1);
         	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
@@ -152,53 +179,365 @@ public class YamlParserTest  {
     	}
     }
 
+    /*
+     * Test Basic static values from file
+     */
     @Test
-    public void testBasicValuesFromFile()
+    public void testBasicValuesFromFile() throws FileNotFoundException, RuntimeConfigException
     {
-    	try {
-        	resolver.parse("src/test/resources/test.yml");
-            LinkedHashMap<String, Object> config = resolver.resolveValues();
+		resolver_no_def.parse("src/test/resources/test.yml");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues();
 
-        	assertEquals(getValueAsInt(config, "a"), 1);
-        	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
-        	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
-        	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
-    	} catch(RuntimeConfigException|FileNotFoundException e) {
-    		System.err.println(e);
-    		e.printStackTrace();
-    	}
+    	assertEquals(getValueAsInt(config, "a"), 1);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testBasicValuesFromEmptyFile()
+    /*
+     * Test Empty Yaml
+     */
+    @Test(expected = RuntimeConfigException.class)
+    public void testBasicValuesFromEmptyFile() throws FileNotFoundException, RuntimeConfigException
     {
-    	try {
-        	resolver.parse("src/test/resources/empty.yml");
-            LinkedHashMap<String, Object> config = resolver.resolveValues();
-            assertTrue(config.isEmpty());
-    	} catch(RuntimeConfigException|FileNotFoundException e) {
-    		System.err.println(e);
-    		e.printStackTrace();
-    	}
+    	resolver_no_def.parse("src/test/resources/empty.yml");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues();
+        assertTrue(config.isEmpty());
     }
 
+    /*
+     * Test Default Value
+     */
     @Test
-    public void testDefaultValues()
+    public void testDefaultValues() throws RuntimeConfigException
     {
-    	try {
-        	LinkedHashMap<String, Object> config_in = get_basic_hash();
-        	setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
-        	setArrayStringValue(config_in, "b", 0, "{!SSM: TESTUC3_SSM2 !DEFAULT: def2}");
-        	LinkedHashMap<String, Object> config = resolver.resolveValues(config_in);
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
+    	setArrayStringValue(config_in, "b", 0, "{!SSM: TESTUC3_SSM2 !DEFAULT: def2}");
+    	LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
 
-        	assertEquals(getValueAsString(config, "a"), "def");
-        	assertEquals(getArrayValueAsString(config, "b", 0), "def2");
-        	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
-        	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
-    	} catch(RuntimeConfigException e) {
-    		System.err.println(e);
-    		e.printStackTrace();
-    	}
+    	assertEquals(getValueAsString(config, "a"), "def");
+    	assertEquals(getArrayValueAsString(config, "b", 0), "def2");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+    
+    /*
+     * Test No Default ENV Value
+     */
+    @Test(expected = RuntimeConfigException.class)
+    public void testNoDefaultEnvValue() throws RuntimeConfigException
+    {
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1}");
+    	resolver_no_def.resolveValues(config_in);
+    }
+    
+    /*
+     * Test No Default ENV Value - Global Default
+     */
+    @Test
+    public void testNoDefaultEnvValueGlobalDefault() throws RuntimeConfigException
+    {
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1}");
+    	LinkedHashMap<String, Object> config = resolver_def.resolveValues(config_in);
+
+    	assertEquals(getValueAsString(config, "a"), NOT_APPLICABLE);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+
+    /*
+     * Test No Default SSM Value
+     */
+    @Test(expected = RuntimeConfigException.class)
+    public void testNoDefaultSsmValue() throws RuntimeConfigException
+    {
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setArrayStringValue(config_in, "b", 0, "{!SSM: TESTUC3_SSM2}");
+    	resolver_no_def.resolveValues(config_in);
+    }
+
+    /*
+     * Test No Default SSM Value - Global Default
+     */
+    @Test
+    public void testNoDefaultSsmValueGlobalDefault() throws RuntimeConfigException
+    {
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+       	setArrayStringValue(config_in, "b", 0, "{!SSM: TESTUC3_SSM2}");
+        LinkedHashMap<String, Object> config = resolver_def.resolveValues(config_in);
+
+    	assertEquals(getValueAsInt(config, "a"), 1);
+    	assertEquals(getArrayValueAsString(config, "b", 0), NOT_APPLICABLE);
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+    
+    /*
+     * TestENV substitution
+     */
+    @Test
+    public void testEnvSubstitution() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	updateEnv("TESTUC3_SSM_ENV1", "100");
+       	updateEnv("TESTUC3_SSM_ENV2", "400");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
+     	setArrayStringValue(config_in, "b", 0, "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
+
+    	assertEquals(getValueAsInt(config, "a"), 100);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "400");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+
+    /*
+     * Test ENV substitution of partially resolved hash (a)
+     */
+    @Test
+    public void testEnvSubstitutionPartiallyResolvedA() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	updateEnv("TESTUC3_SSM_ENV1", "100");
+       	updateEnv("TESTUC3_SSM_ENV2", "400");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
+     	setArrayStringValue(config_in, "b", 0, "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}");
+        LinkedHashMap<String, Object> config = resolver_no_def.partiallyResolveValues(config_in, "a");
+
+    	assertEquals(getValueAsInt(config, "a"), 100);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+
+    /*
+     * Test ENV substitution of partially resolved hash (b)
+     */
+    @Test
+    public void testEnvSubstitutionPartiallyResolvedB() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	updateEnv("TESTUC3_SSM_ENV1", "100");
+       	updateEnv("TESTUC3_SSM_ENV2", "400");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
+     	setArrayStringValue(config_in, "b", 0, "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}");
+        LinkedHashMap<String, Object> config = resolver_no_def.partiallyResolveValues(config_in, "b");
+
+    	assertEquals(getValueAsString(config, "a"), "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
+    	assertEquals(getArrayValueAsString(config, "b", 0), "400");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+    
+    
+    /*
+     * Test ENV substitution with return_val (a) - this case is not supported in the java version of the application
+     * Test ENV substitution with return_val (b) - this case is not supported in the java version of the application
+     */
+
+    /*
+     * Test ENV substitution
+     */
+    @Test
+    public void testEnvSubstitutionNoDefault() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	updateEnv("TESTUC3_SSM_ENV1", "100");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1}");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
+
+    	assertEquals(getValueAsInt(config, "a"), 100);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+    
+    /*
+     * Test ENV substitution in ARRAY
+     */
+    @Test
+    public void testEnvSubstitutionInArray() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	updateEnv("TESTUC3_SSM_ENV1", "100");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+     	setArrayStringValue(config_in, "b", 0, "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
+
+    	assertEquals(getValueAsInt(config, "a"), 1);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "100");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+    
+    /*
+     * Test ENV substitution in HASH
+     */
+    @Test
+    public void testEnvSubstitutionInHash() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	updateEnv("TESTUC3_SSM_ENV1", "100");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+     	setHashStringValue(config_in, "c", "d", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
+
+    	assertEquals(getValueAsInt(config, "a"), 1);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 100);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+
+    /*
+     * Test ENV substitution in ARRAY in HASH
+     */
+    @Test
+    public void testEnvSubstitutionInArrayInHash() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	updateEnv("TESTUC3_SSM_ENV1", "100");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+     	this.setHashArrayValue(config_in, "c", "e", 1, "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
+
+    	assertEquals(getValueAsInt(config, "a"), 1);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 100);
+    }
+
+    /*
+     * Test ENV substitution with prefix and suffix
+     */
+    @Test
+    public void testEnvSubstitutionWithPrefixAndSuffix() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	updateEnv("TESTUC3_SSM_ENV1", "100");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "aaa{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}bbb");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
+
+    	assertEquals(getValueAsString(config, "a"), "aaa100bbb");
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+  
+    /*
+     * Test Compound ENV substitution
+     */
+    @Test
+    public void testEnvCompoundSubstitution() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	updateEnv("TESTUC3_SSM_ENV2", "path/");
+    	updateEnv("TESTUC3_SSM_ENV1", "100");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "AA/{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def}{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}/ccc");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
+
+    	assertEquals(getValueAsString(config, "a"), "AA/path/100/ccc");
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+    
+    /*
+     * Test SSM substitution
+     */
+    @Test
+    public void testSsmSubstitution() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "100");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "{!SSM: TESTUC3_SSM1 !DEFAULT: def}");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
+
+    	assertEquals(getValueAsInt(config, "a"), 100);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+    
+    /*
+     * Test SSM substitution with root path passed to resolver
+     */
+    @Test
+    public void testSsmSubstitutionWithRootPath() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	ssm_mock_prefix.addMockSsmValue("/root/path/TESTUC3_SSM1", "100");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "{!SSM: TESTUC3_SSM1 !DEFAULT: def}");
+        LinkedHashMap<String, Object> config = resolver_prefix.resolveValues(config_in);
+
+    	assertEquals(getValueAsInt(config, "a"), 100);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+
+    /*
+     * Test SSM substitution - no default
+     */
+    @Test
+    public void testSsmSubstitutionNoDefault() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "100");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "{!SSM: TESTUC3_SSM1}");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
+
+        assertEquals(getValueAsInt(config, "a"), 100);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+    
+    /*
+     * Test Compound SSM substitution
+     */
+    @Test
+    public void testSsmCompoundSubstitution() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "path/");
+    	ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM2", "subpath");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "AA/{!SSM: TESTUC3_SSM1 !DEFAULT: def}{!SSM: TESTUC3_SSM2 !DEFAULT: def2}/bb.txt");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
+
+        System.out.println(config);
+
+        assertEquals(getValueAsString(config, "a"), "AA/path/subpath/bb.txt");
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+
+    /*
+     * Test Compound SSM/ENV substitution
+     */
+    @Test
+    public void testSsmEnvCompoundSubstitution() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "path/");
+    	updateEnv("TESTUC3_SSM_ENV2", "envpath");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "AA/{!SSM: TESTUC3_SSM1 !DEFAULT: def}{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}/bb.txt");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
+
+    	assertEquals(getValueAsString(config, "a"), "AA/path/envpath/bb.txt");
+    	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+    
+    /*
+     * Test File Not Found
+     */
+    @Test(expected = FileNotFoundException.class)
+    public void testFileNotFound() throws FileNotFoundException, RuntimeConfigException
+    {
+    	resolver_no_def.parse("src/test/resources/not-found.yml");
     }
 
 }

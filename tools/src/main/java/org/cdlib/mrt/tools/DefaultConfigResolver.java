@@ -71,6 +71,23 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
         this.ssmPath = prefix;
     }
     
+    public String getKey(String parameterName)
+        throws TException
+    {
+        if (StringUtil.isAllBlank(parameterName)) {
+            throw new TException.INVALID_OR_MISSING_PARM("SSM parameter empty");
+        }
+        String init = parameterName.substring(0,1);
+        if (!init.equals("/")) {
+            if (getSsmPath() == null) {
+                throw new TException.INVALID_OR_MISSING_PARM(
+                    "SSM parameter is relative and no SSM_ROOT_PATH supplied:" 
+                    + parameterName);
+            }
+        }
+        return getSsmPath() + parameterName;
+    }
+
     public abstract String getResolvedValue(String parameterName)
         throws TException;
     
@@ -106,19 +123,24 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
 		this.defaultReturn = defaultReturn;
 	}
 
-	public static Pattern pToken = Pattern.compile("\\{!(ENV|SSM):\\s*([^\\}!]*)(!DEFAULT:\\s([^\\}]*))?\\}");
+	public static Pattern pToken = Pattern.compile("^(.*)\\{!(ENV|SSM):\\s*([^\\}!]*)(!DEFAULT:\\s([^\\}]*))?\\}(.*)$");
 
 	@Override
 	public String resolveConfigValue(String s) throws RuntimeConfigException {
 		Matcher m = pToken.matcher(s);
 		if (m.matches()) {
-			String type = getValueOrDefault(m.group(1), "");
-			String key = getValueOrDefault(m.group(2), "");
-			String def = getValueOrDefault(m.group(4), null);
+			String prefix = getValueOrDefault(m.group(1), "");
+			String type = getValueOrDefault(m.group(2), "");
+			String key = getValueOrDefault(m.group(3).trim(), "");
+			String def = getValueOrDefault(m.group(5), null);
+			if (def != null) {
+				def = def.trim();
+			}
+			String suffix = getValueOrDefault(m.group(6), "");
 
 			String ret = null;
 			if (type.equals("ENV")) {
-				ret = getValueOrDefault(System.getenv(m.group(2)), def);
+				ret = getValueOrDefault(System.getenv(key), def);
 			}
 			if (type.equals("SSM")) {
 			    try {
@@ -132,7 +154,7 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
 			if (ret == null) {
 				throw new RuntimeConfigException("Cannot resolve " + s);
 			}
-			return ret;
+			return resolveConfigValue(String.format("%s%s%s", prefix, ret, suffix));
 		}
 		return s;
 	}

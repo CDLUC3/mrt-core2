@@ -64,19 +64,7 @@ public class SSMConfigResolver extends DefaultConfigResolver
         throws TException
     {
         GetParameterRequest request = new GetParameterRequest();
-        if (StringUtil.isAllBlank(parameterName)) {
-            throw new TException.INVALID_OR_MISSING_PARM("SSM parameter empty");
-        }
-        String init = parameterName.substring(0,1);
-        String searchName = parameterName;
-        if (!init.equals("/")) {
-            if (getSsmPath() == null) {
-                throw new TException.INVALID_OR_MISSING_PARM(
-                    "SSM parameter is relative and no SSM_ROOT_PATH supplied:" 
-                    + parameterName);
-            }
-            searchName = getSsmPath() + parameterName;
-        }
+        String searchName = getKey(parameterName);
         request.setName(searchName);
         request.setWithDecryption(true);
         return ssm.getParameter(request).getParameter().getValue(); 

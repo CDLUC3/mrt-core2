@@ -30,15 +30,9 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.cdlib.mrt.tools;
 
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
 
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TException;
 
 /**
@@ -58,7 +52,7 @@ public class MockConfigResolver extends DefaultConfigResolver
     
     public MockConfigResolver() 
     { 
-        super();
+        super("/");
     }
     
     public void addMockSsmValue(String key, String value) {
@@ -68,19 +62,7 @@ public class MockConfigResolver extends DefaultConfigResolver
     public String getResolvedValue(String parameterName)
         throws TException
     {
-    	if (StringUtil.isAllBlank(parameterName)) {
-            throw new TException.INVALID_OR_MISSING_PARM("SSM parameter empty");
-        }
-        String init = parameterName.substring(0,1);
-        String searchName = parameterName;
-        if (!init.equals("/")) {
-            if (getSsmPath() == null) {
-                throw new TException.INVALID_OR_MISSING_PARM(
-                    "SSM parameter is relative and no SSM_ROOT_PATH supplied:" 
-                    + parameterName);
-            }
-            searchName = getSsmPath() + parameterName;
-        }
+        String searchName = getKey(parameterName);
         if (!map.containsKey(searchName)) {
         	throw new TException.INVALID_OR_MISSING_PARM("SSM key not found: " + searchName);
         }
