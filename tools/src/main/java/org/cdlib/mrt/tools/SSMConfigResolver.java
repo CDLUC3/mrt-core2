@@ -60,7 +60,10 @@ public class SSMConfigResolver extends DefaultConfigResolver
         throws TException
     {
         GetParameterRequest request = new GetParameterRequest();
-        String searchName = getKey(parameterName);
+        String searchName = parameterName;
+        if (!parameterName.startsWith("/")) {
+           searchName = getKey(parameterName);
+        }
         request.setName(searchName);
         request.setWithDecryption(true);
         return ssm.getParameter(request).getParameter().getValue(); 
