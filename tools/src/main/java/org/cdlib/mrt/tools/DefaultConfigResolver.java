@@ -79,13 +79,13 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
         if (StringUtil.isAllBlank(parameterName)) {
             throw new TException.INVALID_OR_MISSING_PARM("SSM parameter empty");
         }
-        String init = parameterName.substring(0,1);
-        if (!init.equals("/")) {
-            if (getSsmPath() == null) {
-                throw new TException.INVALID_OR_MISSING_PARM(
-                    "SSM parameter is relative and no SSM_ROOT_PATH supplied:" 
-                    + parameterName);
-            }
+        if (parameterName.startsWith("/")) {
+            return parameterName;
+         }
+        if (getSsmPath() == null) {
+            throw new TException.INVALID_OR_MISSING_PARM(
+                "SSM parameter is relative and no SSM_ROOT_PATH supplied:" 
+                + parameterName);
         }
         return getSsmPath() + parameterName;
     }

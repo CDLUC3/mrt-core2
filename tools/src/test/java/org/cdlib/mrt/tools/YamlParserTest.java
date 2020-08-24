@@ -506,8 +506,6 @@ public class YamlParserTest  {
     	setValueString(config_in, "a", "AA/{!SSM: TESTUC3_SSM1 !DEFAULT: def}{!SSM: TESTUC3_SSM2 !DEFAULT: def2}/bb.txt");
         LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
 
-        System.out.println(config);
-
         assertEquals(getValueAsString(config, "a"), "AA/path/subpath/bb.txt");
     	assertEquals(getArrayValueAsString(config, "b", 0), "hi");
     	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
@@ -532,6 +530,21 @@ public class YamlParserTest  {
     	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
     }
     
+    @Test
+    public void testRootPathOverride() throws RuntimeConfigException, ReflectiveOperationException
+    {
+    	ssm_mock_prefix.addMockSsmValue("/root/path/TESTUC3_SSM1", "100");
+    	ssm_mock_prefix.addMockSsmValue("/TESTUC3_SSM1", "999");
+    	LinkedHashMap<String, Object> config_in = get_basic_hash();
+    	setValueString(config_in, "a", "{!SSM: TESTUC3_SSM1 !DEFAULT: def}");
+     	setArrayStringValue(config_in, "b", 0, "{!SSM: /TESTUC3_SSM1 !DEFAULT: def}");
+        LinkedHashMap<String, Object> config = resolver_prefix.resolveValues(config_in);
+        
+    	assertEquals(getValueAsInt(config, "a"), 100);
+    	assertEquals(getArrayValueAsString(config, "b", 0), "999");
+    	assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+    	assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
     /*
      * Test File Not Found
      */
