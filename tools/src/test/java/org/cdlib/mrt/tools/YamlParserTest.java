@@ -370,9 +370,12 @@ public class YamlParserTest  {
         resolver_no_def.partiallyResolveValues("b");
         LinkedHashMap<String, Object> config = resolver_no_def.getResolvedValues();
 
-        assertEquals(resolver_no_def.dumpJson(config.get("a")), "\"{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}\"");
-        assertEquals(resolver_no_def.dumpJson(config.get("b")), "[\"ddd\",\"bye\"]");
-        assertEquals(resolver_no_def.dumpJson(config.get("c")), "{\"d\":3,\"e\":[1,2,3]}");
+        assertEquals(resolver_no_def.dumpJsonObject(config.get("a")), "\"{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}\"");
+        assertEquals(resolver_no_def.dumpJsonObject(config.get("b")), "[\"ddd\",\"bye\"]");
+        assertEquals(resolver_no_def.dumpJsonObject(config.get("c")), "{\"d\":3,\"e\":[1,2,3]}");
+        assertEquals(resolver_no_def.dumpJsonForKey("a"), "\"{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}\"");
+        assertEquals(resolver_no_def.dumpJsonForKey("b"), "[\"ddd\",\"bye\"]");
+        assertEquals(resolver_no_def.dumpJsonForKey("c"), "{\"d\":3,\"e\":[1,2,3]}");
     }
     /*
      * Test ENV substitution with return_val (a) - this case is not supported in the java version of the application

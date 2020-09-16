@@ -56,39 +56,60 @@ public class YamlParser {
         if (loadedYaml == null) {
             throw new RuntimeConfigException("No Yaml content was parsed");
         }
-        resolvedYaml = (LinkedHashMap<String, Object>)yaml.load(dumpJson(loadedYaml));
+        resolvedYaml = (LinkedHashMap<String, Object>)yaml.load(dumpJsonObject(loadedYaml));
         return loadedYaml;
     }
 
     public void loadConfigMap(LinkedHashMap<String, Object> map) {
         loadedYaml = map;
-        resolvedYaml = (LinkedHashMap<String, Object>)yaml.load(dumpJson(loadedYaml));
+        resolvedYaml = (LinkedHashMap<String, Object>)yaml.load(dumpJsonObject(loadedYaml));
     }
 
     public String dumpJson() {
-        return dumpJson(resolvedYaml);
+        return dumpJsonObject(resolvedYaml, false);
     }
 
-    public String dumpJsonPretty() {
-        return dumpJson(resolvedYaml);
+    public String dumpJson(boolean pretty) {
+        return dumpJsonObject(resolvedYaml, pretty);
+    }
+
+    public String dumpJsonForKey(String key) {
+        return dumpJsonForKey(key, false);
+    }
+
+    public String dumpJsonForKey(String key, boolean pretty) {
+        if (resolvedYaml.containsKey(key)) {
+            return dumpJsonObject(resolvedYaml.get(key), pretty);
+        }
+        return dumpJsonObject("");
     }
 
     public JSONObject getJson() throws JSONException {
-        return getJson(resolvedYaml);
+        return createJson(resolvedYaml);
 	  }
 
-    public String dumpJson(Object map) {
-        Gson gson = new GsonBuilder().create();
+    public JSONObject getJsonForKey(String key) throws JSONException {
+        if (resolvedYaml.containsKey(key)) {
+            return createJson(resolvedYaml.get(key));
+        }
+        throw new JSONException("Key not found in parsed map: " + key);
+	  }
+
+    public String dumpJsonObject(Object map) {
+        return dumpJsonObject(map, false);
+    }
+
+    public String dumpJsonObject(Object map, boolean pretty) {
+        GsonBuilder gsonb = new GsonBuilder();
+        if (pretty) {
+            gsonb.setPrettyPrinting();
+        }
+        Gson gson = gsonb.create();
         return gson.toJson(map, map.getClass());
     }
 
-    public String dumpJsonPretty(Object map) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(map, map.getClass());
-    }
-
-    public JSONObject getJson(LinkedHashMap<String, Object> map) throws JSONException {
-        return new JSONObject(dumpJson(map));
+    public JSONObject createJson(Object map) throws JSONException {
+        return new JSONObject(dumpJsonObject(map));
     }
 
     public LinkedHashMap<String, Object> getParsedValues() {
