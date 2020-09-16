@@ -44,26 +44,46 @@ import org.cdlib.mrt.utility.TException;
  */
 public class SSMConfigResolver extends DefaultConfigResolver
 {
-    private AWSSimpleSystemsManagement ssm = AWSSimpleSystemsManagementClientBuilder.defaultClient();
+    private AWSSimpleSystemsManagement ssm = null;
+    private Exception serviceException = null;
     
     public SSMConfigResolver(String prefix) 
     { 
     	super(prefix);
+        setSSM();
     }
     
     public SSMConfigResolver() 
     { 
         super();
+        setSSM();
+    }
+    
+    private void setSSM()
+    {
+        try {
+            ssm = AWSSimpleSystemsManagementClientBuilder.defaultClient();
+        } catch (Exception ex) {
+            ssm = null;
+            serviceException = ex;
+        }
     }
     
     public String getResolvedValue(String parameterName)
         throws TException
     {
+        if (ssm == null) {
+            throw new TException.EXTERNAL_SERVICE_UNAVAILABLE("SSM service not available");
+        }
         GetParameterRequest request = new GetParameterRequest();
         String searchName = getKey(parameterName);
         request.setName(searchName);
         request.setWithDecryption(true);
         return ssm.getParameter(request).getParameter().getValue(); 
+    }
+
+    public Exception getServiceException() {
+        return serviceException;
     }
     
 }
