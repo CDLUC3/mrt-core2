@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import org.yaml.snakeyaml.Yaml;
@@ -95,6 +96,13 @@ public class YamlParser {
         throw new JSONException("Key not found in parsed map: " + key);
 	  }
 
+    public JSONArray getJsonArrayForKey(String key) throws JSONException {
+        if (resolvedYaml.containsKey(key)) {
+            return createJsonArray(resolvedYaml.get(key));
+        }
+        throw new JSONException("Key not found in parsed map: " + key);
+	  }
+
     public String dumpJsonObject(Object map) {
         return dumpJsonObject(map, false);
     }
@@ -110,6 +118,10 @@ public class YamlParser {
 
     public JSONObject createJson(Object map) throws JSONException {
         return new JSONObject(dumpJsonObject(map));
+    }
+
+    public JSONArray createJsonArray(Object map) throws JSONException {
+        return new JSONArray(dumpJsonObject(map));
     }
 
     public LinkedHashMap<String, Object> getParsedValues() {
@@ -136,5 +148,4 @@ public class YamlParser {
     public void partiallyResolveValues(String partialKey) throws RuntimeConfigException {
         resolvedYaml = getPartiallyResolvedValues(resolvedYaml, partialKey);
     }
-
 }

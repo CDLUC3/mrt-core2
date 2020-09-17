@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.lang.reflect.*;
+import org.json.JSONException;
 
 
 public class YamlParserTest  {
@@ -359,7 +360,7 @@ public class YamlParserTest  {
     }
 
     @Test
-    public void testEnvSubstitutionPartiallyResolvedBJson() throws RuntimeConfigException, ReflectiveOperationException
+    public void testEnvSubstitutionPartiallyResolvedBJson() throws RuntimeConfigException, ReflectiveOperationException, JSONException
     {
         updateEnv("TESTUC3_SSM_ENV1", "ccc");
         updateEnv("TESTUC3_SSM_ENV2", "ddd");
@@ -373,9 +374,35 @@ public class YamlParserTest  {
         assertEquals(resolver_no_def.dumpJsonObject(config.get("a")), "\"{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}\"");
         assertEquals(resolver_no_def.dumpJsonObject(config.get("b")), "[\"ddd\",\"bye\"]");
         assertEquals(resolver_no_def.dumpJsonObject(config.get("c")), "{\"d\":3,\"e\":[1,2,3]}");
+
         assertEquals(resolver_no_def.dumpJsonForKey("a"), "\"{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}\"");
         assertEquals(resolver_no_def.dumpJsonForKey("b"), "[\"ddd\",\"bye\"]");
         assertEquals(resolver_no_def.dumpJsonForKey("c"), "{\"d\":3,\"e\":[1,2,3]}");
+
+        assertEquals(resolver_no_def.getJsonArrayForKey("b").toString(), "[\"ddd\",\"bye\"]");
+        assertEquals(resolver_no_def.getJsonForKey("c").toString(), "{\"d\":3,\"e\":[1,2,3]}");
+    }
+
+    @Test
+    public void testEnvSubstitutionPartiallyResolvedCJson() throws RuntimeConfigException, ReflectiveOperationException, JSONException
+    {
+        updateEnv("TESTUC3_SSM_ENV1", "ccc");
+        updateEnv("TESTUC3_SSM_ENV2", "ddd");
+        LinkedHashMap<String, Object> config_in = get_basic_hash();
+        setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
+        setHashStringValue(config_in, "c", "d", "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def}");
+        resolver_no_def.loadConfigMap(config_in);
+        LinkedHashMap<String, Object> c = (LinkedHashMap<String, Object>)resolver_no_def.getResolvedValues().get("c");
+        System.out.println(c);
+        c = resolver_no_def.getPartiallyResolvedValues(c, "d");
+        System.out.println(c);
+
+        resolver_no_def.getResolvedValues().put("c", c);
+        LinkedHashMap<String, Object> config = resolver_no_def.getResolvedValues();
+
+        assertEquals(resolver_no_def.dumpJsonObject(config.get("a")), "\"{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}\"");
+        assertEquals(resolver_no_def.dumpJsonObject(config.get("b")), "[\"hi\",\"bye\"]");
+        assertEquals(resolver_no_def.dumpJsonObject(config.get("c")), "{\"d\":\"ddd\",\"e\":[1,2,3]}");
     }
     /*
      * Test ENV substitution with return_val (a) - this case is not supported in the java version of the application
