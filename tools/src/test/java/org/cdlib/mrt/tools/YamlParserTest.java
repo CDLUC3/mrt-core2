@@ -393,9 +393,7 @@ public class YamlParserTest  {
         setHashStringValue(config_in, "c", "d", "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def}");
         resolver_no_def.loadConfigMap(config_in);
         LinkedHashMap<String, Object> c = (LinkedHashMap<String, Object>)resolver_no_def.getResolvedValues().get("c");
-        System.out.println(c);
         c = resolver_no_def.getPartiallyResolvedValues(c, "d");
-        System.out.println(c);
 
         resolver_no_def.getResolvedValues().put("c", c);
         LinkedHashMap<String, Object> config = resolver_no_def.getResolvedValues();
