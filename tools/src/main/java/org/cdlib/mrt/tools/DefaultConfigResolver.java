@@ -49,6 +49,7 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
 
     private String ssmPath = null;
     private String defaultReturn = null;
+    private boolean skipSSM;
 
     public DefaultConfigResolver(String prefix)
     {
@@ -57,6 +58,7 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
         } else {
             setPath(prefix);
         }
+        skipSSM = System.getenv("SSM_SKIP_RESOLUTION") != null;
     }
 
     public DefaultConfigResolver()
@@ -143,6 +145,9 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
                 ret = getValueOrDefault(System.getenv(key), def);
             }
             if (type.equals("SSM")) {
+                if (skipSSM) {
+                    return def == null ? s : def;
+                }
                 try {
                     String value = getResolvedValue(key);
                     ret = getValueOrDefault(value, def);
@@ -160,21 +165,13 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
     }
 
     public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) throws RuntimeConfigException {
-        return getPartiallyResolvedValues(lmap, null);
-    }
-
-    public LinkedHashMap<String, Object> getPartiallyResolvedValues(LinkedHashMap<String, Object> lmap, String partialKey) throws RuntimeConfigException {
         LinkedHashMap<String, Object> copy = new LinkedHashMap<>();
         for(String k: lmap.keySet()) {
             Object obj = lmap.get(k);
-            if (k.equals(partialKey) || partialKey == null) {
-                if (obj instanceof String) {
-                    copy.put(k, resolveConfigValue((String)obj));
-                } else {
-                    copy.put(k, resolveObjectValue(obj));
-                }
+            if (obj instanceof String) {
+                copy.put(k, resolveConfigValue((String)obj));
             } else {
-                copy.put(k, lmap.get(k));
+                copy.put(k, resolveObjectValue(obj));
             }
         }
         return copy;

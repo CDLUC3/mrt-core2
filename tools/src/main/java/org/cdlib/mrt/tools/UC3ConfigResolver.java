@@ -47,5 +47,4 @@ public interface UC3ConfigResolver
     public void setSsmPath(String ssmPath);
     public void setDefaultReturn(String defaultReturn);
     public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) throws RuntimeConfigException;
-    public LinkedHashMap<String, Object> getPartiallyResolvedValues(LinkedHashMap<String, Object> lmap, String partialKey) throws RuntimeConfigException;
 }

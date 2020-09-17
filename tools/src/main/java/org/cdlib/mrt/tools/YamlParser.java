@@ -30,6 +30,7 @@ public class YamlParser {
     private UC3ConfigResolver uc3configResolver = null;
     private LinkedHashMap<String, Object> loadedYaml = new LinkedHashMap<>();
     private LinkedHashMap<String, Object> resolvedYaml = new LinkedHashMap<>();
+    private boolean prettyJson = false;
 
     public YamlParser(UC3ConfigResolver ssm) {
         this.uc3configResolver = ssm;
@@ -41,6 +42,14 @@ public class YamlParser {
 
     public YamlParser() {
         this(new SSMConfigResolver());
+    }
+
+    public void setPrettyJson(boolean pretty) {
+        this.prettyJson = pretty;
+    }
+
+    public boolean getPrettyJson() {
+        return this.prettyJson;
     }
 
     public LinkedHashMap<String, Object> parse(String fs) throws FileNotFoundException, RuntimeConfigException {
@@ -67,20 +76,12 @@ public class YamlParser {
     }
 
     public String dumpJson() {
-        return dumpJsonObject(resolvedYaml, false);
-    }
-
-    public String dumpJson(boolean pretty) {
-        return dumpJsonObject(resolvedYaml, pretty);
+        return dumpJsonObject(resolvedYaml);
     }
 
     public String dumpJsonForKey(String key) {
-        return dumpJsonForKey(key, false);
-    }
-
-    public String dumpJsonForKey(String key, boolean pretty) {
         if (resolvedYaml.containsKey(key)) {
-            return dumpJsonObject(resolvedYaml.get(key), pretty);
+            return dumpJsonObject(resolvedYaml.get(key));
         }
         return dumpJsonObject("");
     }
@@ -104,12 +105,8 @@ public class YamlParser {
 	  }
 
     public String dumpJsonObject(Object map) {
-        return dumpJsonObject(map, false);
-    }
-
-    public String dumpJsonObject(Object map, boolean pretty) {
         GsonBuilder gsonb = new GsonBuilder();
-        if (pretty) {
+        if (prettyJson) {
             gsonb.setPrettyPrinting();
         }
         Gson gson = gsonb.create();
@@ -141,11 +138,4 @@ public class YamlParser {
         return uc3configResolver.resolveValues(lmap);
     }
 
-    public LinkedHashMap<String, Object> getPartiallyResolvedValues(LinkedHashMap<String, Object> lmap, String partialKey) throws RuntimeConfigException {
-        return uc3configResolver.getPartiallyResolvedValues(lmap, partialKey);
-	  }
-
-    public void partiallyResolveValues(String partialKey) throws RuntimeConfigException {
-        resolvedYaml = getPartiallyResolvedValues(resolvedYaml, partialKey);
-    }
 }

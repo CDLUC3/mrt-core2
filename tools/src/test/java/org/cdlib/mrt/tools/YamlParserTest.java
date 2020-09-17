@@ -71,6 +71,8 @@ public class YamlParserTest  {
     private YamlParser resolver_no_def;
     private YamlParser resolver_def;
     private YamlParser resolver_prefix;
+    private YamlParser resolver_skip;
+    private MockConfigResolver ssm_mock_skip;
     private MockConfigResolver ssm_mock_no_def;
     private MockConfigResolver ssm_mock_def;
     private MockConfigResolver ssm_mock_prefix;
@@ -86,6 +88,15 @@ public class YamlParserTest  {
         ssm_mock_prefix = new MockConfigResolver("/root/path/");
         ssm_mock_prefix.setDefaultReturn(NOT_APPLICABLE);
         resolver_prefix = new YamlParser(ssm_mock_prefix);
+        try {
+          updateEnv("SSM_SKIP_RESOLUTION", "Y");
+          ssm_mock_skip = new MockConfigResolver();
+          resolver_skip = new YamlParser(ssm_mock_skip);
+          removeEnv("SSM_SKIP_RESOLUTION");
+        } catch(ReflectiveOperationException e) {
+            System.err.println(e);
+            e.printStackTrace();
+        }
     }
 
     @After
@@ -300,108 +311,30 @@ public class YamlParserTest  {
         assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
     }
 
-    /*
-     * Test ENV substitution of partially resolved hash (a)
-     */
     @Test
-    public void testEnvSubstitutionPartiallyResolvedA() throws RuntimeConfigException, ReflectiveOperationException
+    public void testEnvSubstitutionJsonAccess() throws RuntimeConfigException, ReflectiveOperationException, JSONException
     {
-        updateEnv("TESTUC3_SSM_ENV1", "100");
-        updateEnv("TESTUC3_SSM_ENV2", "400");
+        updateEnv("TESTUC3_SSM_ENV1", "ddd");
+        updateEnv("TESTUC3_SSM_ENV2", "eee");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
         setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
         setArrayStringValue(config_in, "b", 0, "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}");
-        LinkedHashMap<String, Object> config = resolver_no_def.getPartiallyResolvedValues(config_in, "a");
+        LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
 
-        assertEquals(getValueAsInt(config, "a"), 100);
-        assertEquals(getArrayValueAsString(config, "b", 0), "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}");
-        assertEquals(getHashValueAsInt(config, "c", "d"), 3);
-        assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
-    }
-
-    /*
-     * Test ENV substitution of partially resolved hash (b)
-     */
-    @Test
-    public void testEnvSubstitutionPartiallyResolvedB() throws RuntimeConfigException, ReflectiveOperationException
-    {
-        updateEnv("TESTUC3_SSM_ENV1", "100");
-        updateEnv("TESTUC3_SSM_ENV2", "400");
-        LinkedHashMap<String, Object> config_in = get_basic_hash();
-        setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
-        setArrayStringValue(config_in, "b", 0, "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}");
-        LinkedHashMap<String, Object> config = resolver_no_def.getPartiallyResolvedValues(config_in, "b");
-
-        assertEquals(getValueAsString(config, "a"), "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
-        assertEquals(getArrayValueAsString(config, "b", 0), "400");
-        assertEquals(getHashValueAsInt(config, "c", "d"), 3);
-        assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
-    }
-
-    /*
-     * Test ENV substitution of partially resolved hash (b)
-     */
-    @Test
-    public void testEnvSubstitutionPartiallyResolvedBInPlace() throws RuntimeConfigException, ReflectiveOperationException
-    {
-        updateEnv("TESTUC3_SSM_ENV1", "ccc");
-        updateEnv("TESTUC3_SSM_ENV2", "ddd");
-        LinkedHashMap<String, Object> config_in = get_basic_hash();
-        setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
-        setArrayStringValue(config_in, "b", 0, "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}");
-        resolver_no_def.loadConfigMap(config_in);
-        resolver_no_def.partiallyResolveValues("b");
-        LinkedHashMap<String, Object> config = resolver_no_def.getResolvedValues();
-
-        assertEquals(getValueAsString(config, "a"), "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
-        assertEquals(getArrayValueAsString(config, "b", 0), "ddd");
-        assertEquals(getHashValueAsInt(config, "c", "d"), 3);
-        assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
-    }
-
-    @Test
-    public void testEnvSubstitutionPartiallyResolvedBJson() throws RuntimeConfigException, ReflectiveOperationException, JSONException
-    {
-        updateEnv("TESTUC3_SSM_ENV1", "ccc");
-        updateEnv("TESTUC3_SSM_ENV2", "ddd");
-        LinkedHashMap<String, Object> config_in = get_basic_hash();
-        setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
-        setArrayStringValue(config_in, "b", 0, "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}");
-        resolver_no_def.loadConfigMap(config_in);
-        resolver_no_def.partiallyResolveValues("b");
-        LinkedHashMap<String, Object> config = resolver_no_def.getResolvedValues();
-
-        assertEquals(resolver_no_def.dumpJsonObject(config.get("a")), "\"{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}\"");
-        assertEquals(resolver_no_def.dumpJsonObject(config.get("b")), "[\"ddd\",\"bye\"]");
+        assertEquals(resolver_no_def.dumpJsonObject(config.get("a")), "\"ddd\"");
+        assertEquals(resolver_no_def.dumpJsonObject(config.get("b")), "[\"eee\",\"bye\"]");
         assertEquals(resolver_no_def.dumpJsonObject(config.get("c")), "{\"d\":3,\"e\":[1,2,3]}");
 
-        assertEquals(resolver_no_def.dumpJsonForKey("a"), "\"{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}\"");
-        assertEquals(resolver_no_def.dumpJsonForKey("b"), "[\"ddd\",\"bye\"]");
+        // Save resolved object back to the parser
+        resolver_no_def.loadConfigMap(config);
+        assertEquals(resolver_no_def.dumpJsonForKey("a"), "\"ddd\"");
+        assertEquals(resolver_no_def.dumpJsonForKey("b"), "[\"eee\",\"bye\"]");
         assertEquals(resolver_no_def.dumpJsonForKey("c"), "{\"d\":3,\"e\":[1,2,3]}");
 
-        assertEquals(resolver_no_def.getJsonArrayForKey("b").toString(), "[\"ddd\",\"bye\"]");
+        assertEquals(resolver_no_def.getJsonArrayForKey("b").toString(), "[\"eee\",\"bye\"]");
         assertEquals(resolver_no_def.getJsonForKey("c").toString(), "{\"d\":3,\"e\":[1,2,3]}");
     }
 
-    @Test
-    public void testEnvSubstitutionPartiallyResolvedCJson() throws RuntimeConfigException, ReflectiveOperationException, JSONException
-    {
-        updateEnv("TESTUC3_SSM_ENV1", "ccc");
-        updateEnv("TESTUC3_SSM_ENV2", "ddd");
-        LinkedHashMap<String, Object> config_in = get_basic_hash();
-        setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
-        setHashStringValue(config_in, "c", "d", "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def}");
-        resolver_no_def.loadConfigMap(config_in);
-        LinkedHashMap<String, Object> c = (LinkedHashMap<String, Object>)resolver_no_def.getResolvedValues().get("c");
-        c = resolver_no_def.getPartiallyResolvedValues(c, "d");
-
-        resolver_no_def.getResolvedValues().put("c", c);
-        LinkedHashMap<String, Object> config = resolver_no_def.getResolvedValues();
-
-        assertEquals(resolver_no_def.dumpJsonObject(config.get("a")), "\"{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}\"");
-        assertEquals(resolver_no_def.dumpJsonObject(config.get("b")), "[\"hi\",\"bye\"]");
-        assertEquals(resolver_no_def.dumpJsonObject(config.get("c")), "{\"d\":\"ddd\",\"e\":[1,2,3]}");
-    }
     /*
      * Test ENV substitution with return_val (a) - this case is not supported in the java version of the application
      * Test ENV substitution with return_val (b) - this case is not supported in the java version of the application
@@ -522,6 +455,34 @@ public class YamlParserTest  {
         LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
 
         assertEquals(getValueAsInt(config, "a"), 100);
+        assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+        assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+        assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+
+    @Test
+    public void testSsmSubstitutionDisabledDef() throws RuntimeConfigException, ReflectiveOperationException
+    {
+        ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "100");
+        LinkedHashMap<String, Object> config_in = get_basic_hash();
+        setValueString(config_in, "a", "{!SSM: TESTUC3_SSM1 !DEFAULT: def}");
+        LinkedHashMap<String, Object> config = resolver_skip.resolveValues(config_in);
+
+        assertEquals(getValueAsString(config, "a"), "def");
+        assertEquals(getArrayValueAsString(config, "b", 0), "hi");
+        assertEquals(getHashValueAsInt(config, "c", "d"), 3);
+        assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
+    }
+
+    @Test
+    public void testSsmSubstitutionDisabledNoDef() throws RuntimeConfigException, ReflectiveOperationException
+    {
+        ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "100");
+        LinkedHashMap<String, Object> config_in = get_basic_hash();
+        setValueString(config_in, "a", "{!SSM: TESTUC3_SSM1}");
+        LinkedHashMap<String, Object> config = resolver_skip.resolveValues(config_in);
+
+        assertEquals(getValueAsString(config, "a"), "{!SSM: TESTUC3_SSM1}");
         assertEquals(getArrayValueAsString(config, "b", 0), "hi");
         assertEquals(getHashValueAsInt(config, "c", "d"), 3);
         assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
