@@ -39,31 +39,54 @@ import org.cdlib.mrt.utility.TException;
 /**
  *
  * @author DLoy
- * Class used to 
+ * Class used to
  *
  */
 public class SSMConfigResolver extends DefaultConfigResolver
 {
-    private AWSSimpleSystemsManagement ssm = AWSSimpleSystemsManagementClientBuilder.defaultClient();
-    
-    public SSMConfigResolver(String prefix) 
-    { 
+    private AWSSimpleSystemsManagement ssm = null;
+    private Exception serviceException = null;
+
+    public SSMConfigResolver(String prefix)
+    {
     	super(prefix);
+        setSSM();
     }
-    
-    public SSMConfigResolver() 
-    { 
+
+    public SSMConfigResolver()
+    {
         super();
+        setSSM();
     }
-    
+
+    private void setSSM()
+    {
+        if (System.getenv("SSM_SKIP_RESOLUTION") != null) {
+            return;
+        }
+        try {
+            ssm = AWSSimpleSystemsManagementClientBuilder.defaultClient();
+        } catch (Exception ex) {
+            ssm = null;
+            serviceException = ex;
+        }
+    }
+
     public String getResolvedValue(String parameterName)
         throws TException
     {
+        if (ssm == null) {
+            throw new TException.EXTERNAL_SERVICE_UNAVAILABLE("SSM service not available");
+        }
         GetParameterRequest request = new GetParameterRequest();
         String searchName = getKey(parameterName);
         request.setName(searchName);
         request.setWithDecryption(true);
-        return ssm.getParameter(request).getParameter().getValue(); 
+        return ssm.getParameter(request).getParameter().getValue();
     }
-    
+
+    public Exception getServiceException() {
+        return serviceException;
+    }
+
 }

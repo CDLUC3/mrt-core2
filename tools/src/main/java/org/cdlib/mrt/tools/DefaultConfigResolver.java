@@ -41,29 +41,31 @@ import java.util.regex.Pattern;
 /**
  *
  * @author DLoy
- * Class used to 
+ * Class used to
  *
  */
 public abstract class DefaultConfigResolver implements UC3ConfigResolver
 {
-    
+
     private String ssmPath = null;
     private String defaultReturn = null;
-    
-    public DefaultConfigResolver(String prefix) 
-    { 
+    private boolean skipSSM;
+
+    public DefaultConfigResolver(String prefix)
+    {
         if (StringUtil.isAllBlank(prefix)) {
             setPath(System.getenv("SSM_ROOT_PATH"));
         } else {
             setPath(prefix);
         }
+        skipSSM = System.getenv("SSM_SKIP_RESOLUTION") != null;
     }
-    
-    public DefaultConfigResolver() 
-    { 
+
+    public DefaultConfigResolver()
+    {
         setPath(System.getenv("SSM_ROOT_PATH"));
     }
-    
+
     protected void setPath(String prefix)
     {
         if (prefix == null) return;
@@ -72,7 +74,7 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
         }
         this.ssmPath = prefix;
     }
-    
+
     public String getKey(String parameterName)
         throws TException
     {
@@ -84,7 +86,7 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
          }
         if (getSsmPath() == null) {
             throw new TException.INVALID_OR_MISSING_PARM(
-                "SSM parameter is relative and no SSM_ROOT_PATH supplied:" 
+                "SSM parameter is relative and no SSM_ROOT_PATH supplied:"
                 + parameterName);
         }
         return getSsmPath() + parameterName;
@@ -92,11 +94,11 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
 
     public abstract String getResolvedValue(String parameterName)
         throws TException;
-    
+
     public String getResolvedStorageNode(long num)
         throws TException
     {
-    	return getResolvedValue(ssmPath + "cloud/nodes/" + num);
+        return getResolvedValue(ssmPath + "cloud/nodes/" + num);
     }
 
     public String getSsmPath() {
@@ -106,99 +108,94 @@ public abstract class DefaultConfigResolver implements UC3ConfigResolver
     public void setSsmPath(String ssmPath) {
         this.ssmPath = ssmPath;
     }
-    
-	public String getValueOrDefault(String a, String def) {
-		if (a != null) {
-			return a;
-		}
-		if (def != null) {
-			return def;
-		}
-		if (this.defaultReturn != null) {
-			return this.defaultReturn;
-		}
-		return null;
-	}
 
-	public void setDefaultReturn(String defaultReturn) {
-		this.defaultReturn = defaultReturn;
-	}
+    public String getValueOrDefault(String a, String def) {
+        if (a != null) {
+            return a;
+        }
+        if (def != null) {
+            return def;
+        }
+        if (this.defaultReturn != null) {
+            return this.defaultReturn;
+        }
+        return null;
+    }
 
-	public static Pattern pToken = Pattern.compile("^(.*)\\{!(ENV|SSM):\\s*([^\\}!]*)(!DEFAULT:\\s([^\\}]*))?\\}(.*)$");
+    public void setDefaultReturn(String defaultReturn) {
+        this.defaultReturn = defaultReturn;
+    }
 
-	public String resolveConfigValue(String s) throws RuntimeConfigException {
-		Matcher m = pToken.matcher(s);
-		if (m.matches()) {
-			String prefix = getValueOrDefault(m.group(1), "");
-			String type = getValueOrDefault(m.group(2), "");
-			String key = getValueOrDefault(m.group(3).trim(), "");
-			String def = getValueOrDefault(m.group(5), null);
-			if (def != null) {
-				def = def.trim();
-			}
-			String suffix = getValueOrDefault(m.group(6), "");
+    public static Pattern pToken = Pattern.compile("^(.*)\\{!(ENV|SSM):\\s*([^\\}!]*)(!DEFAULT:\\s([^\\}]*))?\\}(.*)$");
 
-			String ret = null;
-			if (type.equals("ENV")) {
-				ret = getValueOrDefault(System.getenv(key), def);
-			}
-			if (type.equals("SSM")) {
-			    try {
+    public String resolveConfigValue(String s) throws RuntimeConfigException {
+        Matcher m = pToken.matcher(s);
+        if (m.matches()) {
+            String prefix = getValueOrDefault(m.group(1), "");
+            String type = getValueOrDefault(m.group(2), "");
+            String key = getValueOrDefault(m.group(3).trim(), "");
+            String def = getValueOrDefault(m.group(5), null);
+            if (def != null) {
+                def = def.trim();
+            }
+            String suffix = getValueOrDefault(m.group(6), "");
+
+            String ret = null;
+            if (type.equals("ENV")) {
+                ret = getValueOrDefault(System.getenv(key), def);
+            }
+            if (type.equals("SSM")) {
+                if (skipSSM) {
+                    return def == null ? s : def;
+                }
+                try {
                     String value = getResolvedValue(key);
-					ret = getValueOrDefault(value, def);
-			    } catch(Exception e) {
-			    	ret = def;
-			    }
-			}
+                    ret = getValueOrDefault(value, def);
+                } catch(Exception e) {
+                    ret = def;
+                }
+            }
 
-			if (ret == null) {
-				throw new RuntimeConfigException("Cannot resolve " + s);
-			}
-			return resolveConfigValue(String.format("%s%s%s", prefix, ret, suffix));
-		}
-		return s;
-	}
+            if (ret == null) {
+                throw new RuntimeConfigException("Cannot resolve " + s);
+            }
+            return resolveConfigValue(String.format("%s%s%s", prefix, ret, suffix));
+        }
+        return s;
+    }
 
-	public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) throws RuntimeConfigException {
-		return partiallyResolveValues(lmap, null);
-	}
+    public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) throws RuntimeConfigException {
+        LinkedHashMap<String, Object> copy = new LinkedHashMap<>();
+        for(String k: lmap.keySet()) {
+            Object obj = lmap.get(k);
+            if (obj instanceof String) {
+                copy.put(k, resolveConfigValue((String)obj));
+            } else {
+                copy.put(k, resolveObjectValue(obj));
+            }
+        }
+        return copy;
+    }
 
-	public LinkedHashMap<String, Object> partiallyResolveValues(LinkedHashMap<String, Object> lmap, String partialKey) throws RuntimeConfigException {
-		LinkedHashMap<String, Object> copy = new LinkedHashMap<>();
-		for(String k: lmap.keySet()) {
-			Object obj = lmap.get(k);
-			if (k.equals(partialKey) || partialKey == null) {
-				if (obj instanceof String) {
-					copy.put(k, resolveConfigValue((String)obj));
-				} else {
-					copy.put(k, resolveObjectValue(obj));
-				}
-			} else {
-				copy.put(k, lmap.get(k));
-			}
-		}
-		return copy;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Object resolveObjectValue(Object obj) throws RuntimeConfigException {
-		if (obj instanceof LinkedHashMap) {
-			return resolveValues((LinkedHashMap<String, Object>)obj);
-		} else if (obj instanceof ArrayList) {
-			ArrayList<Object> copy = new ArrayList<>();
-			for(Object aobj: (ArrayList<Object>)obj) {
-				if (aobj instanceof String) {
-					copy.add(resolveConfigValue((String)aobj));
-				} else {
-					copy.add(resolveObjectValue(aobj));
-				}
-			}
-			return copy;
-		} else if (obj instanceof String) {
-			return resolveConfigValue((String)obj);
-		} else {
-			return obj;
-		}
-	}
+    @SuppressWarnings("unchecked")
+    public Object resolveObjectValue(Object obj) throws RuntimeConfigException {
+        if (obj instanceof LinkedHashMap) {
+            return resolveValues((LinkedHashMap<String, Object>)obj);
+        } else if (obj instanceof ArrayList) {
+            ArrayList<Object> copy = new ArrayList<>();
+            for(Object aobj: (ArrayList<Object>)obj) {
+                if (aobj instanceof String) {
+                    copy.add(resolveConfigValue((String)aobj));
+                } else {
+                    copy.add(resolveObjectValue(aobj));
+                }
+            }
+            return copy;
+        } else if (obj instanceof String) {
+            return resolveConfigValue((String)obj);
+        } else {
+            return obj;
+        }
+    }
 
 }

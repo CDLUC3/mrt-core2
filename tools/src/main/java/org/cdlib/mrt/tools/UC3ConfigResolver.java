@@ -39,13 +39,12 @@ import org.cdlib.mrt.utility.TException;
  * Class used to define the interface to the SSM Class (for the purpose of implementing a mock)
  *
  */
-public interface UC3ConfigResolver 
+public interface UC3ConfigResolver
 {
     public String getResolvedValue(String parameterName) throws TException;
     public String getResolvedStorageNode(long num) throws TException;
     public String getSsmPath();
     public void setSsmPath(String ssmPath);
     public void setDefaultReturn(String defaultReturn);
-	public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) throws RuntimeConfigException;
-	public LinkedHashMap<String, Object> partiallyResolveValues(LinkedHashMap<String, Object> lmap, String partialKey) throws RuntimeConfigException;
+    public LinkedHashMap<String, Object> resolveValues(LinkedHashMap<String, Object> lmap) throws RuntimeConfigException;
 }
