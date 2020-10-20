@@ -6,12 +6,13 @@ For properties that are neither sensitive or dynamic, environment variables will
 
 This library will take a LinkedHashMap that has been initialized from a Yaml file and resolve property keys by accessing SSM parameters and/or environment variables.
 
-- [YamlParser](src/main/java/org/cdlib/mrt/tools/YamlParser) - Helper class that loads a LinkedHashMap from a Yaml file and provides access to the SSM Resolver
-- [UC3ConfigResolver](src/main/java/org/cdlib/mrt/tools/UC3ConfigResolver) - Interface defining how hash map values will be resoved from SSM or environment variables
-- [DefaultConfigResolver](src/main/java/org/cdlib/mrt/tools/SSMConfigResolver) - Default implementation of a hash map value resolver
-- [SSMConfigResolver](src/main/java/org/cdlib/mrt/tools/SSMConfigResolver) - Resolves hash map values with an SSM lookup 
-- [MockConfigResolver](src/main/java/org/cdlib/mrt/tools/SSMConfigResolver) - Simulates a resolver performaing an SSM lookup without iniitializing an AWS SSM client
-- [YamlParserTest](src/test/java/org/cdlib/mrt/tools/YamlParser) - Unit test driver for the configuration property resolver
+- [YamlParser](src/main/java/org/cdlib/mrt/tools/YamlParser.java) - Helper class that loads a LinkedHashMap from a Yaml file and provides access to the SSM Resolver
+- [UC3ConfigResolver](src/main/java/org/cdlib/mrt/tools/UC3ConfigResolver.java) - Interface defining how hash map values will be resoved from SSM or environment variables
+- [DefaultConfigResolver](src/main/java/org/cdlib/mrt/tools/SSMConfigResolver.java) - Default implementation of a hash map value resolver
+- [SSMConfigResolver](src/main/java/org/cdlib/mrt/tools/SSMConfigResolver.java) - Resolves hash map values with an SSM lookup 
+- [MockConfigResolver](src/main/java/org/cdlib/mrt/tools/SSMConfigResolver.java) - Simulates a resolver performaing an SSM lookup without iniitializing an AWS SSM client
+- [YamlParserTest](src/test/java/org/cdlib/mrt/tools/YamlParser.java) - Unit test driver for the configuration property resolver
+
 ## Original System Configuration File
 
 _The following example file illustrates how Merritt is using the SSM Parameter Resolver_
