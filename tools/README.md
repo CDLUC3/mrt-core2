@@ -11,7 +11,7 @@ This library will take a LinkedHashMap that has been initialized from a Yaml fil
 - [DefaultConfigResolver](src/main/java/org/cdlib/mrt/tools/SSMConfigResolver.java) - Default implementation of a hash map value resolver
 - [SSMConfigResolver](src/main/java/org/cdlib/mrt/tools/SSMConfigResolver.java) - Resolves hash map values with an SSM lookup 
 - [MockConfigResolver](src/main/java/org/cdlib/mrt/tools/SSMConfigResolver.java) - Simulates a resolver performaing an SSM lookup without iniitializing an AWS SSM client
-- [YamlParserTest](src/test/java/org/cdlib/mrt/tools/YamlParser.java) - Unit test driver for the configuration property resolver
+- [YamlParserTest](src/test/java/org/cdlib/mrt/tools/YamlParserTest.java) - Unit test driver for the configuration property resolver
 
 ## Original System Configuration File
 
