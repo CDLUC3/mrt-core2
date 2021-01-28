@@ -198,6 +198,10 @@ public class HttpGet {
                         failCnt = 0;
                     }
                 }
+                finally {
+                   // System.out.println("Closing stream in HttpGet.buildContentLength(1)");
+                   inStream.close();
+		}
                 long startByte = outFile.length();
                 long endByte = contentLength - 1;
                 System.out.println("HttpGet(" + startCnt + "):"
@@ -206,6 +210,8 @@ public class HttpGet {
                 );
                 inStream = url2Stream( contentURL.toString(),  startByte, endByte);
                 length = outFile.length();
+                // System.out.println("Closing stream in HttpGet.buildContentLength(2)");
+                inStream.close();
             }
             if (DEBUG) System.out.println(MESSAGE + "End start counts=" + startCnt
                         + " - url=" + contentURL.toString()
@@ -266,6 +272,10 @@ public class HttpGet {
                             + " - Exception:" + tex
                                     );
                 }
+		finally {
+                    // System.out.println("Closing stream in HttpGet.buildNoContentLength()");
+                    inStream.close();
+		}
                 if (retry == (MAX_RETRY - 1)) break;
                 entity = HTTPUtil.getObjectEntity(contentURL.toString(), timeout);
             }
