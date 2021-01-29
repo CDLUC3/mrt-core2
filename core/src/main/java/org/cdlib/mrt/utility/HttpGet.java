@@ -174,52 +174,49 @@ public class HttpGet {
                         + " - testLength=" + testLength
             );
             long length = 0;
-            InputStream inStream = entity.getContent();
             int failCnt = 0;
             int startCnt = 0;
-            while (length < contentLength) {
-                startCnt++;
-                long tryLength = outFile.length();
-                try {
-                    stream2File(inStream, outFile, true);
-                    break;
-                } catch (Exception ex) {
-                    System.out.println("WARNING unable to copy all content:" 
-                            + " - outfile.length="+ outFile.length()
-                            + " - contentLength="+ contentLength
-                            + " - Exception:" + ex
-                                    );
-                    if (outFile.length() == tryLength) {
-                        failCnt++;
-                        if (failCnt >= 3) {
-                            throw new TException(ex);
+            InputStream inStream = entity.getContent();
+            try {
+                while (length < contentLength) {
+                    startCnt++;
+                    long tryLength = outFile.length();
+                    try {
+                        stream2File(inStream, outFile, true);
+                        break;
+                    } catch (Exception ex) {
+                        System.out.println("WARNING unable to copy all content:" 
+                                + " - outfile.length="+ outFile.length()
+                                + " - contentLength="+ contentLength
+                                + " - Exception:" + ex
+                                        );
+                        if (outFile.length() == tryLength) {
+                            failCnt++;
+                            if (failCnt >= 3) {
+                                throw new TException(ex);
+                            }
+                        } else {
+                            failCnt = 0;
                         }
-                    } else {
-                        failCnt = 0;
                     }
-                }
-                finally {
-                   // System.out.println("Closing stream in HttpGet.buildContentLength(1)");
-                   inStream.close();
-		}
-                long startByte = outFile.length();
-                long endByte = contentLength - 1;
-                System.out.println("HttpGet(" + startCnt + "):"
+                    long startByte = outFile.length();
+                    long endByte = contentLength - 1;
+                    System.out.println("HttpGet(" + startCnt + "):"
                         + " - startByte=" + startByte
                         + " - endByte=" + endByte
-                );
-                inStream = url2Stream( contentURL.toString(),  startByte, endByte);
-                length = outFile.length();
-                // System.out.println("Closing stream in HttpGet.buildContentLength(2)");
-                inStream.close();
-            }
-            if (DEBUG) System.out.println(MESSAGE + "End start counts=" + startCnt
+                    );
+                    inStream = url2Stream( contentURL.toString(),  startByte, endByte);
+                    length = outFile.length();
+                }
+                if (DEBUG) System.out.println(MESSAGE + "End start counts=" + startCnt
                         + " - url=" + contentURL.toString()
                         + " - file=" + outFile.getCanonicalPath()
                         + " - contentLength=" + contentLength
                         + " - testLength=" + testLength
-            );
-        
+                );
+            }  finally {	// Can not use a try-resource as inStream is reassigned in try block
+               if (inStream != null) inStream.close();
+	    }
         } catch (TException fe) {
             throw fe;
 
@@ -244,11 +241,9 @@ public class HttpGet {
                         + " - contentLength=" + contentLength
                         + " - testLength=" + testLength
             );
-            InputStream inStream = null;
             TException texSave = null;
             for (int retry = 0; retry < MAX_RETRY; retry++) {
-                try {
-                    inStream = entity.getContent();
+                try (InputStream inStream = entity.getContent()) {
                     stream2File(inStream, outFile, false);
                     if ((testLength > 0) && (outFile.length() < testLength)) {
                         throw new TException.INVALID_DATA_FORMAT(MESSAGE 
@@ -272,10 +267,6 @@ public class HttpGet {
                             + " - Exception:" + tex
                                     );
                 }
-		finally {
-                    // System.out.println("Closing stream in HttpGet.buildNoContentLength()");
-                    inStream.close();
-		}
                 if (retry == (MAX_RETRY - 1)) break;
                 entity = HTTPUtil.getObjectEntity(contentURL.toString(), timeout);
             }
