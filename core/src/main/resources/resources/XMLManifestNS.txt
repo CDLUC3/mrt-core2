@@ -21,6 +21,7 @@ BATCH | BatchState | bat | ingest/batch | batchID
 JOB | JobState | job | ingest/job | jobID
 JOBS | JobsState | jobs | ingest/jobs
 PROFILE | ProfileState | pro | ingest/profile
+PROFILES | ProfilesState | pros | ingest/profiles
 HANDLER | HandlerState | bat | ingest/handler
 QUEUE_ENTRY_STATE | QueueEntryState | que | ingest/queue
 FIXITY_ENTRY | FixityEntry | item | fixity/items
