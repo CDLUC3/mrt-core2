@@ -35,6 +35,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -597,7 +598,7 @@ public abstract class FormatterAbs
             throws Exception
     {
         try {
-            Map<String, Object> map = (Map)runMethod(m, obj);
+            Map<Object, Object> map = (Map)runMethod(m, obj);
             if (map == null) return;
             String name = getMethodName(m);
 
@@ -616,7 +617,7 @@ public abstract class FormatterAbs
     }
 
     protected void processMap(
-            Map<String, Object> map,
+            Map<Object, Object> map,
             String name,
             boolean isFirst,
             int lvl,
@@ -630,19 +631,33 @@ public abstract class FormatterAbs
             isFirst = true;
             lvl++;
 
-            for (String key: map.keySet()) {
-         	Object object = (Object) map.get(key);
-   
+            Set<Object> keys =  map.keySet();
+	    Object object = null;
+	    String keyString = null;
+	    
+            for (Object keyRaw: keys) {
+	        if (keyRaw instanceof String) {
+		    String key = (String) keyRaw;
+         	    object = (Object) map.get(key);
+		    keyString = key;
+		} else if (keyRaw instanceof Integer) {
+		    Integer key = (Integer) keyRaw;
+         	    object = (Object) map.get(key);
+		    keyString = key.toString();
+		} else {
+		    System.err.println("[Error] Map key type not supported.");
+		}
+
                 if (object instanceof String) {
                     String value = (String) object;
                     boolean isNumeric = isNumeric(value);
-                    print(key, value, isFirst, isNumeric, lvl, stream);
+                    print(keyString, value, isFirst, isNumeric, lvl, stream);
                     isFirst = false;
                     
                 } else if (isNumeric(object)) {
                     String value = "" + object;
                     boolean isNumeric = isNumeric(value);
-                    print(key, value, isFirst, isNumeric, lvl, stream);
+                    print(keyString, value, isFirst, isNumeric, lvl, stream);
                     isFirst = false;
                     
                 } else if (object instanceof StateInf) {
@@ -1035,7 +1050,7 @@ public abstract class FormatterAbs
      */
     protected boolean isMap(Class c)
     {
-	return c.getName().endsWith(".Map");
+	return c.getName().endsWith("Map");
 
     }
     /**
