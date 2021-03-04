@@ -17,8 +17,10 @@ FEEDER | FeederServiceState | feed | feeder/mets | identifier
 EXCEPTION | TException | exc | core/exc | status
 INGEST | IngestServiceState | ing |ingest/single | serviceID
 QUEUE | QueueState | que | ingest/queue
+BATCHFILE | BatchFileState | batf | ingest/batchf
 BATCH | BatchState | bat | ingest/batch | batchID
 JOB | JobState | job | ingest/job | jobID
+JOBFILE | JobFileState | jobf | ingest/jobf
 JOBS | JobsState | jobs | ingest/jobs
 PROFILE | ProfileState | pro | ingest/profile
 PROFILES | ProfilesState | pros | ingest/profiles
