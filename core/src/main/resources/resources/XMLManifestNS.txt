@@ -33,6 +33,8 @@ FIXITY_ENTRIES | FixityEntriesState | items | fixity/items
 FIXITY_SELECT | FixitySelectState | fixsel | fixity/select
 FIXITY_SERVICE | FixityServiceState | fix | fixity/service
 FIXITY_SUBMIT | FixitySubmittedState | fixsub | fixity/submit
+ING_MANIFEST | ManifestEntryState | ingman | ing/manifest
+ING_MANIFESTS | ManifestsState | ingmans | ing/manifests
 INV_SERVICE | InvServiceState | invsv | inv/service
 INV_DELETE | InvDeleteState | invd | inv/delete
 INV_PROCESS | InvProcessState | invp | inv/process
