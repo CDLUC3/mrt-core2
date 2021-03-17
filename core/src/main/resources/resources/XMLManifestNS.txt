@@ -16,20 +16,25 @@ PRIMARY | PrimaryIDState | pid | store/pid | localIdentifier
 FEEDER | FeederServiceState | feed | feeder/mets | identifier
 EXCEPTION | TException | exc | core/exc | status
 INGEST | IngestServiceState | ing |ingest/single | serviceID
+INGESTQ | IngestQueueNameState | ingq | ingest/queues
 QUEUE | QueueState | que | ingest/queue
-QUEUEENTRY | QueueEntryState | ques | ingest/queues
+BATCHFILE | BatchFileState | batf | ingest/batchf
 BATCH | BatchState | bat | ingest/batch | batchID
 JOB | JobState | job | ingest/job | jobID
+JOBFILE | JobFileState | jobf | ingest/jobf
 JOBS | JobsState | jobs | ingest/jobs
 PROFILE | ProfileState | pro | ingest/profile
 PROFILES | ProfilesState | pros | ingest/profiles
+PROFILESFULL | ProfilesFullState | prosf | ingest/profiles
 HANDLER | HandlerState | bat | ingest/handler
-QUEUE_ENTRY_STATE | QueueEntryState | que | ingest/queue
+QUEUEENTRY | QueueEntryState | ques | ingest/queues
 FIXITY_ENTRY | FixityEntry | item | fixity/items
 FIXITY_ENTRIES | FixityEntriesState | items | fixity/items
 FIXITY_SELECT | FixitySelectState | fixsel | fixity/select
 FIXITY_SERVICE | FixityServiceState | fix | fixity/service
 FIXITY_SUBMIT | FixitySubmittedState | fixsub | fixity/submit
+ING_MANIFEST | ManifestEntryState | ingman | ing/manifest
+ING_MANIFESTS | ManifestsState | ingmans | ing/manifests
 INV_SERVICE | InvServiceState | invsv | inv/service
 INV_DELETE | InvDeleteState | invd | inv/delete
 INV_PROCESS | InvProcessState | invp | inv/process
