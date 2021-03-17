@@ -27,7 +27,7 @@ PROFILE | ProfileState | pro | ingest/profile
 PROFILES | ProfilesState | pros | ingest/profiles
 PROFILESFULL | ProfilesFullState | prosf | ingest/profiles
 HANDLER | HandlerState | bat | ingest/handler
-QUEUE_ENTRY_STATE | QueueEntryState | que | ingest/queue
+QUEUEENTRY | QueueEntryState | ques | ingest/queues
 FIXITY_ENTRY | FixityEntry | item | fixity/items
 FIXITY_ENTRIES | FixityEntriesState | items | fixity/items
 FIXITY_SELECT | FixitySelectState | fixsel | fixity/select
