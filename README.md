@@ -10,7 +10,7 @@ This library contains utility classes utilized across Merritt Java microservices
 
 This code is used by.
 - [Merritt Ingest](https://github.com/CDLUC3/mrt-ingest)
-- [Merritt Inventort](https://github.com/CDLUC3/mrt-inventory)
+- [Merritt Inventory](https://github.com/CDLUC3/mrt-inventory)
 - [Merritt Storage](https://github.com/CDLUC3/mrt-store)
 - [Merritt Audit](https://github.com/CDLUC3/mrt-audit)
 - [Merritt Replic](https://github.com/CDLUC3/mrt-replic)
