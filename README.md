@@ -47,6 +47,7 @@ These include general format types, shared utilities, and reflected formatting c
 
 The Core utilities are made available by the University of California Curation Center (UC3) under the terms of the BSD open source license.
 
+```
 ==============================
 License
 Read included ./LICENSE.txt
@@ -54,4 +55,4 @@ Read included ./LICENSE.txt
 ==============================
 Setup 
 Read included ./SETUP.txt
-
+```
