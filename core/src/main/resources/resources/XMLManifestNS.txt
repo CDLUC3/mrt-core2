@@ -15,6 +15,7 @@ STOR_OBJFIX | ObjectFixityState | ofix | store/ofix
 PRIMARY | PrimaryIDState | pid | store/pid | localIdentifier
 FEEDER | FeederServiceState | feed | feeder/mets | identifier
 EXCEPTION | TException | exc | core/exc | status
+GENERIC | GenericState | ing | ingest/generic | generic
 INGEST | IngestServiceState | ing |ingest/single | serviceID
 INGESTQ | IngestQueueNameState | ingq | ingest/queues
 QUEUE | QueueState | que | ingest/queue
