@@ -8,23 +8,6 @@
     <name>UC3-mrtcore</name>
     <url>http://uc3.cdlib.org</url>
 
-
-
-  <distributionManagement>
-    <repository>
-      <id>cdl-releases</id>
-      <name>CDL Snapshot Repository</name>
-      <url>http://mvn.cdlib.org/content/repositories/cdl-releases/</url>
-    </repository>
-    <!-- 
-    <snapshotRepository>
-      <id>cdl-snapshots</id>
-      <name>CDL Snapshot Repository</name>
-      <url>http://mvn.cdlib.org/content/repositories/cdl-snapshots/</url>
-    </snapshotRepository>
-    -->
-  </distributionManagement>
-
     <!-- force UTF-8 -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -51,6 +34,11 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.2.8</version>
+        </dependency>
         <dependency>
             <groupId>org.cdlib.mrt</groupId>
             <artifactId>mrt-jena</artifactId>
@@ -171,10 +159,3 @@
     </dependencies>
 
 </project>
-
-
-
-
-
-
-
