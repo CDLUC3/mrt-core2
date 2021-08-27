@@ -12,13 +12,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <repositories>
-        <repository>
-            <id>JBoss</id>
-            <name>jboss-maven2-release-repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
@@ -146,16 +139,6 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.13</version>
         </dependency>
-        <!--dependency>
-            <groupId>net.sf</groupId>
-            <artifactId>jargs</artifactId>
-            <version>1.0</version>
-        </dependency-->
-        <!--dependency>
-            <groupId>jargs</groupId>
-            <artifactId>jargs</artifactId>
-            <version>1.0</version>
-        </dependency-->
     </dependencies>
 
 </project>
