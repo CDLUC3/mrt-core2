@@ -53,6 +53,8 @@ REPLIC_MAP | ReplicationAddMapState | repmap | rep/map
 REPLIC_NOS | NodesObjectsState | repnos | rep/nos
 REPLIC_PROP | ReplicationPropertiesState | repprp | rep/prp
 REPLIC_DELETE | ReplicationDeleteState | repdel | rep/del
+REPLIC_MAINT | InvStorageMaint | repmnt | rep/mnt
+REPLIC_SCAN | InvStorageScan | repscan | rep/scan
 REPLIC_SERVICE | ReplicationServiceState | repsvc | rep/svc
 CLOUDHOST_SERVICE | CloudhostServiceState | chsvc | ch/svc
 CLOUDHOST_ADD | CloudhostAddState | chadd | ch/add
