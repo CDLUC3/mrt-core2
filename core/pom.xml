@@ -14,13 +14,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <repositories>
-        <repository>
-            <id>JBoss</id>
-            <name>jboss-maven2-release-repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
