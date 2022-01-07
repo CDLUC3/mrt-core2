@@ -11,6 +11,19 @@
     <description>UC3 Merritt Micro-Services</description>
     <url>http://uc3.cdlib.org</url>
 
+    <repositories>
+      <repository>
+        <id>central</id>
+        <url>https://repo1.maven.org/maven2/</url>
+        <releases>
+          <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+          <updatePolicy>never</updatePolicy>
+      </snapshots>
+      </repository>
+    </repositories>
+
     <modules>
         <module>core-util-init</module>
         <module>jena</module>
@@ -20,6 +33,3 @@
     </modules>
 
 </project>
-
-
-
