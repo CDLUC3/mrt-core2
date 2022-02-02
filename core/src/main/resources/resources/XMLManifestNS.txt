@@ -18,7 +18,9 @@ EXCEPTION | TException | exc | core/exc | status
 GENERIC | GenericState | ing | ingest/generic | generic
 INGEST | IngestServiceState | ing |ingest/single | serviceID
 INGESTQ | IngestQueueNameState | ingq | ingest/queues
+INGESTL | IngestLockNameState | ingl | ingest/locks
 QUEUE | QueueState | que | ingest/queue
+LOCK | LockState | loc | ingest/loc
 BATCHFILE | BatchFileState | batf | ingest/batchf
 BATCH | BatchState | bat | ingest/batch | batchID
 JOB | JobState | job | ingest/job | jobID
@@ -29,6 +31,7 @@ PROFILES | ProfilesState | pros | ingest/profiles
 PROFILESFULL | ProfilesFullState | prosf | ingest/profiles
 HANDLER | HandlerState | bat | ingest/handler
 QUEUEENTRY | QueueEntryState | ques | ingest/queues
+LOCKENTRY | LockEntryState | locs | ingest/locks
 FIXITY_ENTRY | FixityEntry | item | fixity/items
 FIXITY_ENTRIES | FixityEntriesState | items | fixity/items
 FIXITY_SELECT | FixitySelectState | fixsel | fixity/select
