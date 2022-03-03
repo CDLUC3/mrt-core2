@@ -10,32 +10,10 @@
 
 
 
-  <distributionManagement>
-    <repository>
-      <id>cdl-releases</id>
-      <name>CDL Snapshot Repository</name>
-      <url>http://mvn.cdlib.org/content/repositories/cdl-releases/</url>
-    </repository>
-    <!-- 
-    <snapshotRepository>
-      <id>cdl-snapshots</id>
-      <name>CDL Snapshot Repository</name>
-      <url>http://mvn.cdlib.org/content/repositories/cdl-snapshots/</url>
-    </snapshotRepository>
-    -->
-  </distributionManagement>
-
     <!-- force UTF-8 -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <repositories>
-        <repository>
-            <id>JBoss</id>
-            <name>jboss-maven2-release-repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
@@ -171,10 +149,3 @@
     </dependencies>
 
 </project>
-
-
-
-
-
-
-
