@@ -30,7 +30,6 @@
   <dependencies>
 
     <!-- Internal dependencies -->
-
     <dependency>
       <groupId>org.cdlib.mrt</groupId>
       <artifactId>mrt-json</artifactId>
@@ -44,7 +43,6 @@
     </dependency>
 
     <!-- 3rd party dependencies -->
-
     <dependency>
       <groupId>com.jolbox</groupId>
       <artifactId>bonecp</artifactId>
