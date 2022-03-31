@@ -51,8 +51,7 @@
       <groupId>jaxen</groupId>
       <artifactId>jaxen</artifactId>
       <version>1.1.1</version>
-      <!-- tests were failing when jaxen was higher in the dependency list than net.sf.saxon
-           which needs xom:xom:jar:1.2.5 -->
+      <scope>test</scope>
       <exclusions>
         <exclusion>
            <groupId>xom</groupId>
@@ -69,30 +68,20 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.5</version>
-    </dependency>
-
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.13</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
       <version>9.4</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
       <version>1.9.4</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
-      <version>1.8</version>
     </dependency>
 
     <dependency>
@@ -153,6 +142,7 @@
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
       <version>2.11.0</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -163,6 +153,18 @@
   </dependencies>
 
 </project>
+
+<!--
+    [WARNING] Unused declared dependencies found:
+    [WARNING]    jaxen:jaxen:jar:1.1.1:compile
+    [WARNING]    mysql:mysql-connector-java:jar:5.1.13:compile
+    [WARNING]    net.sf.saxon:Saxon-HE:jar:9.4:compile
+    [WARNING]    org.apache.commons:commons-compress:jar:1.8:compile
+    [WARNING]    xerces:xercesImpl:jar:2.11.0:compile
+
+jaxen, Saxon-HE, xercesImpl seem to be needed for testing.  So I only
+removed mysql:mysql-connector-java, org.apache.commons:commons-compress
+-->
 
 
 <!-- commented out dependencies -->
