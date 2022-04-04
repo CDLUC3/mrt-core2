@@ -68,7 +68,10 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.5</version>
+      <!--
+      this project containts test code under src/main
       <scope>test</scope>
+      -->
     </dependency>
 
     <dependency>
