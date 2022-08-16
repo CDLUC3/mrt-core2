@@ -69,6 +69,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 //import org.apache.http.params.BasicHttpParams;
 //import org.apache.http.params.HttpParams;
@@ -1136,7 +1137,7 @@ public class HTTPUtil {
 
         // finally, build the HttpClient;
         //      -- done!
-        HttpClient client = b.build();
+        HttpClient client = b.disableCookieManagement().build();
         return client;
     }
     
@@ -1144,7 +1145,7 @@ public class HTTPUtil {
     public static HttpClient getHttpClient(int timeout)
         throws Exception
     {       
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).build();
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).setCookieSpec(CookieSpecs.STANDARD).build();
             HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
             return httpClient;
     }
@@ -1152,11 +1153,10 @@ public class HTTPUtil {
     public static HttpClient getHttpClient(String requestURL, int timeout)
         throws Exception
     {       
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).build();
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).setCookieSpec(CookieSpecs.STANDARD).build();
             HttpClient httpClient = null;
             if (requestURL.toLowerCase().startsWith("https:")) {
                 httpClient = createHttpClient_AcceptsUntrustedCerts();
-                
             } else if (requestURL.toLowerCase().startsWith("http:")) {
                 httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
             }
