@@ -232,7 +232,11 @@ public class Manifest implements Enumeration
             logger.logError(msg, 0);
             System.out.println(StringUtil.stackTrace(ex));
             throw new TRuntimeException.INVALID_OR_MISSING_PARM(msg);
-        }
+        } finally {
+	    try {
+	       br.close();
+	    } catch (Exception e) {}
+	}
     }
 
     /**
