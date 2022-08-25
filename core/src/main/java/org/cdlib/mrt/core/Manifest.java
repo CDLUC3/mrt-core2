@@ -227,16 +227,20 @@ public class Manifest implements Enumeration
             newRow = rowFactory.getManifestRow(line);
             return newRow;
             
+        } catch (TException tex) {
+	    try {
+	       br.close();
+	    } catch (Exception e) {}
+            String msg = MESSAGE + "new row exception:" + tex;
+            logger.logError(msg, 0);
+            System.out.println(StringUtil.stackTrace(tex));
+            throw new TRuntimeException.INVALID_OR_MISSING_PARM(msg);
         } catch (Exception ex) {
             String msg = MESSAGE + "new row exception:" + ex;
             logger.logError(msg, 0);
             System.out.println(StringUtil.stackTrace(ex));
             throw new TRuntimeException.INVALID_OR_MISSING_PARM(msg);
-        } finally {
-	    try {
-	       br.close();
-	    } catch (Exception e) {}
-	}
+        }
     }
 
     /**
