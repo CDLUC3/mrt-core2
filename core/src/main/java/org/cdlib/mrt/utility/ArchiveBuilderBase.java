@@ -49,6 +49,7 @@ import java.util.zip.ZipOutputStream;
 public abstract class ArchiveBuilderBase {
     protected static final String NAME = "ArchiveBuilderBase";
     protected static final String MESSAGE = NAME + ": ";
+    protected static final boolean DEBUG = false;
     protected static final int BUFSIZE = 102400;
 
 
@@ -58,6 +59,9 @@ public abstract class ArchiveBuilderBase {
     protected File toArchive;
     protected OutputStream outputStream;
     protected boolean includeBase = false;
+    protected boolean deleteFileAfterCopy = false;
+    protected boolean compressZip = true;
+    protected long buildTimeMs = 0;
 
 
     /**
@@ -68,6 +72,7 @@ public abstract class ArchiveBuilderBase {
     {
         tar("tar", "application/x-tar"),
         targz("tar.gz", "application/x-tar-gz"),
+        zipunc("zip", "application/zip"),
         zip("zip", "application/zip");
 
         protected final String mimeType;
@@ -209,6 +214,8 @@ public abstract class ArchiveBuilderBase {
                 return new ArchiveBuilderBase.TarGZ(fromDir, toArchive, logger);
             case zip:
                 return new ArchiveBuilderBase.Zip(fromDir, toArchive, logger);
+            case zipunc:
+                return new ArchiveBuilderBase.Zip(fromDir, toArchive, logger).setCompressZip(false);
         }
         throw new TException.REQUEST_ELEMENT_UNSUPPORTED(MESSAGE + "archiveType not supported");
     }
@@ -240,6 +247,8 @@ public abstract class ArchiveBuilderBase {
                 return new ArchiveBuilderBase.TarGZ(fromDir, outputStream, logger);
             case zip:
                 return new ArchiveBuilderBase.Zip(fromDir, outputStream, logger);
+            case zipunc:
+                return new ArchiveBuilderBase.Zip(fromDir, outputStream, logger).setCompressZip(false);
         }
         throw new TException.REQUEST_ELEMENT_UNSUPPORTED(MESSAGE + "archiveType not supported");
     }
@@ -252,6 +261,7 @@ public abstract class ArchiveBuilderBase {
         throws TException
     {
         this.includeBase = includeBase;
+        long start = System.currentTimeMillis();
         try {
             if (outputStream == null) outputStream = new FileOutputStream(toArchive);
             setOutputStream(outputStream);
@@ -264,6 +274,7 @@ public abstract class ArchiveBuilderBase {
 
         } finally {
             closeArchive();
+            buildTimeMs = (System.currentTimeMillis() - start);
         }
     }
 
@@ -357,11 +368,8 @@ public abstract class ArchiveBuilderBase {
         throws TException
     {
         if ((entry == null) || !entry.exists()) return;
-        String logtext = MESSAGE + "setEntry: name=" + entry.getName();
         InputStream inputStream = null;
         try {
-            logger.logMessage(logtext, 5, true);
-
             inputStream = new FileInputStream(entry);
             byte[] buf = new byte[32768];
 
@@ -382,9 +390,46 @@ public abstract class ArchiveBuilderBase {
                 if (inputStream != null) {
                     inputStream.close();
                 }
+                if (deleteFileAfterCopy) {
+                    if (DEBUG) System.out.println("DELETE:"
+                            + " - name:" + entry.getCanonicalPath()
+                            + " - length:" + entry.length()
+                            + " - fromDir:" + FileUtil.getDirectorySize(fromDir)
+                    );
+                    entry.delete();
+                }
             } catch (Exception lex) {}
         }
     }
+        
+    public static long getCRC(File file, LoggerInf logger)
+        throws Exception
+    {
+        InputStream inStream = new FileInputStream(file);
+        MessageDigestValue digestValue = new MessageDigestValue(inStream, "crc32", logger);
+        String crc = digestValue.checksum;
+        long crcL = getDecimal(crc);
+        if (DEBUG) System.out.println("getCRC:"
+            + " - string:" + crc
+            + " - crcL:" + crcL
+        );
+        return crcL;
+    }
+
+    public static long getDecimal(String hex)
+    {  
+        String digits = "0123456789ABCDEF";  
+        hex = hex.toUpperCase();  
+        long val = 0;  
+        for (int i = 0; i < hex.length(); i++)  
+        {  
+            char c = hex.charAt(i);  
+            int d = digits.indexOf(c);  
+            val = 16*val + d;  
+        }  
+        return val;  
+    }     
+
 
     /**
      * Tar archive - with call backs for Tar
@@ -566,10 +611,17 @@ public abstract class ArchiveBuilderBase {
             String logtext = MESSAGE + "addItemFile: name=" + entry.getName();
 
             try {
-                String entryName = getEntryName(entry);
-                zipOutputStream.putNextEntry(new ZipEntry(entryName));
+                ZipEntry zipEntry = getZipEntry(entry);
+                zipOutputStream.putNextEntry(zipEntry);
                 setEntry(zipOutputStream, entry);
                 zipOutputStream.closeEntry();
+                logger.logMessage(MESSAGE 
+                        + " - name:" + zipEntry.getName()
+                        + " - startSize:" + zipEntry.getSize()
+                        + " - addSize:" + zipEntry.getCompressedSize()
+                        + " - crc:" + zipEntry.getCrc()
+                        + " - deleteFileAfterCopy:" + deleteFileAfterCopy
+                        , 8, true);
 
             } catch (TException fex) {
                 throw fex;
@@ -581,7 +633,36 @@ public abstract class ArchiveBuilderBase {
                 throw new TException.GENERAL_EXCEPTION(errMessage);
             }
         }
+        
+        protected ZipEntry getZipEntry(File inFile)
+            throws TException
+        {
+            ZipEntry zipEntry = null;
+            try {
+                String entryName = getEntryName(inFile);
+                zipEntry = new ZipEntry(entryName);
+                if (compressZip) {
+                    
+                } else {
+                    zipEntry.setMethod(ZipEntry.STORED);
+                    zipEntry.setCompressedSize(inFile.length());
+                    zipEntry.setSize(inFile.length());
+                    zipEntry.setCrc(getCRC(inFile, logger));
+                }
+                
+                return zipEntry;
 
+            } catch (TException fex) {
+                throw fex;
+
+            } catch (Exception ex) {
+                String errMessage = MESSAGE + "addItemFile - Exception:" + ex;
+                logger.logError(errMessage, 0);
+                logger.logError(StringUtil.stackTrace(ex), 10);
+                throw new TException.GENERAL_EXCEPTION(errMessage);
+            }
+            
+        }
         protected void closeArchive()
         {
             try {
@@ -643,4 +724,23 @@ public abstract class ArchiveBuilderBase {
             }
         }
     }
+
+    public boolean isDeleteFileAfterCopy() {
+        return deleteFileAfterCopy;
+    }
+
+    public ArchiveBuilderBase setDeleteFileAfterCopy(boolean deleteFileAfterCopy) {
+        this.deleteFileAfterCopy = deleteFileAfterCopy;
+        return this;
+    }
+
+    protected ArchiveBuilderBase setCompressZip(boolean compressZip) {
+        this.compressZip = compressZip;
+        return this;
+    }
+
+    public long getBuildTimeMs() {
+        return buildTimeMs;
+    }
+    
 }
