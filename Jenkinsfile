@@ -11,7 +11,6 @@ pipeline {
      */
     environment {      
       //Branch/tag names to incorporate into the build.  Create one var for each repo.
-      BRANCH_CORE = 'java-refactor'
       BRANCH_CLOUD = 'main'
       BRANCH_ZK = 'main'
       BRANCH_MRTZOO = 'main'
@@ -45,7 +44,7 @@ pipeline {
                   script {
                     new BuildFunctions().build_library(
                       'https://github.com/CDLUC3/mrt-core2.git', 
-                      env.BRANCH_CORE, 
+                      env.DEF_BRANCH, 
                       ''
                     )
                   }
