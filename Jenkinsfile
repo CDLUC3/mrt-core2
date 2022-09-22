@@ -129,7 +129,7 @@ pipeline {
                 }
             }
         }
-        stage('Build Replic') {
+        stage('Build Ingest') {
             steps {
                 dir('mrt-ingest'){
                   script {
