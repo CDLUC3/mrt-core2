@@ -18,6 +18,7 @@ pipeline {
       BRANCH_AUDIT = 'main'
       BRANCH_REPLIC = 'main'
       BRANCH_INGEST = 'main'
+      BRANCH_STORE = 'main'
 
       //working vars
       M2DIR = "${HOME}/.m2-replic"
@@ -90,12 +91,12 @@ pipeline {
                 }
             }
         }
-        stage('Build Inventory Source') {
+        stage('Build Inventory') {
             steps {
-                dir('mrt-inventory') {
+                dir('mrt-inventory'){
                   script {
-                    new BuildFunctions().build_library(
-                      'https://github.com/CDLUC3/mrt-inventory.git', 
+                    new BuildFunctions().build_and_test_war(
+                      'https://github.com/CDLUC3/mrt-inventory.git',
                       env.BRANCH_INV, 
                       ''
                     )
@@ -107,7 +108,7 @@ pipeline {
             steps {
                 dir('mrt-replic'){
                   script {
-                    new BuildFunctions().build_war(
+                    new BuildFunctions().build_and_test_war(
                       'https://github.com/CDLUC3/mrt-replic.git',
                       env.BRANCH_REPLIC, 
                       ''
@@ -120,7 +121,7 @@ pipeline {
             steps {
                 dir('mrt-replic'){
                   script {
-                    new BuildFunctions().build_war(
+                    new BuildFunctions().build_and_test_war(
                       'https://github.com/CDLUC3/mrt-audit.git',
                       env.BRANCH_AUDIT, 
                       ''
@@ -133,12 +134,32 @@ pipeline {
             steps {
                 dir('mrt-ingest'){
                   script {
-                    new BuildFunctions().build_war(
+                    new BuildFunctions().build_and_test_war(
                       'https://github.com/CDLUC3/mrt-ingest.git',
                       env.BRANCH_INGEST, 
                       ''
                     )
                   }
+                }
+            }
+        }
+        stage('Build Store') {
+            steps {
+                dir('mrt-store'){
+                  script {
+                    new BuildFunctions().build_and_test_war(
+                      'https://github.com/CDLUC3/mrt-store.git',
+                      env.BRANCH_STORE, 
+                      ''
+                    )
+                  }
+                }
+            }
+        }
+        stage('Archive Build Info') { // for display purposes
+            steps {
+                script {
+                  new BuildFunctions().save_build_info()
                 }
             }
         }
