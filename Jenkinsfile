@@ -130,19 +130,6 @@ pipeline {
                 }
             }
         }
-        stage('Build Ingest') {
-            steps {
-                dir('mrt-ingest'){
-                  script {
-                    new BuildFunctions().build_and_test_war(
-                      'https://github.com/CDLUC3/mrt-ingest.git',
-                      env.BRANCH_INGEST, 
-                      ''
-                    )
-                  }
-                }
-            }
-        }
         stage('Build Store') {
             steps {
                 dir('mrt-store'){
@@ -151,6 +138,19 @@ pipeline {
                       'https://github.com/CDLUC3/mrt-store.git',
                       env.BRANCH_STORE, 
                       ''
+                    )
+                  }
+                }
+            }
+        }
+        stage('Build Ingest') {
+            steps {
+                dir('mrt-ingest'){
+                  script {
+                    new BuildFunctions().build_and_test_war(
+                      'https://github.com/CDLUC3/mrt-ingest.git',
+                      env.BRANCH_INGEST, 
+                      '-Denforcer.skip=true'
                     )
                   }
                 }
