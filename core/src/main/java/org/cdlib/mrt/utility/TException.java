@@ -713,4 +713,24 @@ public class TException
         }
     }
 
+    /**
+     * SQL_EXCEPTION subclass
+     * See TExceptionEnum value for description
+     */
+    public static class ACCEPTED extends TException
+    {
+        public ACCEPTED(Exception ex)
+        {
+            super(TExceptionEnum.ACCEPTED, ex);
+        }
+        public ACCEPTED(String msg)
+        {
+            super(TExceptionEnum.ACCEPTED, msg);
+        }
+        public ACCEPTED(String msg, Exception ex)
+        {
+            super(TExceptionEnum.ACCEPTED, msg, ex);
+        }
+    }
+
 }
