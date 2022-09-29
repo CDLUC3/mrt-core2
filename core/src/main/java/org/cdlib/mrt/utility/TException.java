@@ -717,19 +717,19 @@ public class TException
      * SQL_EXCEPTION subclass
      * See TExceptionEnum value for description
      */
-    public static class ACCEPTED extends TException
+    public static class GATEWAY_TIMEOUT extends TException
     {
-        public ACCEPTED(Exception ex)
+        public GATEWAY_TIMEOUT(Exception ex)
         {
-            super(TExceptionEnum.ACCEPTED, ex);
+            super(TExceptionEnum.GATEWAY_TIMEOUT, ex);
         }
-        public ACCEPTED(String msg)
+        public GATEWAY_TIMEOUT(String msg)
         {
-            super(TExceptionEnum.ACCEPTED, msg);
+            super(TExceptionEnum.GATEWAY_TIMEOUT, msg);
         }
-        public ACCEPTED(String msg, Exception ex)
+        public GATEWAY_TIMEOUT(String msg, Exception ex)
         {
-            super(TExceptionEnum.ACCEPTED, msg, ex);
+            super(TExceptionEnum.GATEWAY_TIMEOUT, msg, ex);
         }
     }
 
