@@ -66,4 +66,5 @@ CLOUDHOST_FIXITY | CloudhostFixityState | chfix | ch/fix
 CLOUDHOST_META | CloudhostMetaState | chmeta | ch/meta
 STORE_LOCID | LocalIDsState | locid | store/locid
 STORE_DELID | DeleteIDState | delid | store/delid
+TOKEN_LOCK | ZooTokenState | tok | store/tok
 PING | PingState | ping | ping/basic | dateTime
