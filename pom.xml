@@ -39,6 +39,7 @@
     </repositories>
 
     <modules>
+        <module>reflect</module>
         <module>core-util-init</module>
         <module>jena</module>
         <module>json</module>
