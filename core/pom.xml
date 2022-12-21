@@ -43,15 +43,9 @@
     <dependencies>
         <dependency>
             <groupId>org.cdlib.mrt</groupId>
-            <artifactId>mrt-jena</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.cdlib.mrt</groupId>
             <artifactId>mrt-json</artifactId>
             <version>2.0-SNAPSHOT</version>
-        </dependency>
-        
+        </dependency>        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -70,24 +64,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
+            <scope>runtime</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
-        <!--
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>2.7.1</version>
-        </dependency>
-        -->
         
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -100,57 +83,36 @@
         <dependency>
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
+            <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>jdom</groupId>
+         <dependency>
+            <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jolbox</groupId>
             <artifactId>bonecp</artifactId>
-            <!--version>0.7.2-SNAPSHOT</version-->
         </dependency>
-  
-
-<!-- upgrade tika handling >> -->
-        <dependency>
+          <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
         </dependency>
-        
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-        </dependency>
-        
         <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
         </dependency> 
-<!-- << upgrade tika handling -->
-
-        <!--dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.18</version>
-        </dependency-->
-        <!--dependency>
-            <groupId>net.sf</groupId>
-            <artifactId>jargs</artifactId>
-            <version>1.0</version>
-        </dependency-->
-        <!--dependency>
-            <groupId>jargs</groupId>
-            <artifactId>jargs</artifactId>
-            <version>1.0</version>
-        </dependency-->
-
-        <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hp.hpl.jena</groupId>
+            <artifactId>jena</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
