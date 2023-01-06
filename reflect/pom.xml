@@ -154,6 +154,7 @@
                 <version>9.4</version>
             </dependency>
 
+            <!-- this dependency contains the tar library used by Merritt -->
             <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
