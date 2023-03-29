@@ -38,6 +38,7 @@ import java.net.URLConnection;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +47,6 @@ import java.util.Properties;
 import java.util.Set;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-
-
 
 //import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -1145,7 +1144,7 @@ public class HTTPUtil {
     public static HttpClient getHttpClient(int timeout)
         throws Exception
     {       
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).setCookieSpec(CookieSpecs.STANDARD).build();
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).setSocketTimeout(timeout).setConnectionRequestTimeout(timeout).setCookieSpec(CookieSpecs.STANDARD).build();
             HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
             return httpClient;
     }
@@ -1153,7 +1152,7 @@ public class HTTPUtil {
     public static HttpClient getHttpClient(String requestURL, int timeout)
         throws Exception
     {       
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).setCookieSpec(CookieSpecs.STANDARD).build();
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).setSocketTimeout(timeout).setConnectionRequestTimeout(timeout).setCookieSpec(CookieSpecs.STANDARD).build();
             HttpClient httpClient = null;
             if (requestURL.toLowerCase().startsWith("https:")) {
                 httpClient = createHttpClient_AcceptsUntrustedCerts();
@@ -1161,6 +1160,11 @@ public class HTTPUtil {
                 httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
             }
             return httpClient;
+    }
+
+    public static final String getBasicAuthenticationHeader(String username, String password) {
+    	    String valueToEncode = username + ":" + password;
+    	    return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
     }
 
     private static class URLConnectionTimeout implements Runnable
