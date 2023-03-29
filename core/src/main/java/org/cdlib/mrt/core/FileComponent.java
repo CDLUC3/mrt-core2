@@ -34,6 +34,8 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.cdlib.mrt.core.Identifier;
 import org.cdlib.mrt.core.MessageDigest;
@@ -75,6 +77,7 @@ public class FileComponent
     protected String date = null;
 
 
+    public static final Pattern boxToken = Pattern.compile("^https://([^/]+box\\.com)/s/(\\S+)");
 
     /**
      * Get a file for this Component
@@ -228,6 +231,10 @@ public class FileComponent
      */
     public URL getURL() {
         return link;
+    }
+    
+    public URL getURLNorm() {
+        return normBox(link);
     }
 
     /**
@@ -518,5 +525,25 @@ public class FileComponent
     public void setDate(String date) {
         this.date = date;
     }
+    
+    public static URL normBox(URL inURL)
+    {
+        String insert = "/public/static/";
+        URL retURL = inURL;
+        if (inURL == null) return null;
+        try {
+            String inS = inURL.toString();
+            Matcher m = boxToken.matcher(inS);
+            
+            if (m.matches()) {
+                String downloadURLS = "https://" + m.group(1) + insert + m.group(2);
+                retURL = new URL(downloadURLS);
+            }
+            return retURL;
+            
+        } catch (Exception ex) {
+            return inURL;
+        }
+    }    
 }
 
