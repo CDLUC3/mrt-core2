@@ -123,9 +123,9 @@ public abstract class FormatterAbs
     }
 
     /**
-     * get Turtle formatter
+     * get XHTML formatter
      * @param logger process logger
-     * @return Turtle formatter
+     * @return XHTML formatter
      * @throws org.cdlib.mrt.utility.TException
      */
     public static XHTMLFormatter getXHTMLFormatter(LoggerInf logger)
@@ -137,10 +137,10 @@ public abstract class FormatterAbs
     }
 
     /**
-     * get Turtle formatter
+     * get XHTML formatter
      * @param mapperName name of XML mapper file
      * @param logger process logger
-     * @return Turtle formatter
+     * @return XHTML formatter
      * @throws org.cdlib.mrt.utility.TException
      */
     public static XHTMLFormatter getXHTMLFormatter(String mapperName, LoggerInf logger)
