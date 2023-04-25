@@ -42,7 +42,8 @@ public interface FormatterInf
      * Supported types of output formats
      */
     public enum Format {
-        anvl, html, json, json2, serial, xml, turtle, rdf, xhtml;
+        //anvl, html, json, json2, serial, xml, turtle, rdf, xhtml;
+        anvl, html, json, json2, serial, xml, xhtml;
     }
 
     /**

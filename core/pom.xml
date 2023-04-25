@@ -46,10 +46,10 @@
             <version>2.0-SNAPSHOT</version>
         </dependency>   
         
-        <dependency>
+        <!--dependency>
             <groupId>com.hp.hpl.jena</groupId>
             <artifactId>jena</artifactId>
-        </dependency>
+        </dependency-->
         
         <dependency>
             <groupId>com.jolbox</groupId>

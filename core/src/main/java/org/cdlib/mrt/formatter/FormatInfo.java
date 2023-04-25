@@ -44,8 +44,8 @@ import org.cdlib.mrt.utility.StringUtil;
         targz("archive", "tar.gz", "application/x-tar-gz", "gzip"),
         txt("file", "txt", "plain/text", null),
         xml("state", "xml", "text/xml", null),
-        rdf("state", "xml", "application/rdf+xml", null),
-        turtle("state", "ttl", "text/turtle", null),
+        //rdf("state", "xml", "application/rdf+xml", null),
+        //turtle("state", "ttl", "text/turtle", null),
         xhtml("state", "xhtml", "application/xhtml+xml", null),
         zip("archive", "zip", "application/zip", null);
 

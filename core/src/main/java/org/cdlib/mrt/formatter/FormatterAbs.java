@@ -123,67 +123,9 @@ public abstract class FormatterAbs
     }
 
     /**
-     * get Turtle formatter
+     * get XHTML formatter
      * @param logger process logger
-     * @return Turtle formatter
-     * @throws org.cdlib.mrt.utility.TException
-     */
-    public static JENAFormatter getTurtleFormatter(LoggerInf logger)
-            throws TException
-    {
-        JENAFormatter formatter = new JENAFormatter(logger);
-        formatter.setFormatterType(FormatterInf.Format.turtle);
-        return formatter;
-    }
-
-    /**
-     * get Turtle formatter
-     * @param mapperName name of XML mapper file
-     * @param logger process logger
-     * @return Turtle formatter
-     * @throws org.cdlib.mrt.utility.TException
-     */
-    public static JENAFormatter getTurtleFormatter(String mapperName, LoggerInf logger)
-            throws TException
-    {
-        JENAFormatter formatter = new JENAFormatter(mapperName, logger);
-        formatter.setFormatterType(FormatterInf.Format.turtle);
-        return formatter;
-    }
-
-    /**
-     * get Turtle formatter
-     * @param logger process logger
-     * @return Turtle formatter
-     * @throws org.cdlib.mrt.utility.TException
-     */
-    public static JENAFormatter getRDFFormatter(LoggerInf logger)
-            throws TException
-    {
-        JENAFormatter formatter = new JENAFormatter(logger);
-        formatter.setFormatterType(FormatterInf.Format.rdf);
-        return formatter;
-    }
-
-    /**
-     * get Turtle formatter
-     * @param mapperName name of XML mapper file
-     * @param logger process logger
-     * @return Turtle formatter
-     * @throws org.cdlib.mrt.utility.TException
-     */
-    public static JENAFormatter getRDFFormatter(String mapperName, LoggerInf logger)
-            throws TException
-    {
-        JENAFormatter formatter = new JENAFormatter(mapperName, logger);
-        formatter.setFormatterType(FormatterInf.Format.rdf);
-        return formatter;
-    }
-
-    /**
-     * get Turtle formatter
-     * @param logger process logger
-     * @return Turtle formatter
+     * @return XHTML formatter
      * @throws org.cdlib.mrt.utility.TException
      */
     public static XHTMLFormatter getXHTMLFormatter(LoggerInf logger)
@@ -195,10 +137,10 @@ public abstract class FormatterAbs
     }
 
     /**
-     * get Turtle formatter
+     * get XHTML formatter
      * @param mapperName name of XML mapper file
      * @param logger process logger
-     * @return Turtle formatter
+     * @return XHTML formatter
      * @throws org.cdlib.mrt.utility.TException
      */
     public static XHTMLFormatter getXHTMLFormatter(String mapperName, LoggerInf logger)
@@ -261,10 +203,6 @@ public abstract class FormatterAbs
                 return getXMLFormatter(logger);
             case json:
                 return getJSONFormatter(logger);
-            case turtle:
-                return getTurtleFormatter(logger);
-            case rdf:
-                return getRDFFormatter(logger);
             case xhtml:
                 return getXHTMLFormatter(logger);
             default:
