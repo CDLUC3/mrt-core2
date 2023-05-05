@@ -126,6 +126,12 @@
         </dependency>
         
         <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>serializer</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <scope>runtime</scope>
