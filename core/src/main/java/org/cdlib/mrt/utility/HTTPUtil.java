@@ -448,6 +448,43 @@ public class HTTPUtil {
             throw new TException.GENERAL_EXCEPTION("HTTPUTIL: getObject- Exception:" + ex);
         }
     }
+    
+    /**
+     * Used to trace IT calls
+     * @param response http response
+     * @param goodStatus expected status to skip dump
+     */
+    public static void dumpHttpResponse(HttpResponse response, int goodStatus)
+    {
+        
+        try {
+            if (response == null) {
+                System.out.println("dumpHttpResponse null response");
+                return;
+            }
+            int status = response.getStatusLine().getStatusCode();
+            if (status == goodStatus) {
+                return;
+            }
+            System.out.println("dumpHttpResponse status:" + status);
+            HttpEntity entity = response.getEntity();
+            long length = entity.getContentLength();
+            if (length == 0) {
+                System.out.println("dumpHttpResponse entity length zero");
+                return;
+            }
+            InputStream inStream = entity.getContent();
+            String inS = StringUtil.streamToString(inStream, "utf8");
+            System.out.println("dumpHttpResponse:" + inS);
+
+        } catch( IllegalArgumentException iae ) {
+            System.out.println("trace:" + StringUtil.stackTrace(iae));
+           
+
+        } catch( Exception ex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(ex));
+        }
+    }
 
     /**
      * Get structured properties from a Get request
