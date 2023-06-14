@@ -239,6 +239,7 @@
                 <artifactId>ecs-logging-core</artifactId>
                 <version>1.5.0</version>
             </dependency>
+            
             <dependency>
                 <groupId>co.elastic.logging</groupId>
                 <artifactId>log4j2-ecs-layout</artifactId>

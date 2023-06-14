@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.cdlib.mrt</groupId>
+    <artifactId>mrt-parent-properties</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>mrt-parent-properties</name>
+
+    
+    <!-- force UTF-8 -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <docker.maven.plugin.version>0.40.2</docker.maven.plugin.version>
+        <jacoco.maven.plugin.version>0.8.5</jacoco.maven.plugin.version>
+        <maven.compiler.plugin.java>1.8</maven.compiler.plugin.java>
+        <maven.compiler.plugin.version>3.9.0</maven.compiler.plugin.version>
+        <maven.failsafe.plugin.version>2.22.2</maven.failsafe.plugin.version>
+        <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--compiler.argument>-Xlint:unchecked</compiler.argument-->
+    </properties>
+</project>
