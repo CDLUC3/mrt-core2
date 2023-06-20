@@ -1,6 +1,6 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>mrt-core-util</artifactId>
     <groupId>org.cdlib.mrt</groupId>
@@ -10,14 +10,25 @@
     <name>UC3-mrtcore</name>
     <description>UC3 Merritt Micro-Services</description>
     <url>http://uc3.cdlib.org</url>
-
-    <modules>
-        <module>reflect</module>
-        <module>parprop</module>
-        <module>core-util-init</module>
-        <module>json</module>
-        <module>tools</module>
-        <module>core</module>
-    </modules>
-
+    <profiles>
+        <profile>
+          <id>uc3</id>
+          <activation>
+              <activeByDefault>true</activeByDefault>
+          </activation>
+          <modules>
+                <module>reflect</module>
+                <module>json</module>
+                <module>core</module>
+                <module>tools</module>
+            </modules>
+        </profile>
+        
+        <profile>
+          <id>parent</id>
+          <modules>
+                <module>parprop</module>
+          </modules>
+        </profile>
+     </profiles>
 </project>
