@@ -1,5 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cdlib.mrt</groupId>
     <artifactId>mrt-reflectoring-bom</artifactId>
@@ -8,37 +9,37 @@
     <name>mrt-reflectoring</name>
     <dependencyManagement>
         <dependencies>
-            
+
             <dependency>
                 <groupId>ant</groupId>
                 <artifactId>ant</artifactId>
                 <version>1.7.0</version>
             </dependency>
-        
+
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-core</artifactId>
                 <version>1.12.261</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-kms</artifactId>
                 <version>1.12.261</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-s3</artifactId>
                 <version>1.12.261</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-ssm</artifactId>
                 <version>1.12.190</version>
             </dependency>
-        
+
             <dependency>
                 <groupId>com.box</groupId>
                 <artifactId>box-java-sdk</artifactId>
@@ -57,7 +58,7 @@
                 <!--version>2.8.6</version-->
                 <version>2.8.9</version>
             </dependency>
-      
+
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -69,32 +70,33 @@
                 <artifactId>jena</artifactId>
                 <version>2.6.4</version>
             </dependency-->
-            
+
             <dependency>
-              <groupId>com.jolbox</groupId>
-              <artifactId>bonecp</artifactId>
-              <version>0.8.0.RELEASE</version>
+                <groupId>com.jolbox</groupId>
+                <artifactId>bonecp</artifactId>
+                <version>0.8.0.RELEASE</version>
             </dependency>
 
             <dependency>
-               <groupId>com.zaxxer</groupId>
-               <artifactId>HikariCP</artifactId>
-               <version>4.0.3</version>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>4.0.3</version>
             </dependency>
-      
+
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>1.3</version>
             </dependency>
-      
+
             <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
-                <!--version>1.3.3</version 230327-->
+                <!--version>1.3.3</version
+                230327-->
                 <version>1.5</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
@@ -106,13 +108,13 @@
                 <artifactId>commons-io</artifactId>
                 <version>2.7</version>
             </dependency>
-    
+
             <dependency>
                 <groupId>javax.mail</groupId>
                 <artifactId>mail</artifactId>
                 <version>1.4.1</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>servlet-api</artifactId>
@@ -124,17 +126,17 @@
                 <artifactId>javax.ws.rs-api</artifactId>
                 <version>2.0.1</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
                 <version>2.3.1</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>jaxen</groupId>
                 <artifactId>jaxen</artifactId>
-                <version>1.1.1</version>
+                <version>1.2.0</version>
             </dependency>
 
             <dependency>
@@ -142,31 +144,31 @@
                 <artifactId>jdom</artifactId>
                 <version>1.1</version>
             </dependency>
-        
+
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.13.1</version>
             </dependency>
-                 
+
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>8.0.28</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-	        <version>9.8.0-14</version>
+                <version>9.8.0-14</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
-                <version>1.10.13</version> 
+                <version>1.10.13</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
@@ -176,7 +178,8 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-email</artifactId>
-                <!--version>1.2 230327</version-->
+                <!--version>1.2
+                230327</version-->
                 <version>1.5</version>
             </dependency>
 
@@ -197,13 +200,13 @@
                 <artifactId>httpclient</artifactId>
                 <version>4.5.13</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
                 <version>4.4.14</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
@@ -213,20 +216,34 @@
             <dependency>
                 <groupId>org.apache.james</groupId>
                 <artifactId>apache-mime4j</artifactId>
-                <!--version>0.6</version 230327-->
+                <!--version>0.6</version
+                230327-->
                 <version>0.8.9</version>
-            </dependency>
-      
-            <dependency>
-              <groupId>org.apache.logging.log4j</groupId>
-              <artifactId>log4j-core</artifactId>
-              <version>2.20.0</version>
             </dependency>
 
             <dependency>
-              <groupId>org.apache.logging.log4j</groupId>
-              <artifactId>log4j-api</artifactId>
-              <version>2.20.0</version>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.20.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>2.20.0</version>
+            </dependency>
+
+            <!-- Include the following as a runtime dependency when logging in ECS format for open search-->
+            <dependency>
+                <groupId>co.elastic.logging</groupId>
+                <artifactId>ecs-logging-core</artifactId>
+                <version>1.5.0</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>co.elastic.logging</groupId>
+                <artifactId>log4j2-ecs-layout</artifactId>
+                <version>1.5.0</version>
             </dependency>
 
             <dependency>
@@ -234,13 +251,13 @@
                 <artifactId>tika-core</artifactId>
                 <version>1.26</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
                 <version>3.7.1</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper-jute</artifactId>
@@ -252,7 +269,7 @@
                 <artifactId>jersey-client</artifactId>
                 <version>2.25.1</version>
             </dependency>
-      
+
             <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-servlet</artifactId>
@@ -276,11 +293,12 @@
                 <artifactId>jdom</artifactId>
                 <version>1.1</version>
             </dependency>
-                     
+
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
-                <!--version>1.3.2</version 230327-->
+                <!--version>1.3.2</version
+                230327-->
                 <version>2.0</version>
             </dependency>
 
@@ -289,14 +307,14 @@
                 <artifactId>serializer</artifactId>
                 <version>2.7.3</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>xalan</groupId>
                 <artifactId>xalan</artifactId>
                 <!--version>2.7.2</version-->
                 <version>2.7.3</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>xerces</groupId>
                 <artifactId>xercesImpl</artifactId>
@@ -308,7 +326,7 @@
                 <artifactId>xmlParserAPIs</artifactId>
                 <version>2.6.2</version>
             </dependency>
-        
+
             <dependency>
                 <groupId>xml-apis</groupId>
                 <artifactId>xml-apis</artifactId>
@@ -326,7 +344,7 @@
                 <artifactId>opencsv</artifactId>
                 <version>2.0</version>
             </dependency>
-            
+
         </dependencies>
     </dependencyManagement>
 </project>
