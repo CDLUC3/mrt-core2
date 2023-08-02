@@ -1,0 +1,40 @@
+<Configuration status="warn">
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <!--JSONLayout /-->
+            <JSONLayout compact="true" eventEol="true" properties="true" stacktraceAsString="true" includeTimeMillis="true">
+                <KeyValuePair key="Date" value="${%d{DEFAULT}}"/>
+            </JSONLayout>
+        </Console>
+        <File name="myFile" fileName="/home/loy/tasks/logging/230515-log4j2/logs">
+          <!--PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/-->
+          <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+        
+        <RollingFile
+          name="rollingFile"
+          fileName="${LOG_DIR}/application.log"
+          filePattern="${LOG_DIR}/application.%i.log.gz"
+          ignoreExceptions="false">
+          <PatternLayout>
+              <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %m%n</Pattern>
+          </PatternLayout>
+          <Policies>
+              <SizeBasedTriggeringPolicy size="10MB" />
+          </Policies>
+          <DefaultRolloverStrategy max="5">
+            <Delete basePath="${LOG_DIR}" maxDepth="2">
+              <IfFileName glob="*/app-*.log.gz" />
+              <IfLastModified age="P30D" />
+            </Delete>
+          </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+    	<!-- Root logger referring to console appender -->
+        <Root level="debug" additivity="false">
+            <AppenderRef ref="console" level="info"/>
+            <AppenderRef ref="myFile" level="debug"/>
+        </Root>
+    </Loggers>
+</Configuration>
