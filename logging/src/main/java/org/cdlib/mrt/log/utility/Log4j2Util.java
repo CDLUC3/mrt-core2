@@ -45,6 +45,18 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 
 public class Log4j2Util {
     
+    public static void setRootLevel(String levelS)
+        throws TException
+    {
+        try {
+            System.out.println("reset:" + levelS);
+            Level level = Level.toLevel(levelS, Level.INFO);
+            setRootLevel(level);
+            
+        } catch (Exception ex) {
+            throw new TException(ex);
+        }
+    }
     
     public static void setRootLevel(Level level)
         throws TException
@@ -79,6 +91,10 @@ public class Log4j2Util {
             if (header == null) header = "";
             LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
             System.out.println(header + " Configuration found at "+ctx.getConfiguration().toString());
+            LogManager.getLogger().warn("whichLog4j2: warn");
+            LogManager.getLogger().info("whichLog4j2: info");
+            LogManager.getLogger().debug("whichLog4j2: debug");
+            LogManager.getLogger().trace("whichLog4j2: trace");
         } catch (Exception ex) {
             System.out.println("whichLog4j2 Exception:" + ex);
         }

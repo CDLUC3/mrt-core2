@@ -46,14 +46,25 @@ public class AddStateEntry {
     private String service = null;
     private String serviceProcess = null;
     private Integer version = null;
-    private Long node = null;
-    private Long length = null;
+    private Long sourceNode = null;
+    private Long targetNode = null;
+    private Integer currentVersion = null;
+    private Integer addVersions = null;
+    private Long addFiles = null;
+    private Long addBytes = null;
+    private Integer versions = null;
+    private Long files = null;
+    private Long bytes = null;
+    private Integer deleteVersions = null;
+    private Long deleteFiles = null;
+    private Long deleteBytes = null;
     private Long durationMs = null;
+    private Long startMs = null;
     private String key = null;
     private Identifier objectID = null;
     private String localids = null;
    
-    private static final Logger LOGGER = LogManager.getLogger("JSONLog");
+    protected static final Logger LOGGER = LogManager.getLogger("JSONLog");
         
     public void addLogStateEntry(String logKey)
         throws TException
@@ -72,7 +83,34 @@ public class AddStateEntry {
         }
     }
         
-    public void addLogStateEntry(String logKey, JSONObject jsonState)
+    public void addLog(String levelS, String logKey)
+        throws TException
+    {
+        JSONObject jsonState = buildStateJSON();
+        try {
+            System.out.println("jsonState:" + jsonState.toString(2));
+            
+        } catch (Exception ex) { }
+        if (false) return;
+        try {
+            if (durationMs == null) {
+                durationMs = System.currentTimeMillis() - startMs;
+            }
+            Level logLevel = Level.getLevel(logKey);
+            addLogStateEntry(logLevel, logKey, jsonState);
+            
+        } catch (Exception ex) {
+            throw new TException.GENERAL_EXCEPTION(ex);
+        }
+    }
+        
+    public static void addLogStateEntry(String logKey, JSONObject jsonState)
+        throws TException
+    {
+        addLogStateEntry(Level.INFO, logKey, jsonState);
+    }
+        
+    public static void addLogStateEntry(Level level, String logKey, JSONObject jsonState)
         throws TException
     {
         
@@ -86,7 +124,7 @@ public class AddStateEntry {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(jsonRoot.toString());
-                LOGGER.log(Level.INFO, jsonNode);
+                LOGGER.log(level, jsonNode);
                 
             } catch (Exception ex) {
                 throw new TException.GENERAL_EXCEPTION(ex);
@@ -98,7 +136,7 @@ public class AddStateEntry {
             throw new TException.GENERAL_EXCEPTION(ex);
         }
     }
-    
+        
     // default ServiceState
     public static AddStateEntry getAddStateEntry(String service, String serviceProcess)
     {
@@ -109,6 +147,7 @@ public class AddStateEntry {
     {
         this.service = service;
         this.serviceProcess = serviceProcess;
+        this.startMs = System.currentTimeMillis();
     }
 
     public JSONObject buildService()
@@ -133,8 +172,11 @@ public class AddStateEntry {
     {
         try {
             JSONObject jsonID = new JSONObject();
-            if (node != null) {
-                jsonID.put("node", node);
+            if (sourceNode != null) {
+                jsonID.put("sourceNode", sourceNode);
+            }
+            if (targetNode != null) {
+                jsonID.put("targetNode", targetNode);
             }
             if (version != null) {
                 jsonID.put("version", version);
@@ -157,11 +199,35 @@ public class AddStateEntry {
     {
         try {
             JSONObject jsonContent = new JSONObject();
-            if (length != null) {
-                jsonContent.put("length", length);
-            }
             if (durationMs != null) {
                 jsonContent.put("durationMs", durationMs);
+            }
+            if (addBytes != null) {
+                jsonContent.put("addBytes", addBytes);
+            }
+            if (addFiles != null) {
+                jsonContent.put("addFiles", addFiles);
+            }
+            if (addVersions != null) {
+                jsonContent.put("addVersions", addVersions);
+            }
+            if (deleteBytes != null) {
+                jsonContent.put("deleteBytes", deleteBytes);
+            }
+            if (deleteFiles != null) {
+                jsonContent.put("deleteFiles", deleteFiles);
+            }
+            if (deleteVersions != null) {
+                jsonContent.put("deleteVersions", deleteVersions);
+            }
+            if (bytes != null) {
+                jsonContent.put("bytes", bytes);
+            }
+            if (files != null) {
+                jsonContent.put("files", files);
+            }
+            if (versions != null) {
+                jsonContent.put("versions", versions);
             }
             return jsonContent;
             
@@ -192,8 +258,8 @@ public class AddStateEntry {
             throw new TException.GENERAL_EXCEPTION(ex);
         }
     }
-
-    public JSONObject addLogKey(String logKey, JSONObject jsonState)
+    
+    public static JSONObject addLogKey(String logKey, JSONObject jsonState)
         throws TException
     {
         try {
@@ -228,61 +294,171 @@ public class AddStateEntry {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public AddStateEntry setVersion(Integer version) {
         this.version = version;
+        return this;
     }
-
-    public Long getNode() {
-        return node;
-    }
-
-    public void setNode(Long node) {
-        this.node = node;
-    }
-
-    public Long getLength() {
-        return length;
-    }
-
-    public void setLength(Long length) {
-        this.length = length;
-    }
-
+    
     public Long getDurationMs() {
         return durationMs;
     }
 
-    public void setDurationMs(Long durationMs) {
+    public AddStateEntry setDurationMs(Long durationMs) {
         this.durationMs = durationMs;
+        return this;
+    }
+
+    public Integer getCurrentVersion() {
+        return currentVersion;
+    }
+
+    public AddStateEntry setCurrentVersion(Integer currentVersion) {
+        this.currentVersion = currentVersion;
+        return this;
+    }
+
+    public Integer getAddVersions() {
+        return addVersions;
+    }
+
+    public AddStateEntry setAddVersions(Integer addVersions) {
+        this.addVersions = addVersions;
+        return this;
+    }
+
+    public Long getAddFiles() {
+        return addFiles;
+    }
+
+    public AddStateEntry setAddFiles(Long addFiles) {
+        this.addFiles = addFiles;
+        return this;
+    }
+
+    public Integer getDeleteVersions() {
+        return deleteVersions;
+    }
+
+    public Long getAddBytes() {
+        return addBytes;
+    }
+
+    public AddStateEntry setAddBytes(Long addBytes) {
+        this.addBytes = addBytes;
+        return this;
+    }
+
+    public AddStateEntry setDeleteVersions(Integer deleteVersions) {
+        this.deleteVersions = deleteVersions;
+        return this;
+    }
+
+    public Long getDeleteFiles() {
+        return deleteFiles;
+    }
+
+    public AddStateEntry setDeleteFiles(Long deleteFiles) {
+        this.deleteFiles = deleteFiles;
+        return this;
+    }
+    
+
+    public Long getDeleteBytes() {
+        return deleteBytes;
+    }
+
+    public AddStateEntry setDeleteBytes(Long deleteBytes) {
+        this.deleteBytes = deleteBytes;
+        return this;
     }
 
     public String getKey() {
         return key;
     }
 
-    public void setKey(String key) {
+    public AddStateEntry setKey(String key) {
         this.key = key;
+        return this;
     }
 
     public Identifier getObjectID() {
         return objectID;
     }
 
-    public void setObjectID(Identifier objectID) {
+    public AddStateEntry setObjectID(Identifier objectID) {
         this.objectID = objectID;
+        return this;
     }
 
-    public void setArk(String objectIDS) 
+    public AddStateEntry setArk(String objectIDS) 
         throws TException
     {
         this.objectID = new Identifier(objectIDS);
+        return this;
     }
     
     public String getLocalids() {
         return localids;
     }
 
-    public void setLocalids(String localids) {
+    public AddStateEntry setLocalids(String localids) {
         this.localids = localids;
+        return this;
+    }
+
+    public Long getSourceNode() {
+        return sourceNode;
+    }
+
+    public AddStateEntry setSourceNode(Long sourceNode) {
+        this.sourceNode = sourceNode;
+        return this;
+    }
+
+    public AddStateEntry setSourceNode(Integer sourceNodeI) {
+        if (sourceNodeI == null) return this;
+        long sourceNodeL = sourceNodeI;
+        this.sourceNode = sourceNodeL;
+        return this;
+    }
+
+    public Long getTargetNode() {
+        return targetNode;
+    }
+
+    public AddStateEntry setTargetNode(Long targetNode) {
+        this.targetNode = targetNode;
+        return this;
+    }
+
+    public Integer getVersions() {
+        return versions;
+    }
+
+    public AddStateEntry setVersions(Integer versions) {
+        this.versions = versions;
+        return this;
+    }
+
+    public Long getFiles() {
+        return files;
+    }
+
+    public AddStateEntry setFiles(Long files) {
+        this.files = files;
+        return this;
+    }
+
+    public Long getBytes() {
+        return bytes;
+    }
+
+    public AddStateEntry setBytes(Long bytes) {
+        this.bytes = bytes;
+        return this;
+    }
+
+    public static Logger getLOGGER() {
+        return LOGGER;
     }
 }

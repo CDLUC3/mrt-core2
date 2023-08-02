@@ -77,7 +77,7 @@ public class TestUse {
     {
         Log4j2Util.whichLog4j2("start");
         AddStateEntry stateEntry = AddStateEntry.getAddStateEntry("storage", "add");
-        stateEntry.setNode(2001L);
+        stateEntry.setTargetNode(2001L);
         stateEntry.setArk("ark:/13030/testarkentry");
         stateEntry.setVersion(15);
         stateEntry.setDurationMs(1234L);
