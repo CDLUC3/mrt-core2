@@ -49,7 +49,6 @@ public class Log4j2Util {
         throws TException
     {
         try {
-            System.out.println("reset:" + levelS);
             Level level = Level.toLevel(levelS, Level.INFO);
             setRootLevel(level);
             
@@ -62,12 +61,15 @@ public class Log4j2Util {
         throws TException
     {
         try {
-            System.out.println("reset:" + level);
             LoggerContext context = (LoggerContext) LogManager.getContext(false);
             Configuration config = context.getConfiguration();
             LoggerConfig rootConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+            System.out.println("setRootLevel before:" + rootConfig.getLevel());
             rootConfig.setLevel(level);
             context.updateLoggers();
+            String msg = "setRootLevel after:" + rootConfig.getLevel();
+            System.out.println(msg);
+            LogManager.getLogger().info(msg);
             
         } catch (Exception ex) {
             throw new TException(ex);

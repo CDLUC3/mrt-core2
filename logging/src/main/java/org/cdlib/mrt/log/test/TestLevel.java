@@ -57,7 +57,7 @@ public class TestLevel {
     {
         try {
             TestLevel test = new TestLevel();
-            test.doTest();
+            test.doTest2();
             
             
         } catch (Exception ex) {
@@ -88,7 +88,20 @@ public class TestLevel {
         System.out.println("afterLvl:" + afterLvl);
         LOGGER = LogManager.getLogger();
         
+        
         logit(txt+1);
+        
+    }
+    public void doTest2()
+       throws TException
+    {
+        int txt=16;
+        logit(txt);
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        Log4j2Util.setRootLevel("trace");
+        logit(99);
+        Log4j2Util.setRootLevel("warn");
+        logit(100);
         
     }
     
@@ -99,6 +112,7 @@ public class TestLevel {
         LOGGER.warn("TL" + tst +" warn");
         LOGGER.info("TL" + tst +" info");
         LOGGER.debug("TL" + tst +" debug");
+        LOGGER.trace("TL" + tst +" trace");
     }
     
 }
