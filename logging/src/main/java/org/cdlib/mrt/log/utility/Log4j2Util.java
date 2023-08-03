@@ -64,7 +64,12 @@ public class Log4j2Util {
             LoggerContext context = (LoggerContext) LogManager.getContext(false);
             Configuration config = context.getConfiguration();
             LoggerConfig rootConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-            System.out.println("setRootLevel before:" + rootConfig.getLevel());
+            Level beforeLvl = rootConfig.getLevel();
+            if (beforeLvl == level) {
+                System.out.println("setRootLevel match:" + level.toString());
+                return;
+            }
+            System.out.println("setRootLevel before:" + beforeLvl);
             rootConfig.setLevel(level);
             context.updateLoggers();
             String msg = "setRootLevel after:" + rootConfig.getLevel();
