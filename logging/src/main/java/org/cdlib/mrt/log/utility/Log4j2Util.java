@@ -74,6 +74,20 @@ public class Log4j2Util {
         }
     }
     
+    public static String getRootLevel()
+        throws TException
+    {
+        try {
+            LoggerContext context = (LoggerContext) LogManager.getContext(false);
+            Configuration config = context.getConfiguration();
+            LoggerConfig rootConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+            return rootConfig.getLevel().toString();
+            
+        } catch (Exception ex) {
+            throw new TException(ex);
+        }
+    }
+    
     public static Logger getLoggerResource(String logConfigName)
        throws Exception
     {
