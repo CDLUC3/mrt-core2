@@ -21,6 +21,7 @@
                 <module>json</module>
                 <module>core</module>
                 <module>tools</module>
+                <module>logging</module>
             </modules>
         </profile>
         
