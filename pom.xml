@@ -10,6 +10,7 @@
     <name>UC3-mrtcore</name>
     <description>UC3 Merritt Micro-Services</description>
     <url>http://uc3.cdlib.org</url>
+
     <profiles>
         <profile>
           <id>uc3</id>

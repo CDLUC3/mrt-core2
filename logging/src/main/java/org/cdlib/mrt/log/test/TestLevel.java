@@ -35,7 +35,6 @@ package org.cdlib.mrt.log.test;
 
 import java.net.URI;
 import java.net.URL;
-import org.cdlib.mrt.log.*;
 import org.cdlib.mrt.utility.TException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

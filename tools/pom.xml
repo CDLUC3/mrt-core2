@@ -32,10 +32,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
-                <configuration>
-                    <source>${maven.plugin.compiler.java}</source>
-                    <target>${maven.plugin.compiler.java}</target>
-                </configuration>
             </plugin>
         </plugins>
     </build>
