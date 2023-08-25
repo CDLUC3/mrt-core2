@@ -62,6 +62,7 @@ public abstract class ArchiveBuilderBase {
     protected boolean deleteFileAfterCopy = false;
     protected boolean compressZip = true;
     protected long buildTimeMs = 0;
+    protected long buildFileCnt = 0;
 
 
     /**
@@ -491,6 +492,7 @@ public abstract class ArchiveBuilderBase {
 
             try {
                 logger.logMessage(logtext, 5, true);
+                buildFileCnt++;
                 long length = entry.length();
                 // directory - no data
                 if (length == 0) return;
@@ -611,6 +613,7 @@ public abstract class ArchiveBuilderBase {
             String logtext = MESSAGE + "addItemFile: name=" + entry.getName();
 
             try {
+                buildFileCnt++;
                 ZipEntry zipEntry = getZipEntry(entry);
                 zipOutputStream.putNextEntry(zipEntry);
                 setEntry(zipOutputStream, entry);
@@ -742,5 +745,8 @@ public abstract class ArchiveBuilderBase {
     public long getBuildTimeMs() {
         return buildTimeMs;
     }
-    
+
+    public long getBuildFileCnt() {
+        return buildFileCnt;
+    }
 }

@@ -230,7 +230,7 @@ public class AddStateEntryGen {
                 double bytesPerMs = (double)bytes/(double)durationMs;
                 jsonContent.put(keyPrefix + "BytesPerMs", bytesPerMs);
             }
-            if ((files != null) && (durationMs != null)) {
+            if ((files != null) && (files != 0)) {
                 double msPerFile = (double)durationMs/(double)files;
                 jsonContent.put(keyPrefix + "MsPerFile", msPerFile);
             }
