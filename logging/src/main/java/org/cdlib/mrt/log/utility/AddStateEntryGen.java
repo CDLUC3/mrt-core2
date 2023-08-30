@@ -48,6 +48,7 @@ public class AddStateEntryGen {
     private String service = null;
     private String serviceProcess = null;
     private Integer version = null;
+    private Long processNode = null;
     private Long sourceNode = null;
     private Long targetNode = null;
     private Integer currentVersion = null;
@@ -170,11 +171,15 @@ public class AddStateEntryGen {
     {
         try {
             JSONObject jsonID = new JSONObject();
+            // Note that node is output as string key - opensearch uses delimiters 9,501
             if (sourceNode != null) {
-                jsonID.put("sourceNode", sourceNode);
+                jsonID.put("sourceNode", "" + sourceNode);
             }
             if (targetNode != null) {
-                jsonID.put("targetNode", targetNode);
+                jsonID.put("targetNode", "" + targetNode);
+            }
+            if (processNode != null) {
+                jsonID.put("processNode", "" + processNode);
             }
             if (version != null) {
                 jsonID.put("version", version);
@@ -373,6 +378,22 @@ public class AddStateEntryGen {
         if (sourceNodeI == null) return this;
         long sourceNodeL = sourceNodeI;
         this.sourceNode = sourceNodeL;
+        return this;
+    }
+
+    public Long getProcessNode() {
+        return processNode;
+    }
+
+    public AddStateEntryGen setProcessNode(Long processNode) {
+        this.processNode = processNode;
+        return this;
+    }
+    
+    public AddStateEntryGen setProcessNode(Integer processNodeI) {
+        if (processNodeI == null) return this;
+        long processNodeL = processNodeI;
+        this.processNode = processNodeL;
         return this;
     }
 
