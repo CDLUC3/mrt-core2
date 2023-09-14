@@ -53,12 +53,15 @@ public class AddStateEntryGen {
     private Long targetNode = null;
     private Integer currentVersion = null;
     private Integer versions = null;
+    private Integer attempts = null;
     private Long files = null;
     private Long bytes = null;
     private Long durationMs = null;
     private Long startMs = null;
     private String key = null;
+    private String status = null;
     private Identifier objectID = null;
+    private Identifier ownerID = null;
     private String localids = null;
     private Properties properties = null;
    
@@ -135,6 +138,13 @@ public class AddStateEntryGen {
         }
     }
         
+    public static void addLogStateEntry(String levelS, String logKey, JSONObject jsonState)
+        throws TException
+    {
+        Level level = Level.toLevel(levelS, Level.INFO);
+        addLogStateEntry(level, logKey, jsonState);
+    }
+        
     // default ServiceState
     public static AddStateEntryGen getAddStateEntryGen(String keyPrefix, String service, String serviceProcess)
     {
@@ -181,11 +191,14 @@ public class AddStateEntryGen {
             if (processNode != null) {
                 jsonID.put("processNode", "" + processNode);
             }
+            if (objectID != null) {
+                jsonID.put("ark", objectID.getValue());
+            }
             if (version != null) {
                 jsonID.put("version", version);
             }
-            if (objectID != null) {
-                jsonID.put("ark", objectID.getValue());
+            if (ownerID != null) {
+                jsonID.put("owner", ownerID.getValue());
             }
             if (localids != null) {
                 jsonID.put("localids", localids);
@@ -219,6 +232,9 @@ public class AddStateEntryGen {
     {
         try {
             JSONObject jsonContent = new JSONObject();
+            if (status != null) {
+                jsonContent.put(keyPrefix + "Status", status);
+            }
             if (durationMs != null) {
                 jsonContent.put(keyPrefix + "DurationMs", durationMs);
             }
@@ -231,13 +247,20 @@ public class AddStateEntryGen {
             if (versions != null) {
                 jsonContent.put(keyPrefix + "Versions", versions);
             }
-            if ((bytes != null) && (durationMs != null)) {
+            if (attempts != null) {
+                jsonContent.put(keyPrefix + "Attempts", attempts);
+            }
+            if ((bytes != null) && (durationMs != null) && (durationMs != 0)) {
                 double bytesPerMs = (double)bytes/(double)durationMs;
                 jsonContent.put(keyPrefix + "BytesPerMs", bytesPerMs);
             }
-            if ((files != null) && (files != 0)) {
+            if ((files != null) && (files != 0) && (durationMs != null)) {
                 double msPerFile = (double)durationMs/(double)files;
                 jsonContent.put(keyPrefix + "MsPerFile", msPerFile);
+            }
+            if ((files != null) && (versions != null) && (versions != 0)) {
+                double filesPerVersions = (double)files/(double)versions;
+                jsonContent.put(keyPrefix + "FilesPerVersions", filesPerVersions);
             }
             return jsonContent;
             
@@ -282,6 +305,31 @@ public class AddStateEntryGen {
             jsonRoot.put(logKey, jsonState);
             System.out.println("root - " + jsonRoot.toString(2));
             return jsonRoot;
+            
+        } catch (Exception ex) {
+            throw new TException.GENERAL_EXCEPTION(ex);
+        }
+    }
+    
+    /**
+     * Add one or more JSON entries in log4j2
+     * @param levelS string form of log4j2 output
+     * @param jsonEntry entries to be added to ecs output
+     * @throws TException 
+     * Example
+     *      JSONObject jsonRoot2 = new JSONObject();
+     *      jsonRoot2.put("BiggyNum2", 1234567890);
+     *      jsonRoot2.put("SomeKey2", "yowza2");
+     *       AddStateEntryGen.addEntry("info", jsonRoot2);
+     */
+    public static void addEntry(String levelS, JSONObject jsonEntry)
+        throws TException
+    {
+        try {
+            Level level = Level.toLevel(levelS, Level.INFO);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(jsonEntry.toString());
+            LOGGER.log(level, jsonNode);
             
         } catch (Exception ex) {
             throw new TException.GENERAL_EXCEPTION(ex);
@@ -353,6 +401,22 @@ public class AddStateEntryGen {
         throws TException
     {
         this.objectID = new Identifier(objectIDS);
+        return this;
+    }
+
+    public Identifier getOwnerID() {
+        return ownerID;
+    }
+
+    public AddStateEntryGen setOwnerID(Identifier ownerID) {
+        this.ownerID = ownerID;
+        return this;
+    }
+
+    public AddStateEntryGen setOwner(String ownerIDS) 
+        throws TException
+    {
+        this.ownerID = new Identifier(ownerIDS);
         return this;
     }
     
@@ -439,6 +503,23 @@ public class AddStateEntryGen {
 
     public void setProperties(Properties properties) {
         this.properties = properties;
+    }
+
+    public Integer getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(Integer attempts) {
+        this.attempts = attempts;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public AddStateEntryGen setStatus(String status) {
+        this.status = status;
+        return this;
     }
 
     public static Logger getLOGGER() {

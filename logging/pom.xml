@@ -70,6 +70,19 @@
            <artifactId>log4j-core</artifactId>
          </dependency>
          
+        <!-- Include the following as a runtime dependency when logging in ECS format for open
+        search-->
+        <dependency>
+            <groupId>co.elastic.logging</groupId>
+            <artifactId>ecs-logging-core</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>co.elastic.logging</groupId>
+            <artifactId>log4j2-ecs-layout</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
 </project>
