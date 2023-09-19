@@ -36,32 +36,13 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Properties;
 import java.util.ArrayList;
 
 
-import org.jdom.Attribute;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-import org.jdom.xpath.XPath;
-
-import org.cdlib.mrt.cloud.ManInfo;
-import static org.cdlib.mrt.cloud.ManifestXML.buildOut;
-import static org.cdlib.mrt.cloud.ManifestXML.getVersionMap;
-import static org.cdlib.mrt.cloud.ManifestXML.testOut;
-import org.cdlib.mrt.cloud.VersionMap;
-import org.cdlib.mrt.core.ComponentContent;
 import org.cdlib.mrt.core.DateState;
 import org.cdlib.mrt.core.FileComponent;
 import org.cdlib.mrt.core.Identifier;
@@ -71,8 +52,6 @@ import org.cdlib.mrt.utility.LoggerInf;
 import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.TException;
 import org.cdlib.mrt.utility.TFileLogger;
-import org.jdom.Namespace;
-import org.jdom.output.Format;
 
 /**
  * This object imports the formatTypes.xml and builds a local table of supported format types.
