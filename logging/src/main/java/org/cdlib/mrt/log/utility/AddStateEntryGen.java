@@ -47,6 +47,7 @@ public class AddStateEntryGen {
     private String keyPrefix = null;
     private String service = null;
     private String serviceProcess = null;
+    private String fileID = null;
     private Integer version = null;
     private Long processNode = null;
     private Long sourceNode = null;
@@ -65,62 +66,58 @@ public class AddStateEntryGen {
     private String localids = null;
     private Properties properties = null;
    
-    protected static final Logger LOGGER = LogManager.getLogger("JSONLog");
+    protected static final Logger LOGGER = LogManager.getLogger();
         
     public void addLogStateEntry(String logKey)
         throws TException
     {
-        JSONObject jsonState = buildStateJSON();
-        try {
-            System.out.println("jsonState:" + jsonState.toString(2));
-            
-        } catch (Exception ex) { }
-        if (false) return;
-        try {
-            addLogStateEntry(logKey, jsonState);
-            
-        } catch (Exception ex) {
-            throw new TException.GENERAL_EXCEPTION(ex);
-        }
+        addLogLevel(Level.INFO, logKey);
+    }   
+    
+    public void addLogStateEntry(String levelS, String logKey)
+        throws TException
+    {
+         Level logLevel = Level.getLevel(levelS);
+         addLogLevel(logLevel, logKey);
+    }
+    
+    public static void addLogStateEntry(String logKey, JSONObject jsonState)
+        throws TException
+    {
+        addLogJson(Level.INFO, logKey, jsonState);
     }
         
-    public void addLog(String levelS, String logKey)
+    public void addLogLevel(Level logLevel, String logKey)
         throws TException
     {
         JSONObject jsonState = buildStateJSON();
-        try {
-            System.out.println("jsonState:" + jsonState.toString(2));
-            
-        } catch (Exception ex) { }
-        if (false) return;
         try {
             if (durationMs == null) {
                 durationMs = System.currentTimeMillis() - startMs;
             }
-            Level logLevel = Level.getLevel(logKey);
-            addLogStateEntry(logLevel, logKey, jsonState);
+            addLogJson(logLevel, logKey, jsonState);
             
         } catch (Exception ex) {
             throw new TException.GENERAL_EXCEPTION(ex);
         }
     }
+    
         
-    public static void addLogStateEntry(String logKey, JSONObject jsonState)
+    public void addLog(String levelS, String logKey)
         throws TException
     {
-        addLogStateEntry(Level.INFO, logKey, jsonState);
+         addLogStateEntry(levelS, logKey);
     }
         
-    public static void addLogStateEntry(Level level, String logKey, JSONObject jsonState)
+    public static void addLogJson(Level level, String logKey, JSONObject jsonState)
         throws TException
     {
-        
+    
+        JSONObject jsonRoot = addLogKey(logKey, jsonState);
         try {
             System.out.println("jsonState:" + jsonState.toString(2));
             
         } catch (Exception ex) { }
-        if (false) return;
-        JSONObject jsonRoot = addLogKey(logKey, jsonState);
         try {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -142,7 +139,7 @@ public class AddStateEntryGen {
         throws TException
     {
         Level level = Level.toLevel(levelS, Level.INFO);
-        addLogStateEntry(level, logKey, jsonState);
+        addLogJson(level, logKey, jsonState);
     }
         
     // default ServiceState
@@ -200,8 +197,14 @@ public class AddStateEntryGen {
             if (ownerID != null) {
                 jsonID.put("owner", ownerID.getValue());
             }
+            if (fileID != null) {
+                jsonID.put("fileid", fileID);
+            }
             if (localids != null) {
                 jsonID.put("localids", localids);
+            }
+            if (key != null) {
+                jsonID.put("key", key);
             }
             return jsonID;
             
@@ -303,7 +306,6 @@ public class AddStateEntryGen {
             if (logKey == null) logKey = "ServiceState";
             JSONObject jsonRoot = new JSONObject();
             jsonRoot.put(logKey, jsonState);
-            System.out.println("root - " + jsonRoot.toString(2));
             return jsonRoot;
             
         } catch (Exception ex) {
@@ -519,6 +521,15 @@ public class AddStateEntryGen {
 
     public AddStateEntryGen setStatus(String status) {
         this.status = status;
+        return this;
+    }
+
+    public String getFileID() {
+        return fileID;
+    }
+
+    public AddStateEntryGen setFileID(String fileID) {
+        this.fileID = fileID;
         return this;
     }
 
