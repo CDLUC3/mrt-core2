@@ -32,7 +32,7 @@ package org.cdlib.mrt.cloud;
 import java.util.List;
 
 
-import org.jdom.Element;
+//import org.jdom.Element;
 
 import org.cdlib.mrt.core.DateState;
 import org.cdlib.mrt.core.FileComponent;
@@ -47,7 +47,7 @@ public class ManInfo
     public int count=0; 
     public long size=0;
     public DateState created = null;
-    public Element elem = null;
+    //public Element elem = null;
     public ComponentContent components = null;
 
     public String dump(String header) {

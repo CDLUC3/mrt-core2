@@ -70,13 +70,12 @@
             <scope>runtime</scope>
         </dependency>   
         
-        <dependency>
+        <!--dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
-            <!-- required although mvn dependency flags as unused -->
             <scope>compile</scope>
-        </dependency>
-          
+        </dependency-->  
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
