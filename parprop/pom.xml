@@ -11,13 +11,13 @@
     
     <!-- force UTF-8 -->
     <properties>
-        <docker.maven.plugin.version>0.40.2</docker.maven.plugin.version>
-        <jacoco.maven.plugin.version>0.8.5</jacoco.maven.plugin.version>
-        <maven.assembly.plugin.version>2.2-beta-5</maven.assembly.plugin.version>
+        <docker.maven.plugin.version>0.43.4</docker.maven.plugin.version>
+        <jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
+        <maven.assembly.plugin.version>3.6.0</maven.assembly.plugin.version>
         <maven.compiler.release>8</maven.compiler.release>
-        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
-        <maven.failsafe.plugin.version>2.22.2</maven.failsafe.plugin.version>
-        <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
+        <maven.compiler.plugin.version>3.12.1</maven.compiler.plugin.version>
+        <maven.failsafe.plugin.version>3.2.5</maven.failsafe.plugin.version>
+        <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--compiler.argument>-Xlint:unchecked</compiler.argument-->
     </properties>
