@@ -49,7 +49,7 @@ public class TikaTest {
     protected static final String NAME = "TikaTest";
     protected static final String MESSAGE = NAME + ": ";
     public static final boolean DEBUG = true;
-    public static final String PATH="c:/Documents and Settings/dloy/My Documents/MRTMaven/repository/fixity/node/store/pairtree_root/ar/k+/=1/30/30/=q/t1/kb/8h/76/3/ark+=13030=qt1kb8h763/v001/full";
+    public static final String PATH="/apps/replic1/data/iPres2023/iPres2023_Data-Set";
     
     private Tika tika = null;
     public TikaTest() {

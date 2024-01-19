@@ -37,10 +37,11 @@ import java.util.ArrayList;
 
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.Detector;
+import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
-
+import org.apache.tika.metadata.TikaCoreProperties;
 import org.cdlib.mrt.utility.LoggerInf;
 import org.cdlib.mrt.utility.LoggerInf;
 import org.cdlib.mrt.utility.TException;
@@ -93,8 +94,8 @@ public class Tika
         throws TException
     {
         try {
-            TikaConfig config = TikaConfig.getDefaultConfig();
-            detector = config.getDetector();
+            //TikaConfig config = new TikaConfig();
+            detector = new DefaultDetector();
             buildAlternates();
             
         } catch (Exception ex) {
@@ -167,7 +168,7 @@ public class Tika
         try {
             stream = TikaInputStream.get(componentStream);
             Metadata metadata = new Metadata();
-            metadata.add(Metadata.RESOURCE_NAME_KEY, filenameWithExtension);
+            metadata.add(TikaCoreProperties.RESOURCE_NAME_KEY, filenameWithExtension);
             MediaType mediaType = detector.detect(stream, metadata);
             return mediaType;
 
