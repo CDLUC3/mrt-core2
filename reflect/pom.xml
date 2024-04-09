@@ -374,6 +374,12 @@ BOM
                 <version>1.4.01</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>20240303</version>
+            </dependency>
+    
         </dependencies>
     </dependencyManagement>
 </project>
