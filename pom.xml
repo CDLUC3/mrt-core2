@@ -19,7 +19,7 @@
           </activation>
           <modules>
                 <module>reflect</module>
-                <!--module>json</module-->
+                <module>json</module>
                 <module>core</module>
                 <module>tools</module>
                 <module>logging</module>
