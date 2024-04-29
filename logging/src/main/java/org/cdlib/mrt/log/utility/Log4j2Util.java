@@ -81,6 +81,42 @@ public class Log4j2Util {
         }
     }
     
+    public static void setLoggerLevel(String loggerName, String levelS)
+        throws TException
+    {
+        try {
+            Level level = Level.toLevel(levelS, Level.INFO);
+            setLoggerLevel(loggerName, level);
+            
+        } catch (Exception ex) {
+            throw new TException(ex);
+        }
+    }
+    
+    public static void setLoggerLevel(String loggerName, Level level)
+        throws TException
+    {
+        try {
+            LoggerContext context = (LoggerContext) LogManager.getContext(false);
+            Configuration config = context.getConfiguration();
+            LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
+            Level beforeLvl = loggerConfig.getLevel();
+            if (beforeLvl == level) {
+                System.out.println("setRootLevel match:" + level.toString());
+                return;
+            }
+            System.out.println("setLoggerLevel(" + loggerName + ") before:" + beforeLvl);
+            loggerConfig.setLevel(level);
+            context.updateLoggers();
+            String msg = "setLoggerLevel(" + loggerName + ") after:" + loggerConfig.getLevel();
+            System.out.println(msg);
+            LogManager.getLogger().info(msg);
+            
+        } catch (Exception ex) {
+            throw new TException(ex);
+        }
+    }
+    
     public static String getRootLevel()
         throws TException
     {
