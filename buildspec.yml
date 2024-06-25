@@ -16,7 +16,7 @@ phases:
     on-failure: ABORT
     commands:
       - mvn -ntp -Pparent clean deploy
-      - mvn -ntp clean deploy -Dmaven.test.skip=true
+      - mvn -ntp clean install -Dmaven.test.skip=true
   post_build:
     commands:
       #- aws s3 rm s3://${S3CFBUCKET}/api --recursive
