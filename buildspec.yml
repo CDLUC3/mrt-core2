@@ -18,10 +18,10 @@ phases:
       - mvn -ntp -Pparent clean deploy
       - mvn clean deploy -f reflect/pom.xml 
       - mvn -ntp clean install -Dmaven.test.skip=true
-      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=core/target/mrt-core-*.jar
-      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=tools/target/mrt-tools-*.jar
-      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=json/target/mrt-json-*.jar
-      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=logging/target/mrt-logging-*.jar
+      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls core/target/mrt-core-*.jar)
+      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls tools/target/mrt-tools-*.jar)
+      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls json/target/mrt-json-*.jar)
+      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls logging/target/mrt-logging-*.jar)
   post_build:
     commands:
       #- aws s3 rm s3://${S3CFBUCKET}/api --recursive
