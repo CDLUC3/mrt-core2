@@ -1,0 +1,27 @@
+version: 0.2
+
+# Pre-requisites
+# - Create CodeBuild project
+#   - Provide minimal github credentials to access public repo
+
+phases:
+  pre_build:
+    on-failure: ABORT
+    commands:
+      - cp settings.xml ~/.m2/
+      - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain cdlib-uc3-mrt --domain-owner $AWS_ACCOUNT_ID --region us-west-2 --query authorizationToken --output text`
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+
+  build:
+    on-failure: ABORT
+    commands:
+      - mvn -ntp -Pparent clean deploy
+      - mvn clean deploy -f reflect/pom.xml 
+      - mvn -ntp clean install -Dmaven.test.skip=true
+      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls core/target/mrt-core-*.jar)
+      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls tools/target/mrt-tools-*.jar)
+      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls json/target/mrt-json-*.jar)
+      - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls logging/target/mrt-logging-*.jar)
+  post_build:
+    commands:
+      #- aws s3 rm s3://${S3CFBUCKET}/api --recursive
