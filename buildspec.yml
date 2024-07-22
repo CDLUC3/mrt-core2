@@ -17,7 +17,8 @@ phases:
     commands:
       - mvn -ntp -Pparent clean deploy
       - mvn clean deploy -f reflect/pom.xml 
-      - mvn -ntp clean install -Dmaven.test.skip=true
+      # - mvn -ntp clean install -Dmaven.test.skip=true
+      - mvn -ntp clean install
       - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls core/target/mrt-core-*.jar)
       - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls tools/target/mrt-tools-*.jar)
       - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls json/target/mrt-json-*.jar)
