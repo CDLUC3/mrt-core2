@@ -7,7 +7,7 @@ This library is part of the [Merritt Preservation System](https://github.com/CDL
 This library contains utility classes utilized across Merritt Java microservices.
 
 ### Special Purpose POM files
-- [BOM File - Definitive Registry of JAR version numbers](reflect/pom.xml)
+- [BOM File - Definitive Registry of 3rd Party JAR version numbers](reflect/pom.xml)
 - [Parent Properties - Maven Plugin Version numbers and properties](parprop/pom.xml)
 
 ## Used By
