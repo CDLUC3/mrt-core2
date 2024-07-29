@@ -4,3 +4,4 @@ target
 .classpath
 */.gitignore
 reflect/pom.xml.releaseBackup
+pom.xml.releaseBackup
