@@ -17,11 +17,7 @@ phases:
     commands:
       - mvn -ntp -Pparent clean deploy
       - mvn clean deploy -f reflect/pom.xml 
-      # Our Yaml/SSM tests do not currently run under Java 17+ due to restrictions on reflection
-      # The SSM library manipulates ENV which is considered unsafe
-      # For now, skip tests until a better solution is found
-      - mvn -ntp clean install -Dmaven.test.skip=true
-      # - mvn -ntp clean install 
+      - mvn -ntp clean install 
       - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls core/target/mrt-core-*.jar)
   post_build:
     commands:
