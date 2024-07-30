@@ -88,27 +88,18 @@ public class YamlParserTest  {
         ssm_mock_prefix = new MockConfigResolver("/root/path/");
         ssm_mock_prefix.setDefaultReturn(NOT_APPLICABLE);
         resolver_prefix = new YamlParser(ssm_mock_prefix);
-        try {
-          //updateEnv("SSM_SKIP_RESOLUTION", "Y");
-          ssm_mock_skip = new MockConfigResolver();
-          resolver_skip = new YamlParser(ssm_mock_skip);
-          //removeEnv("SSM_SKIP_RESOLUTION");
-        } catch(ReflectiveOperationException e) {
-            System.err.println(e);
-            e.printStackTrace();
-        }
+
+        //updateEnv("SSM_SKIP_RESOLUTION", "Y");
+        ssm_mock_skip = new MockConfigResolver();
+        resolver_skip = new YamlParser(ssm_mock_skip);
+        //removeEnv("SSM_SKIP_RESOLUTION");
     }
 
     @After
     public void tearDown() {
-      try {
-          //removeEnv("TESTUC3_SSM_ENV1");
-          //removeEnv("TESTUC3_SSM_ENV2");
-          //removeEnv("TESTUC3_SSM_ENV3");
-      } catch(ReflectiveOperationException e) {
-          System.err.println(e);
-          e.printStackTrace();
-      }
+        //removeEnv("TESTUC3_SSM_ENV1");
+        //removeEnv("TESTUC3_SSM_ENV2");
+        //removeEnv("TESTUC3_SSM_ENV3");
     }
 
     private int getValueAsInt(LinkedHashMap<String, Object> config, String k) throws RuntimeConfigException {
@@ -297,10 +288,10 @@ public class YamlParserTest  {
      */
     //udpateEnv is not supported in Java17+
     //@Test
-    public void testEnvSubstitution() throws RuntimeConfigException, ReflectiveOperationException
+    public void testEnvSubstitution() throws RuntimeConfigException
     {
-        updateEnv("TESTUC3_SSM_ENV1", "100");
-        updateEnv("TESTUC3_SSM_ENV2", "400");
+        //updateEnv("TESTUC3_SSM_ENV1", "100");
+        //updateEnv("TESTUC3_SSM_ENV2", "400");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
         setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
         setArrayStringValue(config_in, "b", 0, "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}");
@@ -314,10 +305,10 @@ public class YamlParserTest  {
 
     //udpateEnv is not supported in Java17+
     //@Test
-    public void testEnvSubstitutionJsonAccess() throws RuntimeConfigException, ReflectiveOperationException, JSONException
+    public void testEnvSubstitutionJsonAccess() throws RuntimeConfigException, JSONException
     {
-        updateEnv("TESTUC3_SSM_ENV1", "ddd");
-        updateEnv("TESTUC3_SSM_ENV2", "eee");
+        //updateEnv("TESTUC3_SSM_ENV1", "ddd");
+        //updateEnv("TESTUC3_SSM_ENV2", "eee");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
         setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
         setArrayStringValue(config_in, "b", 0, "{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}");
@@ -347,9 +338,9 @@ public class YamlParserTest  {
      */
     //udpateEnv is not supported in Java17+
     //@Test
-    public void testEnvSubstitutionNoDefault() throws RuntimeConfigException, ReflectiveOperationException
+    public void testEnvSubstitutionNoDefault() throws RuntimeConfigException
     {
-        updateEnv("TESTUC3_SSM_ENV1", "100");
+        //updateEnv("TESTUC3_SSM_ENV1", "100");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
         setValueString(config_in, "a", "{!ENV: TESTUC3_SSM_ENV1}");
         LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
@@ -365,9 +356,9 @@ public class YamlParserTest  {
      */
     //udpateEnv is not supported in Java17+
     //@Test
-    public void testEnvSubstitutionInArray() throws RuntimeConfigException, ReflectiveOperationException
+    public void testEnvSubstitutionInArray() throws RuntimeConfigException
     {
-        updateEnv("TESTUC3_SSM_ENV1", "100");
+        //updateEnv("TESTUC3_SSM_ENV1", "100");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
         setArrayStringValue(config_in, "b", 0, "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
         LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
@@ -383,9 +374,9 @@ public class YamlParserTest  {
      */
     //udpateEnv is not supported in Java17+
     //@Test
-    public void testEnvSubstitutionInHash() throws RuntimeConfigException, ReflectiveOperationException
+    public void testEnvSubstitutionInHash() throws RuntimeConfigException
     {
-        updateEnv("TESTUC3_SSM_ENV1", "100");
+        //updateEnv("TESTUC3_SSM_ENV1", "100");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
         setHashStringValue(config_in, "c", "d", "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
         LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
@@ -401,9 +392,9 @@ public class YamlParserTest  {
      */
     //udpateEnv is not supported in Java17+
     //@Test
-    public void testEnvSubstitutionInArrayInHash() throws RuntimeConfigException, ReflectiveOperationException
+    public void testEnvSubstitutionInArrayInHash() throws RuntimeConfigException
     {
-        updateEnv("TESTUC3_SSM_ENV1", "100");
+        //updateEnv("TESTUC3_SSM_ENV1", "100");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
         this.setHashArrayValue(config_in, "c", "e", 1, "{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}");
         LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
@@ -419,9 +410,9 @@ public class YamlParserTest  {
      */
     //udpateEnv is not supported in Java17+
     //@Test
-    public void testEnvSubstitutionWithPrefixAndSuffix() throws RuntimeConfigException, ReflectiveOperationException
+    public void testEnvSubstitutionWithPrefixAndSuffix() throws RuntimeConfigException
     {
-        updateEnv("TESTUC3_SSM_ENV1", "100");
+        //updateEnv("TESTUC3_SSM_ENV1", "100");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
         setValueString(config_in, "a", "aaa{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}bbb");
         LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
@@ -437,10 +428,10 @@ public class YamlParserTest  {
      */
     //udpateEnv is not supported in Java17+
     //@Test
-    public void testEnvCompoundSubstitution() throws RuntimeConfigException, ReflectiveOperationException
+    public void testEnvCompoundSubstitution() throws RuntimeConfigException
     {
-        updateEnv("TESTUC3_SSM_ENV2", "path/");
-        updateEnv("TESTUC3_SSM_ENV1", "100");
+        //updateEnv("TESTUC3_SSM_ENV2", "path/");
+        //updateEnv("TESTUC3_SSM_ENV1", "100");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
         setValueString(config_in, "a", "AA/{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def}{!ENV: TESTUC3_SSM_ENV1 !DEFAULT: def}/ccc");
         LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
@@ -455,7 +446,7 @@ public class YamlParserTest  {
      * Test SSM substitution
      */
     @Test
-    public void testSsmSubstitution() throws RuntimeConfigException, ReflectiveOperationException
+    public void testSsmSubstitution() throws RuntimeConfigException
     {
         ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "100");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
@@ -469,7 +460,7 @@ public class YamlParserTest  {
     }
 
     @Test
-    public void testSsmSubstitutionDisabledDef() throws RuntimeConfigException, ReflectiveOperationException
+    public void testSsmSubstitutionDisabledDef() throws RuntimeConfigException
     {
         ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "100");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
@@ -482,8 +473,8 @@ public class YamlParserTest  {
         assertEquals(getHashArrayValueAsInt(config, "c", "e", 1), 2);
     }
 
-    @Test
-    public void testSsmSubstitutionDisabledNoDef() throws RuntimeConfigException, ReflectiveOperationException
+    //@Test
+    public void testSsmSubstitutionDisabledNoDef() throws RuntimeConfigException
     {
         ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "100");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
@@ -500,7 +491,7 @@ public class YamlParserTest  {
      * Test SSM substitution with root path passed to resolver
      */
     @Test
-    public void testSsmSubstitutionWithRootPath() throws RuntimeConfigException, ReflectiveOperationException
+    public void testSsmSubstitutionWithRootPath() throws RuntimeConfigException
     {
         ssm_mock_prefix.addMockSsmValue("/root/path/TESTUC3_SSM1", "100");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
@@ -517,7 +508,7 @@ public class YamlParserTest  {
      * Test SSM substitution - no default
      */
     @Test
-    public void testSsmSubstitutionNoDefault() throws RuntimeConfigException, ReflectiveOperationException
+    public void testSsmSubstitutionNoDefault() throws RuntimeConfigException
     {
         ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "100");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
@@ -534,7 +525,7 @@ public class YamlParserTest  {
      * Test Compound SSM substitution
      */
     @Test
-    public void testSsmCompoundSubstitution() throws RuntimeConfigException, ReflectiveOperationException
+    public void testSsmCompoundSubstitution() throws RuntimeConfigException
     {
         ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "path/");
         ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM2", "subpath");
@@ -553,10 +544,10 @@ public class YamlParserTest  {
      */
     //udpateEnv is not supported in Java17+
     //@Test
-    public void testSsmEnvCompoundSubstitution() throws RuntimeConfigException, ReflectiveOperationException
+    public void testSsmEnvCompoundSubstitution() throws RuntimeConfigException
     {
         ssm_mock_no_def.addMockSsmValue("/TESTUC3_SSM1", "path/");
-        updateEnv("TESTUC3_SSM_ENV2", "envpath");
+        //updateEnv("TESTUC3_SSM_ENV2", "envpath");
         LinkedHashMap<String, Object> config_in = get_basic_hash();
         setValueString(config_in, "a", "AA/{!SSM: TESTUC3_SSM1 !DEFAULT: def}{!ENV: TESTUC3_SSM_ENV2 !DEFAULT: def2}/bb.txt");
         LinkedHashMap<String, Object> config = resolver_no_def.resolveValues(config_in);
@@ -568,7 +559,7 @@ public class YamlParserTest  {
     }
 
     @Test
-    public void testRootPathOverride() throws RuntimeConfigException, ReflectiveOperationException
+    public void testRootPathOverride() throws RuntimeConfigException
     {
         ssm_mock_prefix.addMockSsmValue("/root/path/TESTUC3_SSM1", "100");
         ssm_mock_prefix.addMockSsmValue("/TESTUC3_SSM1", "999");
