@@ -3,8 +3,5 @@ target
 .project
 .classpath
 */.gitignore
-<<<<<<< HEAD
-=======
 reflect/pom.xml.releaseBackup
->>>>>>> 8c1521ab6af056853d525edc8f1c16a170e8ec35
 pom.xml.releaseBackup
