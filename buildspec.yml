@@ -19,6 +19,13 @@ phases:
       - mvn clean deploy -f reflect/pom.xml 
       - mvn -ntp clean install 
       - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls core/target/mrt-core-*.jar)
+      - mvn -ntp javadoc:javadoc
+      - rm -rf api/mrt-core2
+      - mkdir -p api/mrt-core2/java
+      - cp -r target/site/apidocs/* api/mrt-core2/java
+      - echo aws s3 cp --recursive api s3://${S3CFBUCKET}/api 
+      - aws s3 cp --recursive api s3://${S3CFBUCKET}/api
+      - aws cloudfront create-invalidation --distribution-id ${CFDISTRIBUTIONID} --paths /* --region us-east-1
   post_build:
     commands:
       #- aws s3 rm s3://${S3CFBUCKET}/api --recursive
