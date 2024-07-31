@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Enumeration;
+import java.util.TimeZone;
 import java.io.File;
 import java.io.FileInputStream;
 import static org.junit.Assert.*;
@@ -64,6 +65,7 @@ public class ManifestRowBatchTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        TimeZone.setDefault(TimeZone.getTimeZone("America/Los_Angeles"));
     }
 
     @AfterClass
