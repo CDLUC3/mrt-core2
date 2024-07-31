@@ -6,10 +6,18 @@
     <groupId>org.cdlib.mrt</groupId>
 
     <packaging>pom</packaging>
-    <version>2.0-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
     <name>UC3-mrtcore</name>
     <description>UC3 Merritt Micro-Services</description>
     <url>http://uc3.cdlib.org</url>
+
+    <distributionManagement>
+      <repository>
+        <id>cdlib-uc3-mrt-uc3-mrt-java</id>
+        <name>cdlib-uc3-mrt-uc3-mrt-java</name>
+       <url>https://cdlib-uc3-mrt-${env.AWS_ACCOUNT_ID}.d.codeartifact.us-west-2.amazonaws.com/maven/uc3-mrt-java/</url>
+      </repository>
+    </distributionManagement>
 
     <profiles>
         <profile>
@@ -19,10 +27,7 @@
           </activation>
           <modules>
                 <module>reflect</module>
-                <module>json</module>
                 <module>core</module>
-                <module>tools</module>
-                <module>logging</module>
             </modules>
         </profile>
         
