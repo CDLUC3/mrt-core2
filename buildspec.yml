@@ -26,7 +26,7 @@ phases:
     - mvn -ntp clean install 
     - mvn deploy:deploy-file -Durl=${CODEARTIFACT_URL} -DrepositoryId=cdlib-uc3-mrt-uc3-mrt-java -Dfile=$(ls core/target/mrt-core-*.jar)
     - |
-      for pkg in mrt-core 
+      for pkg in mrt-core mrt-core-util mrt-parent-properties mrt-reflectoring-bom
       do
         for ver in `aws codeartifact list-package-versions \
           --domain=cdlib-uc3-mrt --repository=uc3-mrt-java \
