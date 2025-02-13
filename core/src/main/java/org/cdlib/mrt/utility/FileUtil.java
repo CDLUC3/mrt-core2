@@ -458,7 +458,7 @@ public class FileUtil {
             if ((prefix == null) || (prefix.length() < 3)) prefix = "pre.";
             if (StringUtil.isEmpty(suffix)) suffix = ".txt";
             File file = File.createTempFile(prefix, suffix);
-            file.deleteOnExit();
+            // file.deleteOnExit(); << should be deprecated
             return file;
 
         } catch (Exception ex) {
@@ -467,6 +467,37 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Delete file if is temp
+     * @param testFile temp file to be deleted
+     * @return true=file no longer exists on completion; false=file not deleted
+     */
+    public static Boolean deleteTempFile(File testFile)
+    {
+        try {
+            if (testFile == null) return true;
+            if (!testFile.exists()) return true;
+            
+            if (isTempFile(testFile)) {
+                testFile.delete();
+                if (!testFile.exists()) return true;
+            }
+            return false;
+            
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+    
+    /**
+     * is this a temp file
+     * @param file
+     * @return true=is temp; false=is not temp
+     */
+    public static boolean isTempFile(File file) {
+        String tempDir = System.getProperty("java.io.tmpdir");
+        return file.getAbsolutePath().startsWith(tempDir);
+    }
 
     /**
      * Gets a temporary directory
