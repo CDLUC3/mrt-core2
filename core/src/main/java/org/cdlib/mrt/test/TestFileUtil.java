@@ -28,7 +28,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************/
 
-package org.cdlib.mrt.utility;
+package org.cdlib.mrt.test;
+import org.cdlib.mrt.utility.*;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,12 +51,44 @@ import org.cdlib.mrt.utility.HttpGet;
  * Generalized file utilities
  * @author dloy
  */
-public class FileUtil {
+public class TestFileUtil {
     protected static final String NAME = "FileUtil";
     protected static final String MESSAGE = NAME + ": ";
     protected static final int BUFSIZE = 126000;
     protected static final int DEFAULT_TIMEOUT = 3600000;
 
+    public static void main(String args[])
+    {
+       
+        try
+        {
+            File tmpFile = TestFileUtil.getTempFile("deltmp", ".txt");
+            System.out.println("tmpFile exists:" + tmpFile.exists());
+            boolean delFile = TestFileUtil.deleteTempFile(tmpFile);
+            System.out.println("standard tmp(" + delFile + "):" + tmpFile.getCanonicalPath());
+    
+            
+            File nullFile = null;
+            boolean nullstat = TestFileUtil.deleteTempFile(nullFile);
+            System.out.println("nullstat tmp(" + nullstat );
+            
+            File normFile = new File("/home/loy/MRTMaven/docker/merritt-docker/mrt-services/store/test.txt");
+            boolean normstat = TestFileUtil.deleteTempFile(normFile);
+            System.out.println("standard norm(" + normstat + "):" + normFile.getCanonicalPath());
+            
+            File notExistsFile = new File("/home/loy/MRTMaven/docker/merritt-docker/mrt-services/store/xxx.txt");
+            boolean notExistsStat = TestFileUtil.deleteTempFile(notExistsFile);
+            System.out.println("non-exists(" + notExistsStat + "):" + notExistsFile.getCanonicalPath());
+            
+            File localNotExistsFile = new File("./xxx.txt");
+            boolean localNotExistsStat = TestFileUtil.deleteTempFile(localNotExistsFile);
+            System.out.println("non-exists(" + localNotExistsStat + "):" + localNotExistsFile.getCanonicalPath());
+            
+        }  catch(Exception ex)  {
+            System.out.println("Exception:" + ex);
+            ex.printStackTrace();
+        }
+    }
     /**
      * Get content referenced by a url and save in a file
      * @param m_logger logger
@@ -130,7 +163,7 @@ public class FileUtil {
         throws TException
     {
         try {
-            File tempFile = FileUtil.getTempFile(null, ".txt");
+            File tempFile = TestFileUtil.getTempFile(null, ".txt");
             url2File(m_logger, urlS, tempFile);
             return tempFile;
 
@@ -271,7 +304,7 @@ public class FileUtil {
             File sourceFile = new File(sourceDirectory, fileName);
             InputStream inStream = new FileInputStream(sourceFile);
             File targetFile = new File(targetDirectory, fileName);
-            FileUtil.stream2File(inStream, targetFile);
+            TestFileUtil.stream2File(inStream, targetFile);
 
         } catch (Exception ex) {
             System.out.println(StringUtil.stackTrace(ex));
@@ -293,7 +326,7 @@ public class FileUtil {
     {
         try {
             InputStream inStream = new FileInputStream(sourceFile);
-            FileUtil.stream2File(inStream, targetFile);
+            TestFileUtil.stream2File(inStream, targetFile);
 
         } catch (Exception ex) {
             System.out.println(StringUtil.stackTrace(ex));
@@ -1013,7 +1046,7 @@ public class FileUtil {
         throws TException
     {
         try {
-            String fileContent = FileUtil.file2String(splitFile);
+            String fileContent = TestFileUtil.file2String(splitFile);
             if (StringUtil.isEmpty(fileContent)) return null;
             String [] lines = fileContent.split("[\\n\\r]+");
             if (lines.length == 0) return null;
