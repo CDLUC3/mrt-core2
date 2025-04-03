@@ -16,7 +16,7 @@
     
     <!-- force UTF-8 -->
     <properties>
-        <docker.maven.plugin.version>0.43.4</docker.maven.plugin.version>
+        <docker.maven.plugin.version>0.45.1</docker.maven.plugin.version>
         <jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
         <maven.assembly.plugin.version>3.6.0</maven.assembly.plugin.version>
         <maven.compiler.release>8</maven.compiler.release>
