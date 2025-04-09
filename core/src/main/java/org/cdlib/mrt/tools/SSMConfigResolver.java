@@ -30,11 +30,11 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.cdlib.mrt.tools;
 
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
-
 import org.cdlib.mrt.utility.TException;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.ssm.SsmClient;
+import software.amazon.awssdk.services.ssm.model.GetParameterResponse;
+import software.amazon.awssdk.services.ssm.model.SsmException;
 
 /**
  *
@@ -44,7 +44,8 @@ import org.cdlib.mrt.utility.TException;
  */
 public class SSMConfigResolver extends DefaultConfigResolver
 {
-    private AWSSimpleSystemsManagement ssm = null;
+    public static Region region = Region.US_WEST_2;
+    protected SsmClient ssmClient;
     private Exception serviceException = null;
 
     public SSMConfigResolver(String prefix)
@@ -65,9 +66,12 @@ public class SSMConfigResolver extends DefaultConfigResolver
             return;
         }
         try {
-            ssm = AWSSimpleSystemsManagementClientBuilder.defaultClient();
+            
+        ssmClient = SsmClient.builder()
+                .region(region)
+                .build();
         } catch (Exception ex) {
-            ssm = null;
+            ssmClient = null;
             serviceException = ex;
         }
     }
@@ -75,14 +79,26 @@ public class SSMConfigResolver extends DefaultConfigResolver
     public String getResolvedValue(String parameterName)
         throws TException
     {
-        if (ssm == null) {
+        if (ssmClient == null) {
             throw new TException.EXTERNAL_SERVICE_UNAVAILABLE("SSM service not available");
         }
-        GetParameterRequest request = new GetParameterRequest();
-        String searchName = getKey(parameterName);
-        request.setName(searchName);
-        request.setWithDecryption(true);
-        return ssm.getParameter(request).getParameter().getValue();
+        
+        try {
+            if (ssmClient == null) {
+                throw new TException.EXTERNAL_SERVICE_UNAVAILABLE("SSM service not available");
+            }
+            String searchName = getKey(parameterName);
+            software.amazon.awssdk.services.ssm.model.GetParameterRequest request = software.amazon.awssdk.services.ssm.model.GetParameterRequest.builder().
+                     name(searchName).
+                     withDecryption(Boolean.TRUE).
+                     build();
+             GetParameterResponse response = ssmClient.getParameter(request);
+             return response.parameter().value();
+             
+        } catch (SsmException e) {
+            System.err.println(e.getMessage());
+            return null;
+        }
     }
 
     public Exception getServiceException() {
