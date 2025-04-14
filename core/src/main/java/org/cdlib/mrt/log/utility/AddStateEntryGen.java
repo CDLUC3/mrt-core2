@@ -47,6 +47,7 @@ public class AddStateEntryGen {
     private String keyPrefix = null;
     private String service = null;
     private String serviceProcess = null;
+    private Integer awsVersion = 0;
     private String fileID = null;
     private Integer version = null;
     private Long processNode = null;
@@ -148,6 +149,13 @@ public class AddStateEntryGen {
         return new AddStateEntryGen(keyPrefix, service, serviceProcess);
     }
     
+    public static AddStateEntryGen getAddStateEntryGen(String keyPrefix, String service, String serviceProcess, Integer awsVersion)
+    {
+        AddStateEntryGen entry = new AddStateEntryGen(keyPrefix, service, serviceProcess);
+        entry.setAwsVersion(awsVersion);
+        return entry;
+    }
+    
     protected AddStateEntryGen(String keyPrefix, String service, String serviceProcess)
     {
         this.keyPrefix = keyPrefix;
@@ -166,6 +174,7 @@ public class AddStateEntryGen {
             }
             jsonService.put("service", service);
             jsonService.put("serviceProcess", serviceProcess);
+            jsonService.put("awsVersion", awsVersion);
             return jsonService;
             
         } catch (Exception ex) {
@@ -530,6 +539,15 @@ public class AddStateEntryGen {
 
     public AddStateEntryGen setFileID(String fileID) {
         this.fileID = fileID;
+        return this;
+    }
+
+    public Integer getAwsVersion() {
+        return awsVersion;
+    }
+
+    public AddStateEntryGen setAwsVersion(Integer awsVersion) {
+        this.awsVersion = awsVersion;
         return this;
     }
 
