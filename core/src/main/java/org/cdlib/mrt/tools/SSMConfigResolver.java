@@ -96,7 +96,7 @@ public class SSMConfigResolver extends DefaultConfigResolver
              return response.parameter().value();
              
         } catch (SsmException e) {
-            System.err.println(e.getMessage());
+            System.err.println(e.getMessage() + " --- " + parameterName);
             return null;
         }
     }
