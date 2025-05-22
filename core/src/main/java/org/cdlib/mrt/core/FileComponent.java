@@ -263,8 +263,7 @@ public class FileComponent
             setURL(new URL(linkS));
 
         } catch (Exception ex) {
-            throw new TException.INVALID_DATA_FORMAT(
-                    MESSAGE + "setLink fails: URL invalid:" + linkS + ". Exception:" + ex);
+            throw new TException.INVALID_DATA_FORMAT(MESSAGE + "setLink fails: URL invalid:" + linkS + ". Exception:" + ex);
         }
     }
 

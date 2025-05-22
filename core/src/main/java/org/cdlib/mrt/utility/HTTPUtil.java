@@ -92,6 +92,7 @@ import org.apache.http.ssl.TrustStrategy;
  */
 public class HTTPUtil {
     private static final boolean DEBUG = false;
+    private static final boolean RESPONSE = true;
 	
     /**
      * Send this manifestFile to mrt store
@@ -200,6 +201,9 @@ public class HTTPUtil {
             HttpResponse response = getHttpResponse(requestURL, timeout);
 	    int responseCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();
+	    if (RESPONSE) {
+		System.out.println("[Core] HTTPUtil: URL: " + requestURL.toString() + " --- Code: " + responseCode + " --- Message: " + response.getStatusLine().getReasonPhrase());
+	    }
             if (entity != null && (responseCode >= 200 && responseCode < 300)) {
                 if (DEBUG) {
                     System.out.println("ContentLength=" + entity.getContentLength());
