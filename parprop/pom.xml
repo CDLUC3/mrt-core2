@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cdlib.mrt</groupId>
     <artifactId>mrt-parent-properties</artifactId>
-    <version>PAR-3.0-SNAPSHOT</version>
+    <version>PAR-4.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>mrt-parent-properties</name>
 
@@ -19,7 +19,7 @@
         <docker.maven.plugin.version>0.45.1</docker.maven.plugin.version>
         <jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
         <maven.assembly.plugin.version>3.6.0</maven.assembly.plugin.version>
-        <maven.compiler.release>8</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.plugin.version>3.12.1</maven.compiler.plugin.version>
         <maven.failsafe.plugin.version>3.2.5</maven.failsafe.plugin.version>
         <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
