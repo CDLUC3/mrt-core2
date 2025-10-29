@@ -6,9 +6,9 @@
     <version>4.0-SNAPSHOT</version>
     <name>UC3-mrtcore</name>
     <url>http://uc3.cdlib.org</url>
-
+  
     <properties>
-      <merritt-bom.version>4.0-SNAPSHOT</merritt-bom.version>
+      <!--merritt-bom.version>4.0-SNAPSHOT</merritt-bom.version-->
     </properties>
   
     <distributionManagement>
