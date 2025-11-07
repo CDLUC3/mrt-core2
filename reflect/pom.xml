@@ -14,7 +14,7 @@ BOM
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cdlib.mrt</groupId>
     <artifactId>mrt-reflectoring-bom</artifactId>
-    <version>4.0-SNAPSHOT</version>
+    <version>4.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>mrt-reflectoring</name>
 
@@ -27,7 +27,7 @@ BOM
     </distributionManagement>
     
     <properties>
-      <awsjavasdk.version>2.29.30</awsjavasdk.version>
+      <awsjavasdk.version>2.34.4</awsjavasdk.version> 
     </properties>
 
     <dependencyManagement>
@@ -238,7 +238,8 @@ BOM
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.18.0</version>
+                <!--version>3.18.0</version-->
+                <version>3.19.0</version>
             </dependency>
 
             <dependency>
