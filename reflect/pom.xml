@@ -28,35 +28,34 @@ BOM
     
     <properties>
       <awsjavasdk.version>2.41.31</awsjavasdk.version> 
-      <merritt-cloud.version>4.0-SNAPSHOT</merritt-cloud.version>
-      <merritt-core.version>4.0-SNAPSHOT</merritt-core.version>
-      <merritt-zk.version>4.0-SNAPSHOT</merritt-zk.version>
+      <owaspskip>true</owaspskip>
+      <!--merritt-cloud.version>4.0-SNAPSHOT</merritt-cloud.version!-->
+      <!--merritt-core.version>4.0-SNAPSHOT</merritt-core.version-->
+      <!--merritt-zk.version>4.0-SNAPSHOT</merritt-zk.version-->
     </properties>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>12.2.0</version> <!-- Use the latest version -->
+                    <configuration>
+                        <skip>${owaspskip}</skip>
+                    </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencyManagement>
         <dependencies>
-            
-        <!-- local dependencies -->
-
-            <dependency>
-                <groupId>org.cdlib.mrt</groupId>
-                <artifactId>mrt-core</artifactId>
-                <version>${merritt-core.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.cdlib.mrt</groupId>
-                <artifactId>mrt-s3srcpub</artifactId>
-                <version>${merritt-cloud.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.cdlib.mrt.zk</groupId>
-                <artifactId>MerrittZK</artifactId>
-                <version>${merritt-zk.version}</version>
-            </dependency>
-
-        <!-- external dependencies -->
         
             <dependency>
                 <groupId>ant</groupId>
