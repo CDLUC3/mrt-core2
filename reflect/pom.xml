@@ -36,6 +36,7 @@ BOM
     
     <build>
         <plugins>
+            <!-- for key: export NVD_API_KEY=xxowasp-keyxx -->
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
