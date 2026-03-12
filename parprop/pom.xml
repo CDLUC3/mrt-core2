@@ -25,7 +25,7 @@
         <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
         <maven.surefire.plugin.version>3.5.4</maven.surefire.plugin.version>
         <maven.war.plugin.version>3.4.0</maven.war.plugin.version>
-        <merritt-bom.version>4.5-SNAPSHOT</merritt-bom.version>
+        <merritt-bom.version>4.6-SNAPSHOT</merritt-bom.version>
         <merritt-cloud.version>4.0-SNAPSHOT</merritt-cloud.version>
         <merritt-core.version>4.0-SNAPSHOT</merritt-core.version>
         <merritt-zk.version>4.0-SNAPSHOT</merritt-zk.version>
