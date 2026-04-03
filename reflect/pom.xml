@@ -124,17 +124,18 @@ BOM
                 <artifactId>box-java-sdk</artifactId>
                 <version>4.0.1</version>
             </dependency>
-
+            
+            <!-- Note jackson-core and jackson-databind should be same version -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.21.0</version>
+                <version>2.21.2</version>
             </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.21.0</version>
+                <version>2.21.2</version>
             </dependency>
             
             <dependency>
@@ -329,16 +330,17 @@ BOM
                 <version>3.2.3</version>
             </dependency>
 
+            <!-- Note zookeeper and zookeeper-jute must be same version -->
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
-                <version>3.9.4</version>
+                <version>3.9.5</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper-jute</artifactId>
-                <version>3.9.4</version>
+                <version>3.9.5</version>
             </dependency>
 
             <dependency>
