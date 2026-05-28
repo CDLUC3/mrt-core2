@@ -343,7 +343,12 @@ public abstract class ArchiveBuilderBase {
                 File [] children = sourceLocation.listFiles();
                 for (int i=0; i<children.length; i++) {
                     File child = children[i];
-                    addFiles(child);
+		    if (! Thread.currentThread().isInterrupted()) {
+                        addFiles(child);
+		    } else {
+                        String err = MESSAGE + "Process Interrupted";
+            	        throw new TException.GENERAL_EXCEPTION(err);
+		    }
                 }
 
             } else {
