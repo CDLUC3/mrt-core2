@@ -38,6 +38,8 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.Vector;
 import org.apache.http.HttpResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.cdlib.mrt.cloud.ManInfo;
 
@@ -76,6 +78,8 @@ public class VersionData
 
     private static final String NL = System.getProperty("line.separator");
     private static final boolean DEBUG = false;
+
+    private static final Logger log4j = LogManager.getLogger();
     
     protected Identifier objectID = null;
     protected int node = 0;
@@ -108,7 +112,7 @@ public class VersionData
             this.node = map.getNode();
             this.storageBase = map.getStorageBase();
             validate();
-            System.out.println(dump("manifestXML"));
+            log4j.debug(dump("manifestXML"));
             
         } catch (TException tex) {
             throw tex;
@@ -137,7 +141,7 @@ public class VersionData
             this.node = map.getNode();
             this.storageBase = map.getStorageBase();
             validate();
-            System.out.println(dump("versionMap"));
+            log4j.debug(dump("versionMap"));
             
         } catch (TException tex) {
             throw tex;
@@ -169,7 +173,7 @@ public class VersionData
             manifestDir = new File(outputDir, "manifest");
             manifestDir.mkdir();
             this.current = map.getCurrent();
-            System.out.println(dump("identifier"));
+            log4j.debug(dump("identifier"));
             
         } catch (TException tex) {
             throw tex;

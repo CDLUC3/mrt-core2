@@ -116,7 +116,7 @@ public class AddStateEntryGen {
     
         JSONObject jsonRoot = addLogKey(logKey, jsonState);
         try {
-            System.out.println("jsonState:" + jsonState.toString(2));
+            //System.out.println("jsonState:" + jsonState.toString(2));
             
         } catch (Exception ex) { }
         try {
@@ -300,7 +300,7 @@ public class AddStateEntryGen {
             }
             if (jsonContent.length() > 0)
                 jsonState.put("content", jsonContent);
-            System.out.println("jsonState - " + jsonState.toString(2));
+            //System.out.println("jsonState - " + jsonState.toString(2));
             return jsonState;
             
         } catch (Exception ex) {
