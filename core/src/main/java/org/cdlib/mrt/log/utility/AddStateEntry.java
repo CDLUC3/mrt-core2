@@ -71,7 +71,7 @@ public class AddStateEntry {
     {
         JSONObject jsonState = buildStateJSON();
         try {
-            System.out.println("jsonState:" + jsonState.toString(2));
+            //System.out.println("jsonState:" + jsonState.toString(2));
             
         } catch (Exception ex) { }
         if (false) return;
@@ -88,7 +88,7 @@ public class AddStateEntry {
     {
         JSONObject jsonState = buildStateJSON();
         try {
-            System.out.println("jsonState:" + jsonState.toString(2));
+            //System.out.println("jsonState:" + jsonState.toString(2));
             
         } catch (Exception ex) { }
         if (false) return;
@@ -115,7 +115,7 @@ public class AddStateEntry {
     {
         
         try {
-            System.out.println("jsonState:" + jsonState.toString(2));
+            //System.out.println("jsonState:" + jsonState.toString(2));
             
         } catch (Exception ex) { }
         if (false) return;
@@ -251,7 +251,7 @@ public class AddStateEntry {
                 jsonState.put("id", jsonID);
             if (jsonContent.length() > 0)
                 jsonState.put("content", jsonContent);
-            System.out.println("jsonState - " + jsonState.toString(2));
+            //System.out.println("jsonState - " + jsonState.toString(2));
             return jsonState;
             
         } catch (Exception ex) {
