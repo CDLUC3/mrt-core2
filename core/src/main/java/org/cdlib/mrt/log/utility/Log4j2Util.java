@@ -33,6 +33,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.cdlib.mrt.log.utility;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import org.apache.logging.log4j.Level;
@@ -152,6 +153,23 @@ public class Log4j2Util {
             LogManager.getLogger().info("whichLog4j2: info");
             LogManager.getLogger().debug("whichLog4j2: debug");
             LogManager.getLogger().trace("whichLog4j2: trace");
+        } catch (Exception ex) {
+            System.out.println("whichLog4j2 Exception:" + ex);
+        }
+    }
+    
+    public static void useLog4j2(String xmlPath)
+    {
+        try {
+            LoggerContext context = (LoggerContext) LogManager.getContext(false); 
+            // Specify your custom XML file path
+            File configFile = new File(xmlPath);
+        
+            // Set the new location and reconfigure
+            context.setConfigLocation(configFile.toURI());
+            context.updateLoggers();
+        
+            System.out.println("Log4j now using: " + configFile.getAbsolutePath());
         } catch (Exception ex) {
             System.out.println("whichLog4j2 Exception:" + ex);
         }
