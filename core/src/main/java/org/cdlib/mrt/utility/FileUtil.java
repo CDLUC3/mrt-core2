@@ -42,9 +42,10 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.net.URL;
 import java.util.Vector;
-import org.cdlib.mrt.utility.HttpGet;
+import org.cdlib.mrt.utility.HTTPGetUtil;
 
 /**
  * Generalized file utilities
@@ -81,7 +82,8 @@ public class FileUtil {
     {
         URL url = null;
         try {
-            url = new URL(urlS);
+            URI urlI = new URI(urlS);
+            url = urlI.toURL();
             
         } catch (Exception ex) {
             throw new TException.INVALID_OR_MISSING_PARM(MESSAGE + "String URL invalid:" + urlS 
@@ -119,6 +121,62 @@ public class FileUtil {
         url2File(m_logger, urlS, outFile);
     }
     
+    /**
+     * build file form a url
+     * @param urlS source url
+     * @param outFile target file
+     * @param getUtil http utility in addition to straight call allows forward proxy and headers
+     * @throws TException 
+     */
+    public static void url2File(String urlS, File outFile, HTTPGetUtil getUtil)
+        throws TException
+    {
+        try {
+            URI urlI = new URI(urlS);
+        
+            URL url = urlI.toURL();
+            HttpGetNew.getFile(url, outFile, getUtil);
+            
+
+        } catch( TException tex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(tex));
+            throw tex;
+
+        } catch( Exception ex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION(ex);
+        }
+        
+    }
+    
+    /**
+     * 
+     * @param urlS source url
+     * @param outFile target file
+     * @param expectedLength expected length of output
+     * @param getUtil http utility in addition to straight call allows forward proxy and header
+     * @throws TException 
+     */
+    public static void url2File(String urlS, File outFile, Long expectedLength, HTTPGetUtil getUtil)
+        throws TException
+    {
+        try {
+            URI urlI = new URI(urlS);
+        
+            URL url = urlI.toURL();
+            HttpGetNew.getFile(url, outFile, getUtil);
+            
+
+        } catch( TException tex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(tex));
+            throw tex;
+
+        } catch( Exception ex ) {
+            System.out.println("trace:" + StringUtil.stackTrace(ex));
+            throw new TException.GENERAL_EXCEPTION(ex);
+        }
+        
+    }
     
     /**
      * get remote file
