@@ -31,10 +31,6 @@ package org.cdlib.mrt.test;
 
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Properties;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -45,13 +41,9 @@ import java.net.URI;
 import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.http.HttpResponse;
 import java.util.HashMap;
-import static org.cdlib.mrt.test.TestProxyHttp.DEFAULT_TIMEOUT;
-import static org.cdlib.mrt.test.TestProxyHttp.main_test_proxy;
 import org.cdlib.mrt.utility.Checksums;
 import org.cdlib.mrt.utility.FileUtil;
-import org.cdlib.mrt.utility.StringUtil;
 import org.cdlib.mrt.utility.HTTPGetUtil;
 import org.cdlib.mrt.utility.HttpGetNew;
 
