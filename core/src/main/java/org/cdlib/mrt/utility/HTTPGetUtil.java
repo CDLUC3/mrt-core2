@@ -117,11 +117,13 @@ public class HTTPGetUtil {
             //Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
             httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(timeout))
+                .followRedirects(HttpClient.Redirect.NORMAL) // Enable redirection
                 .proxy(ProxySelector.of(new InetSocketAddress(proxyHost, proxyPort)))
                 .build();
         } else {
             httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(timeout))
+                .followRedirects(HttpClient.Redirect.NORMAL) // Enable redirection
                 .build();
         }
         this.timeout = timeout;
