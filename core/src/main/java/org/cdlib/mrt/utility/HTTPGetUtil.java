@@ -489,6 +489,15 @@ public class HTTPGetUtil {
         localHeaders.put("Authorization", authValue);
     }
     
+    /**
+     * returns content length using head if present
+     * @param requestURL tested url for length
+     * @return
+     *  >= 0 content length
+     *  -1 no content-length header found
+     *  < -399 negative status code
+     * @throws TException 
+     */
     public Long getContentLength(String requestURL)
             throws TException
     {
@@ -502,22 +511,25 @@ public class HTTPGetUtil {
          try {
             // 2. Send the request
             HttpResponse<Void> response = httpClient.send(request, HttpResponse.BodyHandlers.discarding());
-
-            if (response.statusCode() == 200) {
+            int statusCode = response.statusCode();
+            if (statusCode == 200) {
                 // 3. Extract the Content-Length header safely
                 OptionalLong size = response.headers().firstValueAsLong("Content-Length");
                 
                 if (size.isPresent()) {
-                    System.out.println("Content Size: " + size.getAsLong() + " bytes");
                     length = size.getAsLong();
                    
                 } else {
-                    System.out.println("Content-Length header not provided by the server.");
-                    length = null;
+                    length = -1L;
                 }
-            } else {
-                System.out.println("Request failed with status code: " + response.statusCode());
+            } else if (statusCode > 399) {
+                long minusStatusCodeL = -1 * statusCode;
+                length = minusStatusCodeL;
+                
             }
+            log4j.debug("getContentLength:" + length
+                    + " - statusCode:" + statusCode
+            );
             return length;
 
         } catch (Exception ex) {
