@@ -28,15 +28,13 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************/
 package org.cdlib.mrt.utility;
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.http.HttpResponse;
-import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 /**
  *
  * @author dloy
@@ -49,6 +47,7 @@ public class HttpGetNew {
     protected static final int BUFSIZE = 126000;
     public final static long SEGMENT = 400000000L;
     public final static long MAX_RETRY = 3; //no content length only
+    private static final Logger log4j = LogManager.getLogger();
     
     protected long testLength = 0;
     protected long headerContentLength = -1;
@@ -150,7 +149,7 @@ public class HttpGetNew {
                         + " - contentLength=" + contentLength
                         + " - testLength=" + testLength
             );
-            long length = 0;
+            long length = -1;
             InputStream inStream = response.body();
             int failCnt = 0;
             int startCnt = 0;
@@ -184,7 +183,7 @@ public class HttpGetNew {
                 inStream = httpGetUtil.getObjectStream(contentURL.toString(), startByte, endByte);
                 length = outFile.length();
             }
-            if (DEBUG) System.out.println(MESSAGE + "End start counts=" + startCnt
+            log4j.debug(MESSAGE + "End start counts=" + startCnt
                         + " - url=" + contentURL.toString()
                         + " - file=" + outFile.getCanonicalPath()
                         + " - contentLength=" + contentLength
@@ -210,7 +209,7 @@ public class HttpGetNew {
         throws TException
     { 
         try {
-            if (true) System.out.println(MESSAGE + "buildNoContentLength build"
+            if (DEBUG) System.out.println(MESSAGE + "buildNoContentLength build"
                         + " - url=" + contentURL.toString()
                         + " - testLength=" + testLength
             );

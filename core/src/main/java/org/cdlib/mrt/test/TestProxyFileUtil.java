@@ -62,7 +62,9 @@ public class TestProxyFileUtil {
         //main_test_noProxy("ark:/99999/fk46d7qj8h",1, "system/mrt-ingest.txt", "/home/loy/tmp/http/npExample.txt");
         try {
             
-            if (true) url2FileP("http://example.com", "/home/loy/tmp/http/example.txt");
+            if (false) url2FileP("http://example.com", "/home/loy/tmp/http/example.txt");
+            
+            if (true) url2FileNoP("https://submit.escholarship.org/data/2026-09-02T00-03-12/qt3fr0n83v/content/PMC10588282.pdf", "/home/loy/tmp/http/zero.txt");
             
             if (false) url2FileNoP( // 6k
                 9501,
@@ -222,6 +224,35 @@ public class TestProxyFileUtil {
             e.printStackTrace();
         }
     }
+    
+    public static void url2FileNoP(String urlS, String fileS) 
+    {
+        try {
+            // 1. Define your local proxy details (e.g., localhost on port 8080)\
+            URI urlI = new URI(urlS);
+            URL url = urlI.toURL();
+            String proxyHost = null;
+            int proxyPort = 65002;
+            File outFile = new File(fileS);
+            deleteFile(outFile);
+            
+            HashMap<String, String> headers = new HashMap<>();
+            HTTPGetUtil getUtil = HTTPGetUtil.build(proxyHost, proxyPort, headers);
+            long startTime = System.currentTimeMillis();
+            FileUtil.url2File(urlS, outFile, getUtil);
+            
+            long durTime = System.currentTimeMillis() - startTime;
+            System.out.println("TIME - NOTLEN:" + durTime);
+            String out = FileUtil.file2String(outFile);
+            System.out.println("File:" + outFile.getCanonicalPath() + " - >>>\n"
+                    + out + "<<<\n"
+            );
+            
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
             
     public static void url2FileNoP(int node, String ark, int versionNum, String pathname, String fileS, long len, String digest) {
         try {
@@ -259,6 +290,8 @@ public class TestProxyFileUtil {
             System.out.println("\n************************\n");
             startTime = System.currentTimeMillis();
             FileUtil.url2File(urlS, outFile, len, getUtil);
+            if (!outFile.exists()) System.out.println("does not exit:" + outFile.getCanonicalPath());
+            else System.out.println("file exists:" + outFile.getCanonicalPath());
             durTime = System.currentTimeMillis() - startTime;
             System.out.println("TIME LEN:" + durTime);
             validate("LEN", outFile, len, digest);
