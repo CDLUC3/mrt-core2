@@ -35,13 +35,14 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.ArrayList;
 
-import org.apache.tika.config.TikaConfig;
+//import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
+import org.apache.tika.parser.ParseContext;
 import org.cdlib.mrt.utility.LoggerInf;
 import org.cdlib.mrt.utility.LoggerInf;
 import org.cdlib.mrt.utility.TException;
@@ -169,7 +170,8 @@ public class Tika
             stream = TikaInputStream.get(componentStream);
             Metadata metadata = new Metadata();
             metadata.add(TikaCoreProperties.RESOURCE_NAME_KEY, filenameWithExtension);
-            MediaType mediaType = detector.detect(stream, metadata);
+            ParseContext parseContext = new ParseContext();
+            MediaType mediaType = detector.detect(stream, metadata, parseContext);
             return mediaType;
 
             
